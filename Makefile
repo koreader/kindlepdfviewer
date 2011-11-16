@@ -99,3 +99,8 @@ display:
 	[ -p $(EMULATE_EINKFB_FILE) ] || mknod $(EMULATE_EINKFB_FILE) p
 	# ...and display from it
 	mplayer -rawvideo format=y8:w=$(EMULATE_EINKFB_W):h=$(EMULATE_EINKFB_H) -demuxer rawvideo $(EMULATE_EINKFB_FILE)
+
+file=/mnt/llin/rest/references/dlj/dlj210.pdf 
+test:
+	[ -e /tmp/input ] || ls /dev/input/by-path/*kbd | head -1 | xargs -i ln -s {} /tmp/input
+	./kpdfview reader.lua --device emu --goto 31 --gamma 1.5 $(file)
