@@ -35,20 +35,22 @@ KEY_BTN = 92
 -- option parsing:
 longopts = {
 	password = "p",
+	goto = "g",
 	gamma = "G",
 	device = "d",
 	help = "h"
 }
-optarg, optind = alt_getopt.get_opts(ARGV, "p:G:h", longopts)
+optarg, optind = alt_getopt.get_opts(ARGV, "p:G:hg:d:", longopts)
 if optarg["h"] or ARGV[optind] == nil then
 	print("usage: ./reader.lua [OPTION] ... DOCUMENT.PDF")
 	print("Read PDFs on your E-Ink reader")
 	print("")
 	print("-p, --password=PASSWORD   set password for reading PDF document")
+	print("-g, --goto=page           start reading on page")
 	print("-G, --gamma=GAMMA         set gamma correction")
 	print("                          (floating point notation, e.g. \"1.5\")")
 	print("-d, --device=DEVICE       set device specific configuration,")
-	print("                          currently one of \"kdxg\" (default), \"k3\"")
+	print("                          \"kdxg\" (default), \"k3\", \"emu\"")
 	print("-h, --help                show this usage help")
 	print("")
 	print("This software is licensed under the GPLv3.")
@@ -66,6 +68,8 @@ if optarg["d"] == "k3" then
 	input.open("/dev/input/event0")
 	input.open("/dev/input/event1")
 	input.open("/dev/input/event2")
+elseif optarg["d"] == "emu" then
+	input.open("/tmp/input")
 else
 	input.open("/dev/input/event0")
 	input.open("/dev/input/event1")
@@ -213,6 +217,6 @@ function mainloop()
 	end
 end
 
-goto(1)
+goto(tonumber(optarg["g"]) or 1)
 
 mainloop()
