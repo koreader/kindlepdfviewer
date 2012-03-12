@@ -436,8 +436,8 @@ function UniReader:goto(no, nojump)
 		return
 	end
 
-	-- for jump_stack, distinguish jump from normal page turn
-	if self.pageno and math.abs(self.pageno - no) > 1 and nojump == nil then
+	-- for jump_stack, if nojump ~=nil don't add it to the list
+	if self.pageno and nojump == nil then
 		self:add_jump(self.pageno)
 	end
 
@@ -679,7 +679,7 @@ function UniReader:inputloop()
 				else
 					-- turn page forward
 					local pageno = self:nextView()
-					self:goto(pageno)
+					self:goto(pageno, 1)
 				end
 			elseif ev.code == KEY_PGBCK or ev.code == KEY_LPGBCK then
 				if Keys.shiftmode then
@@ -689,7 +689,7 @@ function UniReader:inputloop()
 				else
 					-- turn page back
 					local pageno = self:prevView()
-					self:goto(pageno)
+					self:goto(pageno, 1)
 				end
 			elseif ev.code == KEY_BACK then
 				if Keys.altmode then
@@ -707,9 +707,9 @@ function UniReader:inputloop()
 			elseif ev.code == KEY_VMINUS then
 				self:modify_gamma( 0.8 )
 			elseif ev.code == KEY_1 then
-				self:goto(1,1)
+				self:goto(1, 1)
 			elseif ev.code >= KEY_2 and ev.code <= KEY_9 then
-				self:goto(math.floor(self.doc:getPages()/90*(ev.code-KEY_1)*10),1)
+				self:goto(math.floor(self.doc:getPages()/90*(ev.code-KEY_1)*10), 1)
 			elseif ev.code == KEY_0 then
 				self:goto(self.doc:getPages())						
 			elseif ev.code == KEY_A then
