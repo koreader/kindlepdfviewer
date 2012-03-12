@@ -702,24 +702,6 @@ function UniReader:inputloop()
 					end
 				end
 
-
-			-- Jump 10 pages at a time
-			elseif ev.code == KEY_M then
-				if self.pageno + 10 > self.doc:getPages() then
-					self:goto(self.doc:getPages(), 1)
-				else
-					self:goto(self.pageno + 10, 1)
-				end
-
-			elseif ev.code == KEY_N then
-				if self.pageno - 10 < 1 then
-					self:goto(1,1)
-				else
-					self:goto(self.pageno - 10,1)
-				end
-
-
-
 			elseif ev.code == KEY_VPLUS then
 				self:modify_gamma( 1.25 )
 			elseif ev.code == KEY_VMINUS then
