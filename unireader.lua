@@ -435,13 +435,13 @@ function UniReader:del_jump(pageno)
 end
 
 -- change current page and cache next page after rendering
-function UniReader:goto(no)
+function UniReader:goto(no, nojump)
 	if no < 1 or no > self.doc:getPages() then
 		return
 	end
 
 	-- for jump_stack, distinguish jump from normal page turn
-	if self.pageno and math.abs(self.pageno - no) > 1 then
+	if self.pageno and math.abs(self.pageno - no) > 1 and nojump == nil then
 		self:add_jump(self.pageno)
 	end
 
@@ -621,9 +621,9 @@ function UniReader:showJumpStack()
 	item_no = jump_menu:choose(0, fb.bb:getHeight())
 	if item_no then
 		local jump_item = self.jump_stack[item_no]
-		self:goto(jump_item.page)
+		self:goto(jump_item.page, 1)
 	else
-		self:goto(self.pageno)
+		self:goto(self.pageno, 1)
 	end
 end
 
@@ -705,14 +705,33 @@ function UniReader:inputloop()
 						self:goto(self.jump_stack[1].page)
 					end
 				end
+
+
+			-- Jump 10 pages at a time
+			elseif ev.code == KEY_M then
+				if self.pageno + 10 > self.doc:getPages() then
+					self:goto(self.doc:getPages(), 1)
+				else
+					self:goto(self.pageno + 10, 1)
+				end
+
+			elseif ev.code == KEY_N then
+				if self.pageno - 10 < 1 then
+					self:goto(1,1)
+				else
+					self:goto(self.pageno - 10,1)
+				end
+
+
+
 			elseif ev.code == KEY_VPLUS then
 				self:modify_gamma( 1.25 )
 			elseif ev.code == KEY_VMINUS then
 				self:modify_gamma( 0.8 )
 			elseif ev.code == KEY_1 then
-				self:goto(1)
+				self:goto(1,1)
 			elseif ev.code >= KEY_2 and ev.code <= KEY_9 then
-				self:goto(math.floor(self.doc:getPages()/90*(ev.code-KEY_1)*10))
+				self:goto(math.floor(self.doc:getPages()/90*(ev.code-KEY_1)*10),1)
 			elseif ev.code == KEY_0 then
 				self:goto(self.doc:getPages())						
 			elseif ev.code == KEY_A then
