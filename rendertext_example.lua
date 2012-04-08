@@ -23,5 +23,5 @@ renderUtf8Text(fb.bb, 100, 200, face, "h", "AV T.T: gxyt!", false)
 fb:refresh()
 
 while true do
-	local ev = input.waitForEvent()
+	local ev = waitForEvent()
 end

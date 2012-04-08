@@ -292,7 +292,7 @@ function DJVUReader:startHighLightMode()
 
 	-- first use cursor to place start pos for highlight
 	while running do
-		local ev = input.waitForEvent()
+		local ev = waitForEvent()
 		ev.code = adjustKeyEvents(ev)
 		if ev.type == EV_KEY and ev.value == EVENT_VALUE_KEY_PRESS then
 			if ev.code == KEY_FW_LEFT then
@@ -538,7 +538,7 @@ function DJVUReader:startHighLightMode()
 	-- go into highlight mode
 	running = true
 	while running do
-		local ev = input.waitForEvent()
+		local ev = waitForEvent()
 		ev.code = adjustKeyEvents(ev)
 		if ev.type == EV_KEY and ev.value == EVENT_VALUE_KEY_PRESS then
 			if ev.code == KEY_FW_LEFT then

@@ -135,7 +135,7 @@ function InputBox:input(ypos, height, title, d_text)
 	fb:refresh(1, 20, ypos, w, h)
 
 	while true do
-		local ev = input.waitForEvent()
+		local ev = waitForEvent()
 		ev.code = adjustKeyEvents(ev)
 		if ev.type == EV_KEY and ev.value == EVENT_VALUE_KEY_PRESS then
 			--local secs, usecs = util.gettime()

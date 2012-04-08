@@ -254,3 +254,11 @@ function adjustKeyEvents(ev)
 	print("# Unrecognizable rotation mode "..Screen.cur_rotation_mode.."!")
 	return nil
 end
+
+function waitForEvent()
+	local ev = nil
+	while not ev do
+		ev = input.waitForEvent()
+	end
+	return ev
+end

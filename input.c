@@ -83,7 +83,7 @@ static int waitForInput(lua_State *L) {
 
 	num = select(nfds, &fds, NULL, NULL, &timeout);
 	if(num < 0) {
-		return luaL_error(L, "Waiting for input failed: %d\n", errno);
+		return 0;
 	}
 
 	for(i=0; i<NUM_FDS; i++) {
@@ -107,6 +107,7 @@ static int waitForInput(lua_State *L) {
 			}
 		}
 	}
+
 	return 0;
 #else
 	SDL_Event event;

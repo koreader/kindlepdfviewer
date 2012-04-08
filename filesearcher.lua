@@ -291,7 +291,7 @@ function FileSearcher:choose(keywords)
 			self.pagedirty = false
 		end
 
-		local ev = input.waitForEvent()
+		local ev = waitForEvent()
 		ev.code = adjustKeyEvents(ev)
 		if ev.type == EV_KEY and ev.value == EVENT_VALUE_KEY_PRESS then
 			keydef = Keydef:new(ev.code, getKeyModifier())
