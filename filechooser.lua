@@ -164,7 +164,7 @@ function FileChooser:choose(ypos, height)
 			pagedirty = false
 		end
 
-		local ev = input.waitForEvent()
+		local ev = waitForEvent()
 		--print("key code:"..ev.code)
 		ev.code = adjustKeyEvents(ev)
 		if ev.type == EV_KEY and ev.value == EVENT_VALUE_KEY_PRESS then
@@ -196,7 +196,7 @@ function FileChooser:choose(ypos, height)
 					settings menu in the future.
 					--]]
 					return nil, function()
-						FileSearcher:init( self.path )
+						FileSearcher:init(self.path)
 						FileSearcher:choose(keywords)
 					end
 				end
