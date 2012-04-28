@@ -89,22 +89,24 @@ function Button:init()
 	-- set FrameContainer content
 	self[1] = FrameContainer:new{
 		margin = 0,
-		bordersize = 4,
+		bordersize = 3,
 		background = 0,
+		radius = 15,
+		padding = 2,
 
 		HorizontalGroup:new{
-			Widget:new{ dimen = { w = 10, h = 0 } },
+			HorizontalSpan:new{ width = 8 },
 			TextWidget:new{
 				text = self.text,
 				face = Font:getFace("cfont", 20)
 			},
-			Widget:new{ dimen = { w = 10, h = 0 } }
+			HorizontalSpan:new{ width = 8 },
 		}
 	}
 	if self.preselect then
 		self[1].color = 15
 	else
-		self[1].color = 0
+		self[1].color = 5
 	end
 end
 
@@ -114,7 +116,7 @@ function Button:onFocus()
 end
 
 function Button:onUnfocus()
-	self[1].color = 0
+	self[1].color = 5
 	return true
 end
 
@@ -127,6 +129,8 @@ ConfirmBox = FocusManager:new{
 	width = nil,
 	ok_text = "OK",
 	cancel_text = "Cancel",
+	ok_callback = function() end,
+	cancel_callback = function() end,
 }
 
 function ConfirmBox:init()
@@ -154,6 +158,7 @@ function ConfirmBox:init()
 		FrameContainer:new{
 			margin = 2,
 			background = 0,
+			padding = 10,
 			HorizontalGroup:new{
 				ImageWidget:new{
 					file = "resources/info-i.png"
@@ -166,11 +171,11 @@ function ConfirmBox:init()
 						face = Font:getFace("cfont", 30),
 						width = self.width,
 					},
-					VerticalSpan:new{ width = 10 },
+					VerticalSpan:new{ width = 20 },
 					HorizontalGroup:new{
 						ok_button,
-						Widget:new{ dimen = { w = 10, h = 0 } },
-						cancel_button
+						HorizontalSpan:new{ width = 10 },
+						cancel_button,
 					}
 				}
 			}
@@ -179,12 +184,18 @@ function ConfirmBox:init()
 end
 
 function ConfirmBox:onClose()
+	self:cancel_callback()
 	UIManager:close(self)
 	return true
 end
 
 function ConfirmBox:onSelect()
-	print("selected:", self.selected.x)
+	debug("selected:", self.selected.x)
+	if self.selected.x == 1 then
+		self:ok_callback()
+	else
+		self:cancel_callback()
+	end
 	UIManager:close(self)
 	return true
 end
@@ -217,9 +228,7 @@ function InfoMessage:init()
 				ImageWidget:new{
 					file = "resources/info-i.png"
 				},
-				Widget:new{
-					dimen = { w = 10, h = 0 }
-				},
+				HorizontalSpan:new{ width = 10 },
 				TextWidget:new{
 					text = self.text,
 					face = Font:getFace("cfont", 30)
