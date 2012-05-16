@@ -2,14 +2,19 @@ require "rendertext"
 require "keys"
 require "graphics"
 require "font"
+require "inputbox"
+require "dialog"
+require "extentions"
 
 FileSearcher = {
 	-- title height
-	title_H = 45,
+	title_H = 40,
 	-- spacing between lines
-	spacing = 40,
+	spacing = 36,
 	-- foot height
-	foot_H = 27,
+	foot_H = 28,
+	-- horisontal margin
+	margin_H = 10,
 
 	-- state buffer
 	dirs = {},
@@ -31,16 +36,9 @@ function FileSearcher:readDir()
 			-- handle files in d
 			for f in lfs.dir(d) do
 				local file_type = string.lower(string.match(f, ".+%.([^.]+)") or "")
-				if lfs.attributes(d.."/"..f, "mode") == "directory"
-				and f ~= "." and f~= ".." and not string.match(f, "^%.[^.]") then
+				if lfs.attributes(d.."/"..f, "mode") == "directory" and f ~= "." and f~= ".." then
 					table.insert(new_dirs, d.."/"..f)
-				elseif file_type == "djvu" or file_type == "pdf" 
-				or file_type == "xps" or file_type == "cbz" 
-				or file_type == "epub" or file_type == "txt"
-				or file_type == "rtf" or file_type == "htm"
-				or file_type == "html" or file_type == "mobi"
-				or file_type == "fb2" or file_type == "chm"
-				or file_type == "doc" or file_type == "zip" then
+				elseif ext:getReader(file_type) then
 					file_entry = {dir=d, name=f,}
 					table.insert(self.files, file_entry)
 					--debug("file:"..d.."/"..f)
@@ -161,6 +159,7 @@ function FileSearcher:addAllCommands()
 			end
 		end
 	)
+	-- search
 	self.commands:add(KEY_S, nil, "S",
 		"invoke search inputbox",
 		function(self)
@@ -190,8 +189,8 @@ function FileSearcher:addAllCommands()
 			self.pagedirty = true
 		end
 	)
-	self.commands:add({KEY_ENTER, KEY_FW_PRESS}, nil, "",
-		"select item",
+	self.commands:add({KEY_ENTER, KEY_FW_PRESS}, nil, "Enter",
+		"open selected item",
 		function(self)
 			file_entry = self.result[self.perpage*(self.page-1)+self.current]
 			file_full_path = file_entry.dir .. "/" .. file_entry.name
@@ -206,19 +205,56 @@ function FileSearcher:addAllCommands()
 			self.pagedirty = true
 		end
 	)
-	self.commands:add({KEY_BACK, KEY_HOME}, nil, "",
-		"back to file browser",
+	self.commands:add({KEY_BACK, KEY_HOME}, nil, "Back",
+		"back",
 		function(self)
 			return "break"
 		end
 	)
+	self.commands:add({KEY_DEL}, nil, "Del",
+		"delete document",
+		function(self)
+			file_entry = self.result[self.perpage*(self.page-1)+self.current]
+			local file_to_del = file_entry.dir .. "/" .. file_entry.name
+			InfoMessage:show("Press \'Y\' to confirm deleting... ",0)
+			while true do
+				ev = input.saveWaitForEvent()
+				ev.code = adjustKeyEvents(ev)
+				if ev.type == EV_KEY and ev.value ~= EVENT_VALUE_KEY_RELEASE then
+					if ev.code == KEY_Y then
+						-- delete the file itself
+						os.execute("rm \""..file_to_del.."\"")
+						-- and its history file, if any
+						os.execute("rm \""..DocToHistory(file_to_del).."\"")
+						 -- to avoid showing just deleted file
+						self:init( self.path )
+						self:choose(self.keywords)
+					end
+					self.pagedirty = true
+					break
+				end -- if ev.type == EV_KEY
+			end -- while
+		end
+	)	self.commands:add({KEY_SPACE}, nil, "Space",
+		"refresh page manually",
+		function(self)
+			self.pagedirty = true
+		end
+	)
+--[[	self.commands:add({KEY_B}, nil, "B",
+		"file browser",
+		function(self)
+			--FileChooser:setPath(".")
+			FileChooser:choose(0, G_height)
+			self.pagedirty = true
+		end
+	)]]
 end
 
 function FileSearcher:choose(keywords)
 	self.perpage = math.floor(G_height / self.spacing) - 2
 	self.pagedirty = true
 	self.markerdirty = false
-
 
 	-- if given keywords, set new result according to keywords.
 	-- Otherwise, display the previous search result.
@@ -236,50 +272,47 @@ function FileSearcher:choose(keywords)
 			fb.bb:paintRect(0, 0, G_width, G_height, 0)
 
 			-- draw menu title
-			renderUtf8Text(fb.bb, 30, 0 + self.title_H, tface,
-				"Search Result for: "..self.keywords, true)
+			DrawTitle("Search Results for \'"..string.upper(self.keywords).."\'",self.margin_H,0,self.title_H,4,tface)
 
 			-- draw results
 			local c
 			if self.items == 0 then -- nothing found
 				y = self.title_H + self.spacing * 2
-				renderUtf8Text(fb.bb, 20, y, cface,
+				renderUtf8Text(fb.bb, self.margin_H, y, cface,
 					"Sorry, no match found.", true)
-				renderUtf8Text(fb.bb, 20, y + self.spacing, cface,
+				renderUtf8Text(fb.bb, self.margin_H, y + self.spacing, cface,
 					"Please try a different keyword.", true)
 				self.markerdirty = false
 			else -- found something, draw it
 				for c = 1, self.perpage do
 					local i = (self.page - 1) * self.perpage + c
 					if i <= self.items then
-						y = self.title_H + (self.spacing * c)
-						renderUtf8Text(fb.bb, 50, y, cface,
-							self.result[i].name, true)
+						y = self.title_H + (self.spacing * c) + 4
+						local ftype = string.lower(string.match(self.result[i].name, ".+%.([^.]+)") or "")
+						DrawFileItem(self.result[i].name,self.margin_H,y,ftype)
 					end
 				end
 			end
 
 			-- draw footer
-			y = self.title_H + (self.spacing * self.perpage) + self.foot_H
-			x = (G_width / 2) - 50
 			all_page = math.ceil(self.items/self.perpage)
-			renderUtf8Text(fb.bb, x, y, fface,
-				"Page "..self.page.." of "..all_page, true)
+			DrawFooter("Page "..self.page.." of "..all_page,fface,self.foot_H)
+			
 		end
 
 		if self.markerdirty then
 			if not self.pagedirty then
 				if self.oldcurrent > 0 then
-					y = self.title_H + (self.spacing * self.oldcurrent) + 10
-					fb.bb:paintRect(30, y, G_width - 60, 3, 0)
-					fb:refresh(1, 30, y, G_width - 60, 3)
+					y = self.title_H + (self.spacing * self.oldcurrent) + 12
+					fb.bb:paintRect(self.margin_H, y, G_width - 2 * self.margin_H, 3, 0)
+					fb:refresh(1, self.margin_H, y, G_width - 2 * self.margin_H, 3)
 				end
 			end
 			-- draw new marker line
-			y = self.title_H + (self.spacing * self.current) + 10
-			fb.bb:paintRect(30, y, G_width - 60, 3, 15)
+			y = self.title_H + (self.spacing * self.current) + 12
+			fb.bb:paintRect(self.margin_H, y, G_width - 2 * self.margin_H, 3, 15)
 			if not self.pagedirty then
-				fb:refresh(1, 30, y, G_width - 60, 3)
+				fb:refresh(1, self.margin_H, y, G_width - 2 * self.margin_H, 3)
 			end
 			self.oldcurrent = self.current
 			self.markerdirty = false

@@ -7,8 +7,9 @@ CREReader = UniReader:new{
 	pos = nil,
 	percent = 0,
 
-	gamma_index = 15,
+	gamma_index = 10,
 	font_face = nil,
+	font_zoom = 0,
 
 	line_space_percent = 100,
 }
@@ -30,9 +31,22 @@ end
 function CREReader:open(filename)
 	local ok
 	local file_type = string.lower(string.match(filename, ".+%.([^.]+)"))
+
+	-- try to find double extentions like fb2.zip or htm.zip
+	if file_type == "zip" then
+		-- remove zip-extention
+		local fn = string.lower(string.sub(filename,0,-4))
+		-- if no double extention then default file_type
+		file_type = string.lower(string.match(fn, ".+%.([^.]+)") or "cr3")
+	end
+
 	-- these two format use the same css file
 	if file_type == "html" then
 		file_type = "htm"
+	end
+	-- if native css-file doesn't exist, one needs to use default cr3.css
+	if not io.open("./data/"..file_type..".css") then
+		file_type = "cr3"
 	end
 	local style_sheet = "./data/"..file_type..".css"
 	ok, self.doc = pcall(cre.openDocument, filename, style_sheet, 
@@ -51,7 +65,7 @@ end
 ----------------------------------------------------
 function CREReader:loadSpecialSettings()
 	local font_face = self.settings:readSetting("font_face")
-	self.font_face = font_face or "FreeSerif"
+	self.font_face = font_face or "Palatino Linotype"
 	self.doc:setFontFace(self.font_face)
 
 	local gamma_index = self.settings:readSetting("gamma_index")
@@ -60,6 +74,16 @@ function CREReader:loadSpecialSettings()
 
 	local line_space_percent = self.settings:readSetting("line_space_percent")
 	self.line_space_percent = line_space_percent or self.line_space_percent
+
+	font_zoom = self.settings:readSetting("font_zoom") or 0
+	if font_zoom ~= 0 then
+		local i = math.abs(font_zoom)
+		local step = font_zoom / i
+		while i>0 do
+			self.doc:zoomFont(step)
+			i=i-1
+		end
+	end
 end
 
 function CREReader:getLastPageOrPos()
@@ -75,6 +99,7 @@ function CREReader:saveSpecialSettings()
 	self.settings:saveSetting("font_face", self.font_face)
 	self.settings:saveSetting("gamma_index", self.gamma_index)
 	self.settings:saveSetting("line_space_percent", self.line_space_percent)
+	self.settings:saveSetting("font_zoom", font_zoom)
 end
 
 function CREReader:saveLastPageOrPos()
@@ -284,8 +309,6 @@ function CREReader:_drawReadingInfo()
 							5, 4, load_percent/100, 8)
 end
 
-
-
 function CREReader:adjustCreReaderCommands()
 	-- delete commands
 	self.commands:delGroup("[joypad]")
@@ -323,7 +346,8 @@ function CREReader:adjustCreReaderCommands()
 				delta = -1
 				change = "decrease"
 			end
-			InfoMessage:show(change.." font size", 0)
+			font_zoom = font_zoom + delta
+			InfoMessage:show(change.." font size to "..font_zoom, 0)
 			self.doc:zoomFont(delta)
 			self:redrawCurrentPage()
 		end
@@ -439,6 +463,7 @@ function CREReader:adjustCreReaderCommands()
 			cre.setGammaIndex(self.gamma_index+delta)
 			self.gamma_index = cre.getGammaIndex()
 			self:redrawCurrentPage()
+			-- showInfoMsgWithDelay("Redraw with gamma = "..gamma_index, 2000, 1)
 		end
 	)
 	self.commands:add(KEY_FW_UP, nil, "joypad up",

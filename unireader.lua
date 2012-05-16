@@ -2216,6 +2216,16 @@ function UniReader:addAllCommands()
 			unireader:goto(unireader.pageno)
 		end
 	)
+	-- make screenshot
+	self.commands:add(KEY_P, MOD_SHIFT, "P",
+		"make screenshot",
+		function(cr)
+			os.execute("mkdir ".."/mnt/us/kindlepdfviewer/screenshots")
+			local d = os.date("%Y%m%d%H%M%S")
+			showInfoMsgWithDelay("making screenshot... ", 1000, 1) 
+			os.execute("dd ".."if=/dev/fb0 ".."of=/mnt/us/kindlepdfviewer/screenshots/" .. d .. ".raw")
+		end
+	)
 	-- commands.map is very large, impacts startup performance on device
 	--debug("defined commands "..dump(self.commands.map))
 end
