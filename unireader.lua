@@ -150,6 +150,19 @@ function UniReader:zoomedRectCoordTransform(x0, y0, x1, y1)
 end
 
 ----------------------------------------------------
+-- Given coordinates on the screen return positioni
+-- in original page
+----------------------------------------------------
+function UniReader:screenToPageTransform(x, y)
+	local x_o,y_o = self:screenOffset()
+	local x_p,y_p =
+		( x - x_o ) / self.globalzoom,
+		( y - y_o ) / self.globalzoom
+	debug("screenToPage", x,y, "offset", x_o,y_o, "page", x_p,y_p)
+	return x_p, y_p
+end
+
+----------------------------------------------------
 -- Given coordinates of four corners in original page
 -- size and return rectangular area in screen. You
 -- might want to call this when you want to draw stuff
@@ -1670,6 +1683,10 @@ function UniReader:showJumpHist()
 			local jump_item = self.jump_history[item_no]
 			self.jump_history.cur = item_no
 			self:goto(jump_item.page, true)
+			-- set new head if we reached the top of backward stack
+			if self.jump_history.cur == #self.jump_history then
+				self.jump_history.cur = self.jump_history.cur + 1
+			end
 		else
 			self:redrawCurrentPage()
 		end
@@ -1875,7 +1892,15 @@ function UniReader:addAllCommands()
 	self.commands:add(KEY_BACK,nil,"Back",
 		"go backward in jump history",
 		function(unireader)
-			local prev_jump_no = unireader.jump_history.cur - 1
+			local prev_jump_no = 0
+			if unireader.jump_history.cur > #unireader.jump_history then
+				-- if cur points to head, put current page in history
+				unireader:addJump(self.pageno)
+				prev_jump_no = unireader.jump_history.cur - 2
+			else
+				prev_jump_no = unireader.jump_history.cur - 1
+			end
+
 			if prev_jump_no >= 1 then
 				unireader.jump_history.cur = prev_jump_no
 				unireader:goto(unireader.jump_history[prev_jump_no].page, true)
@@ -1890,6 +1915,10 @@ function UniReader:addAllCommands()
 			if next_jump_no <= #self.jump_history then
 				unireader.jump_history.cur = next_jump_no
 				unireader:goto(unireader.jump_history[next_jump_no].page, true)
+				-- set new head if we reached the top of backward stack
+				if unireader.jump_history.cur == #unireader.jump_history then
+					unireader.jump_history.cur = unireader.jump_history.cur + 1
+				end
 			else
 				showInfoMsgWithDelay("Already last jump!", 2000, 1)
 			end
@@ -2090,7 +2119,180 @@ function UniReader:addAllCommands()
 			x,y,w,h = unireader:getRectInScreen( bbox["x0"], bbox["y0"], bbox["x1"], bbox["y1"] )
 			debug("inxertRect",x,y,w,h)
 			fb.bb:invertRect( x,y, w,h )
-			fb:refresh(0)
+			fb:refresh(1)
+		end)
+	self.commands:add(KEY_X,MOD_SHIFT,"X",
+		"modify page bbox",
+		function(unireader)
+			local bbox = unireader.cur_bbox
+			debug("bbox", bbox)
+			x,y,w,h = unireader:getRectInScreen( bbox["x0"], bbox["y0"], bbox["x1"], bbox["y1"] )
+			debug("getRectInScreen",x,y,w,h)
+
+			local new_bbox = bbox
+			local x_s, y_s = x,y
+			local running_corner = "top-left"
+
+			Screen:saveCurrentBB()
+
+			fb.bb:invertRect( 0,y_s, G_width,1 )
+			fb.bb:invertRect( x_s,0, 1,G_height )
+			InfoMessage:show(running_corner.." bbox");
+			fb:refresh(1)
+
+			local last_direction = { x = 0, y = 0 }
+
+			while running_corner do
+				local ev = input.saveWaitForEvent()
+				debug("ev",ev)
+				ev.code = adjustKeyEvents(ev)
+
+				if ev.type == EV_KEY and ev.value ~= EVENT_VALUE_KEY_RELEASE then
+
+					fb.bb:invertRect( 0,y_s, G_width,1 )
+					fb.bb:invertRect( x_s,0, 1,G_height )
+
+					local step   = 10
+					local factor = 1
+
+					local x_direction, y_direction = 0,0
+					if ev.code == KEY_FW_LEFT then
+						x_direction = -1
+					elseif ev.code == KEY_FW_RIGHT then
+						x_direction =  1
+					elseif ev.code == KEY_FW_UP then
+						y_direction = -1
+					elseif ev.code == KEY_FW_DOWN then
+						y_direction =  1
+					elseif ev.code == KEY_FW_PRESS then
+						local p_x,p_y = unireader:screenToPageTransform(x_s,y_s)
+						if running_corner == "top-left" then
+							new_bbox["x0"] = p_x
+							new_bbox["y0"] = p_y
+							debug("change top-left", bbox, "to", new_bbox)
+							running_corner = "bottom-right"
+							Screen:restoreFromSavedBB()
+							InfoMessage:show(running_corner.." bbox")
+							fb:refresh(1)
+							x_s = x+w
+							y_s = y+h
+						else
+							new_bbox["x1"] = p_x
+							new_bbox["y1"] = p_y
+							running_corner = false
+						end
+					elseif ev.code >= KEY_Q and ev.code <= KEY_P then
+						factor = ev.code - KEY_Q + 1
+						x_direction = last_direction["x"]
+						y_direction = last_direction["y"]
+						debug("factor",factor,"deltas",x_direction,y_direction)
+					elseif ev.code >= KEY_A and ev.code <= KEY_L then
+						factor = ev.code - KEY_A + 11
+						x_direction = last_direction["x"]
+						y_direction = last_direction["y"]
+					elseif ev.code >= KEY_Z and ev.code <= KEY_M then
+						factor = ev.code - KEY_Z + 20
+						x_direction = last_direction["x"]
+						y_direction = last_direction["y"]
+					elseif ev.code == KEY_BACK or ev.code == KEY_HOME then
+						running_corner = false
+					end
+
+					debug("factor",factor,"deltas",x_direction,y_direction)
+
+					if running_corner then
+						local x_o = x_direction * step * factor
+						local y_o = y_direction * step * factor
+						debug("move slider",x_o,y_o)
+						if x_s+x_o >= 0 and x_s+x_o <= G_width  then x_s = x_s + x_o end
+						if y_s+y_o >= 0 and y_s+y_o <= G_height then y_s = y_s + y_o end
+
+						if x_direction ~= 0 or y_direction ~= 0 then
+							Screen:restoreFromSavedBB()
+						end
+
+						fb.bb:invertRect( 0,y_s, G_width,1 )
+						fb.bb:invertRect( x_s,0, 1,G_height )
+
+						if x_direction or y_direction then
+							last_direction = { x = x_direction, y = y_direction }
+							debug("last_direction",last_direction)
+
+							-- FIXME partial duplicate of SelectMenu.item_shortcuts
+							local keys = {
+								"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+								"A", "S", "D", "F", "G", "H", "J", "K", "L",
+								"Z", "X", "C", "V", "B", "N", "M",
+							}
+
+							local max = 0
+							if x_direction == 1 then
+								max = G_width - x_s
+							elseif x_direction == -1 then
+								max = x_s
+							elseif y_direction == 1 then
+								max = G_height - y_s
+							elseif y_direction == -1 then
+								max = y_s
+							else
+								print("ERROR: unknown direction!")
+							end
+
+							max = max / step
+							if max > #keys then max = #keys end
+
+							local face = Font:getFace("hpkfont", 11)
+
+							for i = 1, max, 1 do
+								local key = keys[i]
+								local tick = i * step * x_direction
+								if x_direction ~= 0 then
+									local tick = i * step * x_direction
+									debug("x tick",i,tick,key)
+									if running_corner == "top-left" then -- ticks must be inside page
+										fb.bb:invertRect(     x_s+tick, y_s, 1, math.abs(tick))
+									else
+										fb.bb:invertRect(     x_s+tick, y_s-math.abs(tick), 1, math.abs(tick))
+									end
+									if x_direction < 0 then tick = tick - step end
+									tick = tick - step * x_direction / 2
+									renderUtf8Text(fb.bb, x_s+tick+2, y_s+4, face, key)
+								else
+									local tick = i * step * y_direction
+									debug("y tick",i,tick,key)
+									if running_corner == "top-left" then -- ticks must be inside page
+										fb.bb:invertRect(     x_s, y_s+tick, math.abs(tick),1)
+									else
+										fb.bb:invertRect(     x_s-math.abs(tick), y_s+tick, math.abs(tick),1)
+									end
+									if y_direction > 0 then tick = tick + step end
+									tick = tick - step * y_direction / 2
+									renderUtf8Text(fb.bb, x_s-3, y_s+tick-1, face, key)
+								end
+							end
+						end
+
+						fb:refresh(1)
+					end
+				end
+
+			end
+
+			unireader.bbox[unireader.pageno] = new_bbox
+			unireader.bbox[unireader:oddEven(unireader.pageno)] = new_bbox
+			unireader.bbox.enabled = true
+			debug("crop bbox", bbox, "to", new_bbox)
+
+			Screen:restoreFromSavedBB()
+			x,y,w,h = unireader:getRectInScreen( new_bbox["x0"], new_bbox["y0"], new_bbox["x1"], new_bbox["y1"] )
+			fb.bb:invertRect( x,y, w,h )
+			--fb.bb:invertRect( x+1,y+1, w-2,h-2 ) -- just border?
+			showInfoMsgWithDelay("new page bbox", 2000, 1);
+			self:redrawCurrentPage()
+
+			self.rcount = self.rcountmax -- force next full refresh
+
+			--unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_CONTENT)
 		end)
 	self.commands:add(KEY_MENU,nil,"Menu",
 		"toggle info box",
@@ -2216,15 +2418,16 @@ function UniReader:addAllCommands()
 			unireader:goto(unireader.pageno)
 		end
 	)
-	-- make screenshot
 	self.commands:add(KEY_P, MOD_SHIFT, "P",
-		"make screenshot",
-		function(cr)
-			os.execute("mkdir ".."/mnt/us/kindlepdfviewer/screenshots")
-			local d = os.date("%Y%m%d%H%M%S")
-			showInfoMsgWithDelay("making screenshot... ", 1000, 1) 
-			os.execute("dd ".."if=/dev/fb0 ".."of=/mnt/us/kindlepdfviewer/screenshots/" .. d .. ".raw")
-		end
+	"make screenshot",
+	function(unireader)
+		--@TODO convert bitmap to png or jpeg  30.04 2012 (houqp)
+		os.execute("mkdir ".."/mnt/us/kindlepdfviewer/screenshots")
+		local d = os.date("%Y%m%d%H%M%S")
+		InfoMessage:show("making screenshot...", 1)
+		os.execute("dd ".."if=/dev/fb0 ".."of=/mnt/us/kindlepdfviewer/screenshots/" .. d .. ".raw")
+		unireader:redrawCurrentPage()
+	end 
 	)
 	-- commands.map is very large, impacts startup performance on device
 	--debug("defined commands "..dump(self.commands.map))

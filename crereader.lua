@@ -44,10 +44,21 @@ function CREReader:open(filename)
 	if file_type == "html" then
 		file_type = "htm"
 	end
+
 	-- if native css-file doesn't exist, one needs to use default cr3.css
 	if not io.open("./data/"..file_type..".css") then
 		file_type = "cr3"
 	end
+
+	-- detect file type for documents inside zip file
+	-- @TODO do the detection after the file is unzipped  30.04 2012 (houqp)
+	if file_type == "zip" then
+		-- store filename without zip-extention to fn
+		local fn = string.lower(string.sub(filename,0,-4))
+		-- if no double extention then default file_type
+		file_type = string.lower(string.match(fn, ".+%.([^.]+)") or "fb2")
+	end 
+
 	local style_sheet = "./data/"..file_type..".css"
 	ok, self.doc = pcall(cre.openDocument, filename, style_sheet, 
 						G_width, G_height)
@@ -65,7 +76,7 @@ end
 ----------------------------------------------------
 function CREReader:loadSpecialSettings()
 	local font_face = self.settings:readSetting("font_face")
-	self.font_face = font_face or "Palatino Linotype"
+	self.font_face = font_face or "Droid Sans Fallback"
 	self.doc:setFontFace(self.font_face)
 
 	local gamma_index = self.settings:readSetting("gamma_index")
