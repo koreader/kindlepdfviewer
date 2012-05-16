@@ -48,7 +48,7 @@ function getProperTitleLength(txt,font_face,max_width)
 end
 
 function BatteryLevel()
-local fn, battery = "./data/temporary"
+local fn, battery = "./data/temporary", '?'
 os.execute("lipc-get-prop ".."com.lab126.powerd ".."battLevel ".."> "..fn)
 for lines in io.lines(fn) do battery = lines end
 --os.execute("rm "..fn)
@@ -117,23 +117,21 @@ function FileChooser:readDir()
 	self.dirs = {}
 	self.files = {}
 	for f in lfs.dir(self.path) do
-		if lfs.attributes(self.path.."/"..f, "mode") == "directory" and f ~= "." and not (f==".." and self.path=="/") and not string.match(f, "^%.[^.]") then
-			--debug(self.path.." -> adding: '"..f.."'")
+		if lfs.attributes(self.path.."/"..f, "mode") == "directory" and f ~= "." and f~=".."
+			and not string.match(f, "^%.[^.]") then
+			debug(self.path.." -> adding: '"..f.."'")
 			table.insert(self.dirs, f)
-		else
+		elseif lfs.attributes(self.path.."/"..f, "mode") == "file"
+			and not string.match(f, "^%.[^.]") then
 			local file_type = string.lower(string.match(f, ".+%.([^.]+)") or "")
-			if file_type == "djvu"
-			or file_type == "pdf" or file_type == "xps" or file_type == "cbz" 
-			or file_type == "epub" or file_type == "txt" or file_type == "rtf"
-			or file_type == "htm" or file_type == "html" or file_type == "mobi"
-			or file_type == "fb2" or file_type == "chm" or file_type == "doc"
-			or file_type == "zip" then
+			if ext:getReader(file_type) then
 				table.insert(self.files, f)
 			end
 		end
 	end
 	--@TODO make sure .. is sortted to the first item  16.02 2012
 	table.sort(self.dirs)
+	if self.path~="/" then table.insert(self.dirs,1,"..") end
 	table.sort(self.files)
 end
 
