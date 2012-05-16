@@ -120,6 +120,44 @@ end
 function FileSearcher:addAllCommands()
 	self.commands = Commands:new{}
 
+	-- last documents
+	self.commands:add(KEY_L, nil, "L",
+		"last documents",
+		function(self)
+			FileHistory:init()
+			FileHistory:choose("")
+			self.pagedirty = true
+		end
+	)
+	-- show help page
+	self.commands:add(KEY_H, nil, "H",
+		"show help page",
+		function(self)
+			HelpPage:show(0, G_height, self.commands)
+			self.pagedirty = true
+		end
+	) 
+	-- make screenshot
+	self.commands:add(KEY_P, MOD_SHIFT, "P",
+		"make screenshot",
+		function(self)
+			os.execute("mkdir ".."/mnt/us/kindlepdfviewer/screenshots")
+			local d = os.date("%Y%m%d%H%M%S")
+			showInfoMsgWithDelay("making screenshot... ", 1000, 1)
+			os.execute("dd ".."if=/dev/fb0 ".."of=/mnt/us/kindlepdfviewer/screenshots/" .. d .. ".raw")
+		end
+	) 
+	
+	-- file info
+	self.commands:add({KEY_FW_RIGHT, KEY_I}, nil, "joypad right",
+		"document details",
+		function(self)
+			file_entry = self.result[self.perpage*(self.page-1)+self.current]
+			FileInfo:show(file_entry.dir,file_entry.name)
+			self.pagedirty = true
+		end
+	) 
+
 	self.commands:add(KEY_FW_UP, nil, "joypad up",
 		"goto previous item",
 		function(self)
