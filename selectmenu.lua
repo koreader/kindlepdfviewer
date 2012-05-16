@@ -20,6 +20,8 @@ SelectMenu = {
 	spacing = 36,
 	-- foot height
 	foot_H = 27,
+	-- horisontal margin
+	margin_H = 10,
 
 	menu_title = "No Title",
 	no_item_msg = "No items found.",
@@ -232,23 +234,19 @@ function SelectMenu:choose(ypos, height)
 		local fface = Font:getFace("ffont", 16)
 
 		if self.pagedirty then
+			fb.bb:paintRect(0, ypos, fb.bb:getWidth(), height, 0)
 			self.markerdirty = true
-			-- draw menu title
-			fb.bb:paintRect(0, ypos, fb.bb:getWidth(), self.title_H + 10, 0)
-			fb.bb:paintRect(10, ypos + 10, fb.bb:getWidth() - 20, self.title_H, 5)
-
-			local x = 20
-			local y = ypos + self.title_H
-			renderUtf8Text(fb.bb, x, y, tface, self.menu_title, true)
+			-- draw menu title (new version with clock & battery)
+			DrawTitle(self.menu_title,self.margin_H,0,self.title_H,4,tface)
 
 			-- draw items
-			fb.bb:paintRect(0, ypos + self.title_H + 10, fb.bb:getWidth(), height - self.title_H, 0)
+			fb.bb:paintRect(0, ypos + self.title_H + self.margin_H, fb.bb:getWidth(), height - self.title_H, 0)
 			if self.items == 0 then
 				y = ypos + self.title_H + (self.spacing * 2)
-				renderUtf8Text(fb.bb, 30, y, cface,
+				renderUtf8Text(fb.bb, self.margin_H + 20, y, cface,
 					"Oops...  Bad news for you:", true)
 				y = y + self.spacing
-				renderUtf8Text(fb.bb, 30, y, cface,
+				renderUtf8Text(fb.bb, self.margin_H + 20, y, cface,
 					self.no_item_msg, true)
 				self.markerdirty = false
 				self:clearCommands()
@@ -257,54 +255,50 @@ function SelectMenu:choose(ypos, height)
 				for c = 1, self.perpage do
 					local i = (self.page - 1) * self.perpage + c 
 					if i <= self.items then
-						y = ypos + self.title_H + (self.spacing * c)
+						y = ypos + self.title_H + (self.spacing * c) + 4
 
 						-- paint shortcut indications
 						if c <= 10 or c > 20 then
-							blitbuffer.paintBorder(fb.bb, 10, y-22, 29, 29, 2, 15)
+							blitbuffer.paintBorder(fb.bb, self.margin_H, y-22, 29, 29, 2, 15)
 						else
-							fb.bb:paintRect(10, y-22, 29, 29, 3)
+							fb.bb:paintRect(self.margin_H, y-22, 29, 29, 3)
 						end
 						if self.item_shortcuts[c] ~= nil and 
 							string.len(self.item_shortcuts[c]) == 3 then
 							-- debug "Del", "Sym and "Ent"
-							renderUtf8Text(fb.bb, 13, y, fface,
+							renderUtf8Text(fb.bb, self.margin_H + 3, y, fface,
 								self.item_shortcuts[c], true)
 						else
-							renderUtf8Text(fb.bb, 18, y, self.sface,
+							renderUtf8Text(fb.bb, self.margin_H + 8, y, self.sface,
 								self.item_shortcuts[c], true)
 						end
 
 						self.last_shortcut = c
 
-						renderUtf8Text(fb.bb, 50, y, cface,
+						renderUtf8Text(fb.bb, self.margin_H + 40, y, cface,
 							self.item_array[i], true)
 					end -- if i <= self.items
 				end -- for c=1, self.perpage
 			end -- if self.items == 0
 
 			-- draw footer
-			y = ypos + self.title_H + (self.spacing * self.perpage)
-				+ self.foot_H + 5
-			x = (fb.bb:getWidth() / 2) - 50
-			renderUtf8Text(fb.bb, x, y, fface,
-				"Page "..self.page.." of "..
-				(math.ceil(self.items / self.perpage)), true)
+			DrawFooter("Page "..self.page.." of "..(math.ceil(self.items / self.perpage)),fface,self.foot_H)
+			
 		end
 
 		if self.markerdirty then
 			if not self.pagedirty then
 				if self.oldcurrent > 0 then
-					y = ypos + self.title_H + (self.spacing * self.oldcurrent) + 8
-					fb.bb:paintRect(45, y, fb.bb:getWidth() - 60, 3, 0)
-					fb:refresh(1, 45, y, fb.bb:getWidth() - 60, 3)
+					y = ypos + self.title_H + (self.spacing * self.oldcurrent) + 12
+					fb.bb:paintRect( self.margin_H + 35, y, fb.bb:getWidth() - 60, 3, 0)
+					fb:refresh(1, self.margin_H + 35, y, fb.bb:getWidth() - 60, 3)
 				end
 			end
 			-- draw new marker line
-			y = ypos + self.title_H + (self.spacing * self.current) + 8
-			fb.bb:paintRect(45, y, fb.bb:getWidth() - 60, 3, 15)
+			y = ypos + self.title_H + (self.spacing * self.current) + 12
+			fb.bb:paintRect(self.margin_H + 35, y, fb.bb:getWidth() - 60, 3, 15)
 			if not self.pagedirty then
-				fb:refresh(1, 45, y, fb.bb:getWidth() - 60, 3)
+				fb:refresh(1, self.margin_H + 35, y, fb.bb:getWidth() - 60, 3)
 			end
 			self.oldcurrent = self.current
 			self.markerdirty = false

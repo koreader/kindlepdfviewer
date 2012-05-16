@@ -104,3 +104,34 @@ function renderUtf8Text(buffer, x, y, face, text, kerning)
 	end
 	return pen_x
 end
+
+function renderUtf8TextWidth(buffer, x, y, face, text, kerning, w)
+	if text == nil then
+		debug("renderUtf8Text called without text");
+		return nil
+	end
+	local pen_x = 0
+	local rest = ""
+	local prevcharcode = 0
+	for uchar in string.gfind(text, "([%z\1-\127\194-\244][\128-\191]*)") do
+		if pen_x < w then
+			local charcode = util.utf8charcode(uchar)
+			local glyph = getGlyph(face, charcode)
+			if kerning and prevcharcode then
+				local kern = face.ftface:getKerning(prevcharcode, charcode)
+				pen_x = pen_x + kern
+				--debug("prev:"..string.char(prevcharcode).." curr:"..string.char(charcode).." pen_x:"..pen_x.." kern:"..kern)
+				buffer:addblitFrom(glyph.bb, x + pen_x + glyph.l, y - glyph.t, 0, 0, glyph.bb:getWidth(), glyph.bb:getHeight())
+			else
+				--debug(" curr:"..string.char(charcode))
+				buffer:blitFrom(glyph.bb, x + pen_x + glyph.l, y - glyph.t, 0, 0, glyph.bb:getWidth(), glyph.bb:getHeight())
+			end
+			pen_x = pen_x + glyph.ax
+			prevcharcode = charcode
+		else
+			-- accumulating the rest of text here
+			rest = rest .. uchar
+		end
+	end
+	return { leaved = rest, x = pen_x }
+end
