@@ -33,32 +33,42 @@ function CREReader:init()
 	end
 end
 
+-- NuPogodi, 20.05.12: inspect the zipfile content
+function CREReader:ZipContentExt(fname)
+	local outfile = "./data/zip_content"
+	local s = ""
+	os.execute("unzip ".."-l \""..fname.."\" > "..outfile)
+	local i = 1
+	if io.open(outfile,"r") then
+		for lines in io.lines(outfile) do 
+			if i == 4 then s = lines break else i = i + 1 end
+		end
+	end
+	-- return the extention
+	return string.lower(string.match(s, ".+%.([^.]+)"))
+end
+
 -- open a CREngine supported file and its settings store
 function CREReader:open(filename)
 	local ok
 	local file_type = string.lower(string.match(filename, ".+%.([^.]+)"))
-
+	
+	if file_type == "zip" then
+		-- NuPogodi, 20.05.12: read the content of zip-file
+		-- and return extention of the 1st file
+		file_type = self:ZipContentExt(filename)
+	end
+	
 	-- these two format use the same css file
 	if file_type == "html" then
 		file_type = "htm"
 	end
-
-	-- detect file type for documents inside zip file
-	-- @TODO do the detection after the file is unzipped  30.04 2012 (houqp)
-	if file_type == "zip" then
-		-- store filename without zip-extention to fn
-		local fn = string.lower(string.sub(filename,0,-4))
-		-- if no double extention then default file_type
-		file_type = string.lower(string.match(fn, ".+%.([^.]+)") or "fb2")
-	end 
-
-	local style_sheet = "./data/"..file_type..".css"
 	
 	-- if native css-file doesn't exist, one needs to use default cr3.css
-	-- (TODO! at first, i have to upload cr3.css)
-	-- if not io.open("./data/"..file_type..".css") then
-	--	file_type = "cr3"
-	-- end
+	if not io.open("./data/"..file_type..".css") then
+		file_type = "cr3"
+	end
+	local style_sheet = "./data/"..file_type..".css"
 	
 	ok, self.doc = pcall(cre.openDocument, filename, style_sheet, 
 						G_width, G_height)
