@@ -35,12 +35,8 @@ FileChooser = {
 	perpage,
 }
 
--- NuPogodi, 20.05.12: new auxiliary functions
+-- NuPogodi: some new auxiliary functions
 
--- to duplicate visual info by speaking
-function say(text)
-	os.execute("say ".."\""..text.."\"")
-end
 -- make long headers for fit in title width by removing first characters
 function getProperTitleLength(txt,font_face,max_width)
 	local tw = TextWidget:new({ text = txt, face = font_face})
@@ -54,7 +50,7 @@ function getProperTitleLength(txt,font_face,max_width)
 	end
 	return string.sub(txt,n-1,-1)
 end
-
+-- return the battery level - either "XY%" or "" (if error)
 function BatteryLevel()
 	local fn, battery = "./data/temporary"
 	-- NuPogodi, 18.05.12: This command seems to work even without Amazon Kindle framework 
@@ -66,7 +62,7 @@ function BatteryLevel()
 	end
 	return battery
 end
-
+-- draw the text-header for menues and add the clock & battery level
 function DrawTitle(text,lmargin,y,height,color,font_face)
 	fb.bb:paintRect(lmargin, y+10, fb.bb:getWidth() - lmargin*2, height, color)
 	-- to have a horisontal gap between text & background rectangle
@@ -91,13 +87,14 @@ function DrawTitle(text,lmargin,y,height,color,font_face)
 		renderUtf8Text(fb.bb, lmargin+tw:getSize().w, y + height, font_face, txt, true)
 	end
 end
-
+-- just a footer
 function DrawFooter(text,font_face,h)
 	local y = G_height - 7
 	local x = (G_width / 2) - 50
 	renderUtf8Text(fb.bb, x, y, font_face, text, true)
 end
-
+-- to draw items in filechooser, filesearcher & filehistory
+-- TODO?: one can consider replacing icons by hotkeys (requires to redefine existing hotkeys)
 function DrawFileItem(name,x,y,image)
 	-- define icon file for
 	if name == ".." then image = "upfolder" end
@@ -182,7 +179,8 @@ function FileChooser:setPath(newPath)
 	end
 end
 
--- NuPogodi, 20.05.12: rewrote in common way (with help page, AddAllCommands, etc.)
+-- NuPogodi, 20.05.12: rewrote this function in common way 
+-- (with help page, AddAllCommands, etc.)
 
 function FileChooser:choose(ypos, height)
 	self.perpage = math.floor(height / self.spacing) - 2
