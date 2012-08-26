@@ -22,7 +22,7 @@ UniReader = {
 
 	-- framebuffer update policy state:
 	rcount = 5,
-	rcountmax = 5,
+	rcountmax = 0,
 
 	-- zoom state:
 	globalzoom = 1.0,
@@ -33,6 +33,10 @@ UniReader = {
 
 	-- gamma setting:
 	globalgamma = 1.0,   -- GAMMA_NO_GAMMA
+
+    -- rendering mode toggle (used in djvu.c:drawPage())
+    -- if set to 1 render in BLACK & WHITE, otherwise COLOR
+    render_mode = 1,
 
 	-- cached tile size
 	fullwidth = 0,
@@ -1152,7 +1156,9 @@ function UniReader:drawOrCache(no, preCache)
 	--debug ("# new biltbuffer:"..dump(self.cache[pagehash]))
 	dc:setOffset(-tile.x, -tile.y)
 	Debug("rendering page", no)
-	page:draw(dc, self.cache[pagehash].bb, 0, 0)
+    --local start = os.clock()
+	page:draw(dc, self.cache[pagehash].bb, 0, 0, self.render_mode)
+	--showInfoMsgWithDelay(string.format("PageDraw = %.2f(s) ", os.clock()-start), 2000, 1)
 	page:close()
 
 	-- return hash and offset within blitbuffer
@@ -1566,7 +1572,14 @@ end
 function UniReader:modifyGamma(factor)
 	Debug("modifyGamma, gamma=", self.globalgamma, " factor=", factor)
 	self.globalgamma = self.globalgamma * factor;
+	showInfoMsgWithDelay("New gamma = "..self.globalgamma, 1000, 1)
 	self:redrawCurrentPage()
+end
+
+function UniReader:toggle_render_mode()
+	Debug("toggle_render_mode, render_mode=", self.render_mode)
+    self.render_mode = 1 - self.render_mode
+	showInfoMsgWithDelay("New render_mode = "..self.render_mode, 1000, 1)
 end
 
 -- adjust zoom state and trigger re-rendering
@@ -1799,9 +1812,9 @@ function UniReader:_drawReadingInfo()
 	-- display memory on top of page
 	fb.bb:paintRect(0, 0, width, 15+6*2, 0)
 	renderUtf8Text(fb.bb, 10, 15+6, face,
-		"Memory: "..
+		"M: "..
 		math.ceil( self.cache_current_memsize / 1024 ).."/"..math.ceil( self.cache_max_memsize / 1024 )..
-		" "..math.ceil( self.doc:getCacheSize() / 1024 ).."/"..math.ceil( self.cache_document_size / 1024 ).." k",
+		" "..math.ceil( self.doc:getCacheSize() / 1024 ).."/"..math.ceil( self.cache_document_size / 1024 ).."k "..os.date("%a %d %b %Y %T").." ["..BatteryLevel().."]",
 	true)
 
 	-- display reading progress on bottom of page
@@ -1810,7 +1823,7 @@ function UniReader:_drawReadingInfo()
 	ypos = ypos + 15
 	local cur_section = self:getTocTitleOfCurrentPage()
 	if cur_section ~= "" then
-		cur_section = "Section: "..cur_section
+		cur_section = "Sec: "..cur_section
 	end
 	renderUtf8Text(fb.bb, 10, ypos+6, face,
 		"Page: "..self.pageno.."/"..self.doc:getPages()..
@@ -2109,6 +2122,11 @@ function UniReader:addAllCommands()
 				self:redrawCurrentPage()
 			end
 		end)
+    self.commands:add(KEY_R, nil, "R",
+        "toggle rendering mode: b&w/colour",
+        function(unireader)
+            unireader:toggle_render_mode()
+        end)
 	self.commands:add(KEY_R, MOD_SHIFT, "R",
 		"manual full screen refresh",
 		function(unireader)
