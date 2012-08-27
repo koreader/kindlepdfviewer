@@ -1578,7 +1578,9 @@ end
 
 function UniReader:toggle_render_mode()
 	Debug("toggle_render_mode, render_mode=", self.render_mode)
-    self.render_mode = 1 - self.render_mode
+	self.render_mode = 1 - self.render_mode
+	self.doc:cleanCache()
+	self:redrawCurrentPage()
 	showInfoMsgWithDelay("New render_mode = "..self.render_mode, 1000, 1)
 end
 
