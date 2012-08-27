@@ -1579,9 +1579,10 @@ end
 function UniReader:toggle_render_mode()
 	Debug("toggle_render_mode, render_mode=", self.render_mode)
 	self.render_mode = 1 - self.render_mode
+	self:clearCache()
 	self.doc:cleanCache()
-	self:redrawCurrentPage()
 	showInfoMsgWithDelay("New render_mode = "..self.render_mode, 1000, 1)
+	self:redrawCurrentPage()
 end
 
 -- adjust zoom state and trigger re-rendering
