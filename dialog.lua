@@ -21,6 +21,7 @@ function InfoMessage:show(text,refresh_mode)
 				}),
 				TextWidget:new({
 					text = text,
+					-- info messages should have own font face
 					face = Font:getFace("infofont", 30)
 				})
 			})
