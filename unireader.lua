@@ -1803,7 +1803,7 @@ function UniReader:showToc()
 				showInfoMsgWithDelay("External links unsupported", 1500, 1)
 				self.toc_curitem = ret_code
 			else
-				return self:goto(pagenum)
+				return self:gotoTocEntry(self.toc[self.toc_curidx_to_x[ret_code]])
 			end
 		elseif item_no then -- expand or collapse item
 			local abs_item_no = math.abs(item_no)
