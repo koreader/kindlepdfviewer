@@ -197,8 +197,7 @@ function CREReader:gotoPercent(percent)
 end
 
 function CREReader:gotoTocEntry(entry)
-	self:goto(entry.xpointer, nil, "xpointer")
-	self:redrawCurrentPage()
+	self:goto(entry.xpointer, true, "xpointer")
 end
 
 function CREReader:nextView()
