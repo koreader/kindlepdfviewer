@@ -92,7 +92,7 @@ LUALIB := $(LUADIR)/src/libluajit.a
 all:kpdfview
 
 kpdfview: kpdfview.o einkfb.o pdf.o blitbuffer.o drawcontext.o input.o util.o ft.o lfs.o mupdfimg.o $(MUPDFLIBS) $(THIRDPARTYLIBS) $(LUALIB) djvu.o $(DJVULIBS) cre.o $(CRENGINELIBS)
-	$(CC) $(CFLAGS) \
+	$(CC) \
 		kpdfview.o \
 		einkfb.o \
 		pdf.o \
