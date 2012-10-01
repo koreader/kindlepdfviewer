@@ -16,7 +16,7 @@ TTF_FONTS_DIR=$(MUPDFDIR)/fonts
 
 # set this to your ARM cross compiler:
 
-HOST:=arm-none-linux-gnueabi
+HOST?=arm-none-linux-gnueabi
 CC:=$(HOST)-gcc
 CXX:=$(HOST)-g++
 STRIP:=$(HOST)-strip
@@ -27,12 +27,13 @@ endif
 HOSTCC:=gcc
 HOSTCXX:=g++
 
-CFLAGS:=-O3 $(SYSROOT)
-CXXFLAGS:=-O3 $(SYSROOT)
+CFLAGS:=-O3 -D_GNU_SOURCE $(SYSROOT)
+CXXFLAGS:=-O3 -fno-use-cxa-atexit $(SYSROOT)
 LDFLAGS:= $(SYSROOT)
 ARM_CFLAGS:=-march=armv6
 # use this for debugging:
 #CFLAGS:=-O0 -g
+BASE_CFLAGS:= $(CFLAGS)
 
 DYNAMICLIBSTDCPP:=-lstdc++
 ifdef STATICLIBSTDCPP
@@ -58,6 +59,7 @@ ifdef EMULATE_READER
 	endif
 else
 	CFLAGS+= $(ARM_CFLAGS)
+	CXXFLAGS+= $(ARM_CFLAGS)
 endif
 
 # standard includes
@@ -169,12 +171,12 @@ cleanthirdparty:
 	-rm -f $(MUPDFDIR)/cmapdump.host
 
 $(MUPDFDIR)/fontdump.host:
-	make -C mupdf CC="$(HOSTCC)" $(MUPDFTARGET)/fontdump
+	CFLAGS="$(BASE_CFLAGS)" make -C mupdf CC="$(HOSTCC)" $(MUPDFTARGET)/fontdump
 	cp -a $(MUPDFLIBDIR)/fontdump $(MUPDFDIR)/fontdump.host
 	make -C mupdf clean
 
 $(MUPDFDIR)/cmapdump.host:
-	make -C mupdf CC="$(HOSTCC)" $(MUPDFTARGET)/cmapdump
+	CFLAGS="$(BASE_CFLAGS)" make -C mupdf CC="$(HOSTCC)" $(MUPDFTARGET)/cmapdump
 	cp -a $(MUPDFLIBDIR)/cmapdump $(MUPDFDIR)/cmapdump.host
 	make -C mupdf clean
 
@@ -187,20 +189,20 @@ $(DJVULIBS):
 ifdef EMULATE_READER
 	cd $(DJVUDIR)/build && ../configure --disable-desktopfiles --disable-shared --enable-static --disable-xmltools --disable-largefile
 else
-	cd $(DJVUDIR)/build && ../configure --disable-desktopfiles --disable-shared --enable-static --host=$(HOST) --disable-xmltools --disable-largefile
+	cd $(DJVUDIR)/build && CXXFLAGS="$(CXXFLAGS)" ../configure --disable-desktopfiles --disable-shared --enable-static --host=$(HOST) --disable-xmltools --disable-largefile
 endif
 	make -C $(DJVUDIR)/build
 
 $(CRENGINELIBS):
 	cd $(KPVCRLIBDIR) && rm -rf CMakeCache.txt CMakeFiles && \
-		CFLAGS="$(CFLAGS)" CC="$(CC)" CXX="$(CXX)" cmake . && \
+		CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CC="$(CC)" CXX="$(CXX)" cmake . && \
 		make
 
 $(LUALIB):
 ifdef EMULATE_READER
 	make -C $(LUADIR)
 else
-	make -C $(LUADIR) CC="$(HOSTCC)" HOST_CC="$(HOSTCC) -m32" CROSS="$(HOST)-" TARGET_FLAGS="$(SYSROOT) -DLUAJIT_NO_LOG2 -DLUAJIT_NO_EXP2"
+	CFLAGS="$(BASE_CFLAGS)" make -C $(LUADIR) CC="$(HOSTCC)" HOST_CC="$(HOSTCC) -m32" CROSS="$(HOST)-" TARGET_FLAGS="$(SYSROOT) -DLUAJIT_NO_LOG2 -DLUAJIT_NO_EXP2"
 endif
 
 thirdparty: $(MUPDFLIBS) $(THIRDPARTYLIBS) $(LUALIB) $(DJVULIBS) $(CRENGINELIBS)
