@@ -206,6 +206,8 @@ function FileHistory:addAllCommands()
 			self.keywords = InputBox:input(G_height - 100, 100, "Search:", old_keywords)
 			if self.keywords then
 				self:setSearchResult(self.keywords)
+			else
+				self.keywords = old_keywords
 			end
 			if #self.result < 2 then
 				InfoMessage:inform("No hits! Try another keyword. ", 2000, 1, MSG_WARN,
