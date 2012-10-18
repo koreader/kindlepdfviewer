@@ -87,7 +87,6 @@ function PDFReader:drawOrCache(no, preCache)
 	end
 	
 	local dc = self:rfzoom(page, preCache)
-	self.globalzoom_orig = self.globalzoom
 
 	-- offset_x_in_page & offset_y_in_page is the offset within zoomed page
 	-- they are always positive.
@@ -127,8 +126,6 @@ function PDFReader:drawOrCache(no, preCache)
 		-- ...and return blitbuffer plus offset into it
 
 		return pagehash,
-			--offset_x_in_page - self.cache[pagehash].x,
-			--offset_y_in_page - self.cache[pagehash].y
 			-self.offset_x - self.cache[pagehash].x,
 			-self.offset_y - self.cache[pagehash].y
 	end
@@ -144,8 +141,7 @@ function PDFReader:drawOrCache(no, preCache)
 		max_cache = max_cache - self.cache[self.pagehash].size
 	end
 	
-	self.fullwidth, self.fullheight = page:reflow(dc, self.globalzoom)
-	--self.fullwidth, self.fullheight = page:reflow(dc, self.globalzoom)
+	self.fullwidth, self.fullheight = page:reflow(dc)
 	Debug("page::reflowPage:", "width:", self.fullwidth, "height:", self.fullheight)
 	
 	if (self.fullwidth * self.fullheight / 2) <= max_cache then
@@ -184,7 +180,7 @@ end
 
 -- set viewer state according to zoom state
 function PDFReader:rfzoom(page, preCache)
-
+	local dc = DrawContext.new()
 	self.globalzoom_mode = self.ZOOM_BY_VALUE
 	
 	if(self.min_offset_x > 0) then
@@ -194,7 +190,9 @@ function PDFReader:rfzoom(page, preCache)
 		self.min_offset_y = 0
 	end
 	
-	local dc = DrawContext.new()
+	dc:setZoom(self.globalzoom)
+	self.globalzoom_orig = self.globalzoom
+	
 	if self.globalgamma ~= self.GAMMA_NO_GAMMA then
 		Debug("gamma correction: ", self.globalgamma)
 		dc:setGamma(self.globalgamma)
@@ -227,17 +225,7 @@ function PDFReader:restoreReaderStates()
 	self.pan_x = self.last_mode_states.pan_x
 	self.pan_y = self.last_mode_states.pan_y
 	
-	self.last_mode_states = {
-		globalzoom = tmp_states.globalzoom,
-		offset_x = tmp_states.offset_x,
-		offset_y = tmp_states.offset_y,
-		dest_x = tmp_states.dest_x,
-		dest_y = tmp_states.dest_y,
-		min_offset_x = tmp_states.min_offset_x,
-		min_offset_y = tmp_states.min_offset_y,
-		pan_x = tmp_states.pan_x,
-		pan_y = tmp_states.pan_y
-	}
+	self.last_mode_states = tmp_states
 end
 
 function PDFReader:rfNextView()
@@ -277,7 +265,6 @@ function PDFReader:rfPrevView()
 	return pageno
 end
 
--- command definitions
 function PDFReader:init()
 	self:addAllCommands()
 	self:adjustPDFReaderCommand(self.reflow_mode_enable)
@@ -295,11 +282,29 @@ function PDFReader:init()
 	}
 end
 
+function PDFReader:setDefaults()
+    self.show_overlap_enable = true
+    self.show_links_enable = false
+end
+
+-- command definitions
 function PDFReader:adjustPDFReaderCommand(reflow_mode)
 	if reflow_mode then
+		self.commands:del(KEY_A, nil,"A")
+		self.commands:del(KEY_A, MOD_SHIFT, "A")
+		self.commands:del(KEY_D, nil,"D")
+		self.commands:del(KEY_D, MOD_SHIFT, "D")
+		self.commands:del(KEY_F, nil,"F")
+		self.commands:del(KEY_F, MOD_SHIFT, "F")
 		self.commands:del(KEY_Z, nil,"Z")
 		self.commands:del(KEY_Z, MOD_ALT, "Z")
 		self.commands:del(KEY_Z, MOD_SHIFT, "Z")
+		self.commands:del(KEY_X, nil,"X")
+		self.commands:del(KEY_X, MOD_SHIFT, "X")
+		self.commands:del(KEY_N, nil,"N")
+		self.commands:del(KEY_N, MOD_SHIFT, "N")
+		self.commands:del(KEY_L, nil, "L")
+		self.commands:del(KEY_L, MOD_SHIFT, "L")
 		self.commands:addGroup("< >",{
 			Keydef:new(KEY_PGBCK,nil),Keydef:new(KEY_LPGBCK,nil),
 			Keydef:new(KEY_PGFWD,nil),Keydef:new(KEY_LPGFWD,nil)},
@@ -310,7 +315,7 @@ function PDFReader:adjustPDFReaderCommand(reflow_mode)
 				and pdfreader:rfPrevView() or pdfreader:rfNextView())
 			end)
 	else
-		PDFReader:addAllCommands()
+		self:addAllCommands()
 	end
 	self.commands:add(KEY_R, nil, "R",
 		"toggle reflow mode",
