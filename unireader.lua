@@ -2632,11 +2632,7 @@ function UniReader:addAllCommands()
 		"toggle between standard and koptreader",
 		function(unireader)
 			unireader.use_koptreader = not unireader.use_koptreader
-			if unireader.use_koptreader then
-				InfoMessage:inform("Switching to KOPTReader", 1000, 1, MSG_AUX)
-			else
-				InfoMessage:inform("Switching to STANDARD Reader", 1000, 1, MSG_AUX)
-			end
+			InfoMessage:inform("Switching to "..(unireader.use_koptreader and "KOPTReader " or "STANDARD Reader "), nil, 1, MSG_AUX)
 			self.settings:saveSetting("use_koptreader", unireader.use_koptreader)
 			self.doc:close()
 			self.doc = nil
