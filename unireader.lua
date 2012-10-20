@@ -2247,9 +2247,9 @@ function UniReader:inputLoop()
 				Debug("command not found:", tostring(command))
 			end
 
-			local nsecs, nusecs = util.gettime()
-			local dur = (nsecs - secs) * 1000000 + nusecs - usecs
-			Debug("E: T="..ev.type, " V="..ev.value, " C="..ev.code, " DUR=", dur)
+			--local nsecs, nusecs = util.gettime()
+			--local dur = (nsecs - secs) * 1000000 + nusecs - usecs
+			--Debug("E: T="..ev.type, " V="..ev.value, " C="..ev.code, " DUR=", dur)
 
 			if ev.value == EVENT_VALUE_KEY_REPEAT then
 				self.rcount = 0
