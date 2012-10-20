@@ -2628,8 +2628,8 @@ function UniReader:addAllCommands()
 			self:redrawCurrentPage()
 		end)
 
-	self.commands:add(KEY_R, MOD_ALT, "R",
-		"toggle between standard and koptreader",
+	self.commands:add(KEY_F, MOD_ALT, "F",
+		"toggle standard/koptreader",
 		function(unireader)
 			unireader.use_koptreader = not unireader.use_koptreader
 			InfoMessage:inform("Switching to "..(unireader.use_koptreader and "KOPTReader " or "STANDARD Reader "), nil, 1, MSG_AUX)
