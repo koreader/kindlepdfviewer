@@ -68,7 +68,7 @@ UniReader = {
 	show_overlap = 0,
 	show_overlap_enable,
 	show_links_enable,
-	use_koptreader,
+	use_koptreader = false, -- do NOT put this into :setDefaults()
 
 	-- the document:
 	doc = nil,
@@ -962,7 +962,6 @@ end
 function UniReader:setDefaults()
 	self.show_overlap_enable = true
 	self.show_links_enable = true
-	self.use_koptreader = false
 end
 
 -- This is a low-level method that can be shared with all readers.
@@ -2248,9 +2247,9 @@ function UniReader:inputLoop()
 				Debug("command not found:", tostring(command))
 			end
 
-			local nsecs, nusecs = util.gettime()
-			local dur = (nsecs - secs) * 1000000 + nusecs - usecs
-			Debug("E: T="..ev.type, " V="..ev.value, " C="..ev.code, " DUR=", dur)
+			--local nsecs, nusecs = util.gettime()
+			--local dur = (nsecs - secs) * 1000000 + nusecs - usecs
+			--Debug("E: T="..ev.type, " V="..ev.value, " C="..ev.code, " DUR=", dur)
 
 			if ev.value == EVENT_VALUE_KEY_REPEAT then
 				self.rcount = 0
@@ -2262,6 +2261,7 @@ function UniReader:inputLoop()
 	end
 
 	-- do clean up stuff
+	self.use_koptreader = false
 	self:clearCache()
 	self.toc = nil
 	self.toc_expandable = false
@@ -2628,15 +2628,11 @@ function UniReader:addAllCommands()
 			self:redrawCurrentPage()
 		end)
 
-	self.commands:add(KEY_R, MOD_ALT, "R",
-		"toggle between standard and koptreader",
+	self.commands:add(KEY_C, MOD_ALT, "C",
+		"toggle standard/koptreader",
 		function(unireader)
 			unireader.use_koptreader = not unireader.use_koptreader
-			if unireader.use_koptreader then
-				InfoMessage:inform("Switching to KOPTReader", 1000, 1, MSG_AUX)
-			else
-				InfoMessage:inform("Switching to STANDARD Reader", 1000, 1, MSG_AUX)
-			end
+			InfoMessage:inform("Switching to "..(unireader.use_koptreader and "KOPTReader " or "STANDARD Reader "), nil, 1, MSG_AUX)
 			self.settings:saveSetting("use_koptreader", unireader.use_koptreader)
 			self.doc:close()
 			self.doc = nil
