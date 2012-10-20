@@ -5,7 +5,6 @@ DJVUReader = UniReader:new{}
 function DJVUReader:setDefaults()
 	self.show_overlap_enable = true
 	self.show_links_enable = false
-	self.use_koptreader = false
 end
 
 -- check DjVu magic string to validate
