@@ -257,7 +257,6 @@ end
 function KOPTReader:setDefaults()
 	self.show_overlap_enable = true
 	self.show_links_enable = false
-	self.use_koptreader = false
 end
 
 function KOPTReader:init()

@@ -68,7 +68,7 @@ UniReader = {
 	show_overlap = 0,
 	show_overlap_enable,
 	show_links_enable,
-	use_koptreader,
+	use_koptreader = false, -- do NOT put this into :setDefaults()
 
 	-- the document:
 	doc = nil,
@@ -962,7 +962,6 @@ end
 function UniReader:setDefaults()
 	self.show_overlap_enable = true
 	self.show_links_enable = true
-	self.use_koptreader = false
 end
 
 -- This is a low-level method that can be shared with all readers.
@@ -2262,6 +2261,7 @@ function UniReader:inputLoop()
 	end
 
 	-- do clean up stuff
+	self.use_koptreader = false
 	self:clearCache()
 	self.toc = nil
 	self.toc_expandable = false
