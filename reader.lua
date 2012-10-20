@@ -16,7 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
-require "alt_getopt"
 require "pdfreader"
 require "djvureader"
 require "koptreader"
@@ -28,15 +27,6 @@ require "screen"
 require "commands"
 require "dialog"
 require "extentions"
-
--- option parsing:
-longopts = {
-	password = "p",
-	goto = "g",
-	gamma = "G",
-	debug = "d",
-	help = "h"
-}
 
 function openFile(filename)
 	local file_type = string.lower(string.match(filename, ".+%.([^.]+)"))
@@ -74,11 +64,8 @@ end
 
 function showusage()
 	print("usage: ./reader.lua [OPTION] ... path")
-	print("Read PDFs and DJVUs on your E-Ink reader")
+	print("Read PDF/DjVu/ePub/MOBI/FB2/CHM/HTML/TXT/DOC/RTF/JPEG on your E-Ink reader")
 	print("")
-	print("-p, --password=PASSWORD   set password for reading PDF document")
-	print("-g, --goto=page           start reading on page")
-	print("-G, --gamma=GAMMA         set gamma correction")
 	print("-d, --debug               start in debug mode")
 	print("                          (floating point notation, e.g. \"1.5\")")
 	print("-h, --help                show this usage help")
@@ -93,19 +80,17 @@ function showusage()
 	return
 end
 
-optarg, optind = alt_getopt.get_opts(ARGV, "p:g:G:hg:dg:", longopts)
-if optarg["h"] then
+if ARGV[1] == "-h" then
 	return showusage()
 end
 
-if not optarg["d"] then
+local argidx = 1
+if ARGV[1] == "-d" then
+	argidx = argidx + 1	
+else
 	Debug = function() end
 	dump = function() end
 	debug = function() end
-end
-
-if optarg["G"] ~= nil then
-	globalgamma = optarg["G"]
 end
 
 local vfile = io.open("git-rev", "r")
@@ -160,9 +145,7 @@ end
 FileChooser.filemanager_expert_mode = G_reader_settings:readSetting("filemanager_expert_mode") or 1
 InfoMessage:initInfoMessageSettings()
 
--- initialize global settings shared among all readers
 UniReader:initGlobalSettings(G_reader_settings)
--- initialize specific readers
 PDFReader:init()
 DJVUReader:init()
 KOPTReader:init()
@@ -171,25 +154,14 @@ CREReader:init()
 
 -- display directory or open file
 local patharg = G_reader_settings:readSetting("lastfile")
-if ARGV[optind] and lfs.attributes(ARGV[optind], "mode") == "directory" then
-	local running = true
-	FileChooser:setPath(ARGV[optind])
-	while running do
-		local file = FileChooser:choose(0, G_height)
-		if file then
-			running = openFile(file)
-		else
-			running = false
-		end
-	end
-elseif ARGV[optind] and lfs.attributes(ARGV[optind], "mode") == "file" then
-	openFile(ARGV[optind], optarg["p"])
+if ARGV[argidx] and lfs.attributes(ARGV[argidx], "mode") == "directory" then
+	FileChooser:setPath(ARGV[argidx])
+	FileChooser:choose(0, G_height)
 elseif patharg and lfs.attributes(patharg, "mode") == "file" then
-	openFile(patharg, optarg["p"])
+	openFile(patharg)
 else
 	return showusage()
 end
-
 
 -- save reader settings
 G_reader_settings:saveSetting("fontmap", Font.fontmap)
