@@ -2628,7 +2628,7 @@ function UniReader:addAllCommands()
 			self:redrawCurrentPage()
 		end)
 
-	self.commands:add(KEY_F, MOD_ALT, "F",
+	self.commands:add(KEY_C, MOD_ALT, "C",
 		"toggle standard/koptreader",
 		function(unireader)
 			unireader.use_koptreader = not unireader.use_koptreader
