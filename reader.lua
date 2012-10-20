@@ -41,7 +41,6 @@ function openFile(filename)
 			reader.use_koptreader = false
 			reader = ext:getReader(file_type, true)
 			reader:preLoadSettings(filename)
-			reader.use_koptreader = false
 		end
 		local ok, err = reader:open(filename)
 		if ok then
