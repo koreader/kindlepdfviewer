@@ -46,9 +46,11 @@ function openFile(filename)
 	if reader then
 		InfoMessage:inform("Opening document... ", nil, 0, MSG_AUX)
 		reader:preLoadSettings(filename)
-		-- re-establish the reader due to use_koptreader setting
-		reader = ext:getReader(file_type, reader)
-		reader:preLoadSettings(filename)
+		if reader.use_koptreader == true then
+			reader.use_koptreader = false
+			reader = ext:getReader(file_type, true)
+			reader:preLoadSettings(filename)
+		end
 		local ok, err = reader:open(filename)
 		if ok then
 			reader:loadSettings(filename)
