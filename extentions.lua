@@ -9,18 +9,18 @@ ext = {
 }
 
 
-function ext:getReader(ftype, oldreader)
+function ext:getReader(ftype, use_koptreader)
 	local s = ";"
 	if ftype == "" then
 		return nil
 	elseif string.find(self.pdfRead,s..ftype..s) then
-		if oldreader and oldreader.use_koptreader then
+		if use_koptreader then
 			return KOPTReader
 		else
 			return PDFReader
 		end
 	elseif string.find(self.djvuRead,s..ftype..s) then
-		if oldreader and oldreader.use_koptreader then
+		if use_koptreader then
 			return KOPTReader
 		else
 			return DJVUReader
