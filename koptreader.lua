@@ -122,7 +122,7 @@ function KOPTReader:drawOrCache(no, preCache)
 		max_cache = max_cache - self.cache[self.pagehash].size
 	end
 	
-	self.fullwidth, self.fullheight, self.kopt_zoom = page:reflow(dc, self.render_mode)
+	self.fullwidth, self.fullheight, self.kopt_zoom = page:reflow(dc, self.render_mode, width, height)
 	self.globalzoom_orig = self.kopt_zoom
 	Debug("page::reflowPage:", "width:", self.fullwidth, "height:", self.fullheight, "zoom:", self.kopt_zoom)
 	
