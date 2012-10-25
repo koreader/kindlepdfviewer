@@ -515,10 +515,12 @@ static int reflowPage(lua_State *L) {
 
 	PdfPage *page = (PdfPage*) luaL_checkudata(L, 1, "pdfpage");
 	DrawContext *dc = (DrawContext*) luaL_checkudata(L, 2, "drawcontext");
+	// render_mode is 3rd param and unused
+	int width  = luaL_checkint(L, 4); // framebuffer size
+	int height = luaL_checkint(L, 5);
 
-	int width, height;
-	k2pdfopt_mupdf_reflow(page->doc->xref, page->page, page->doc->context, dc->zoom, dc->gamma, 0);
-	k2pdfopt_rfbmp_size(&width, &height);
+	k2pdfopt_mupdf_reflow(page->doc->xref, page->page, page->doc->context, dc->zoom, dc->gamma, 0, width, height);
+	k2pdfopt_rfbmp_size(&width, &height); // overwrite with generated size
 	k2pdfopt_rfbmp_zoom(&dc->zoom);
 
 	lua_pushnumber(L, (double)width);

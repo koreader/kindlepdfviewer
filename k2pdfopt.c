@@ -472,13 +472,16 @@ static void k2pdfopt_reflow_bmp(MASTERINFO *masterinfo, WILLUSBITMAP *src) {
 }
 
 void k2pdfopt_mupdf_reflow(fz_document *doc, fz_page *page, fz_context *ctx, \
-		double zoom, double gamma, double rot_deg) {
+		double zoom, double gamma, double rot_deg, int bb_width, int bb_height) {
 	fz_device *dev;
 	fz_pixmap *pix;
 	fz_rect bounds,bounds2;
 	fz_matrix ctm;
 	fz_bbox bbox;
 	WILLUSBITMAP _src, *src;
+
+	dst_userwidth  = bb_width; // dst_width is adjusted in adjust_params_init
+	dst_userheight = bb_height;
 
 	double dpp;
 	double dpi = 250*zoom;
