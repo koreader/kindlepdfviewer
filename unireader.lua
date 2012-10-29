@@ -63,7 +63,7 @@ UniReader = {
 	pan_by_page = false, -- using shift_[xy] or width/height
 	pan_x = 0, -- top-left offset of page when pan activated
 	pan_y = 0,
-	pan_margin = 5, -- horizontal margin for two-column zoom (in pixels)
+	pan_margin = 50, -- horizontal margin for two-column zoom (in pixels)
 	pan_overlap_vertical = 30,
 	show_overlap = 0,
 	show_overlap_enable,
@@ -1318,12 +1318,15 @@ function UniReader:setzoom(page, preCache)
 		or self.globalzoom_mode == self.ZOOM_FIT_TO_CONTENT_HALF_WIDTH_MARGIN then
 		local margin = self.pan_margin
 		if self.globalzoom_mode == self.ZOOM_FIT_TO_CONTENT_HALF_WIDTH then margin = 0 end
-		self.globalzoom = width / (x1 - x0 + margin)
+		if x0 == 0 and y0 == 0 and x1 == pwidth and y1 == pheight then
+			margin = 0
+			Debug("page doesn't have bbox, disabling margin")
+		end
+		self.globalzoom = width / ( (x1 - x0) / ( 1 - ( margin / G_width ) ) ) -- decrease zoom for margin factor
 		self.offset_x = -1 * x0 * self.globalzoom * 2 + margin
-		self.globalzoom = height / (y1 - y0 + margin)
 		self.offset_y = -1 * y0 * self.globalzoom * 2 + margin
-		self.globalzoom = width / (x1 - x0 + margin) * 2
-		Debug("column mode offset:", self.offset_x, self.offset_y, " zoom:", self.globalzoom);
+		self.globalzoom = self.globalzoom * 2
+		Debug("column mode offset:", self.offset_x, self.offset_y, " zoom:", self.globalzoom, " margin:", margin);
 		self.pan_by_page = self.globalzoom_mode -- store for later and enable pan_by_page
 		self.globalzoom_mode = self.ZOOM_BY_VALUE -- enable pan mode
 		self.pan_x = self.offset_x
