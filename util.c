@@ -17,7 +17,6 @@
 */
 
 #include <sys/time.h>
-#include <sys/types.h>
 #include <sys/statvfs.h>
 #include <unistd.h>
 #include <string.h>
@@ -47,21 +46,19 @@ static int util_usleep(lua_State *L) {
 /* returns three numbers: RSS, Data, TotalVM */
 static int memusage(lua_State *L) {
 	char buf[512];
-	FILE *fp;
 	int rss = -1, data = -1, totalvm = -1;
-
-	sprintf(buf, "/proc/%d/status", getpid());
-	fp = fopen(buf, "r");
+	FILE *fp = fopen("/proc/self/status", "r");
 	if (fp) {
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			char *ptr = NULL;
 			if (ptr = strstr(buf, "VmSize:")) {
-				sscanf(ptr + strlen("VmSize:\t"), "%d kB", &totalvm);
+				sscanf(ptr, "VmSize:\t%d kB", &totalvm);
 			} else if (ptr = strstr(buf, "VmRSS:")) {
-				sscanf(ptr + strlen("VmRSS:\t"), "%d kB", &rss);
+				sscanf(ptr, "VmRSS:\t%d kB", &rss);
 			} else if (ptr = strstr(buf, "VmData:")) {
-				sscanf(ptr + strlen("VmData:\t"), "%d kB", &data);
+				sscanf(ptr, "VmData:\t%d kB", &data);
 			}
+			if (rss != -1 && data != -1 && totalvm != -1) break;
 		}
 		fclose(fp);
 	}
