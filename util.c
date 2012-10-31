@@ -56,11 +56,11 @@ static int memusage(lua_State *L) {
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			char *ptr = NULL;
 			if (ptr = strstr(buf, "VmSize:")) {
-				sscanf(ptr + strlen("VmSize:\t"), "\t%d kB", &totalvm);
+				sscanf(ptr + strlen("VmSize:\t"), "%d kB", &totalvm);
 			} else if (ptr = strstr(buf, "VmRSS:")) {
-				sscanf(ptr + strlen("VmRSS:\t"), "\t%d kB", &rss);
+				sscanf(ptr + strlen("VmRSS:\t"), "%d kB", &rss);
 			} else if (ptr = strstr(buf, "VmData:")) {
-				sscanf(ptr + strlen("VmData:\t"), "\t%d kB", &data);
+				sscanf(ptr + strlen("VmData:\t"), "%d kB", &data);
 			}
 		}
 		fclose(fp);
