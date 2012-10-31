@@ -17,8 +17,10 @@
 */
 
 #include <sys/time.h>
+#include <sys/types.h>
 #include <sys/statvfs.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "util.h"
 
@@ -40,6 +42,34 @@ static int util_usleep(lua_State *L) {
 	useconds_t useconds = luaL_optint(L, 1, 0);
 	usleep(useconds);
 	return 0;
+}
+
+/* returns three numbers: RSS, Data, TotalVM */
+static int memusage(lua_State *L) {
+	char buf[512];
+	FILE *fp;
+	int rss = -1, data = -1, totalvm = -1;
+
+	sprintf(buf, "/proc/%d/status", getpid());
+	fp = fopen(buf, "r");
+	if (fp) {
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			char *ptr = NULL;
+			if (ptr = strstr(buf, "VmSize:")) {
+				sscanf(ptr + strlen("VmSize:\t"), "\t%d kB", &totalvm);
+			} else if (ptr = strstr(buf, "VmRSS:")) {
+				sscanf(ptr + strlen("VmRSS:\t"), "\t%d kB", &rss);
+			} else if (ptr = strstr(buf, "VmData:")) {
+				sscanf(ptr + strlen("VmData:\t"), "\t%d kB", &data);
+			}
+		}
+		fclose(fp);
+	}
+
+	lua_pushinteger(L, rss);
+	lua_pushinteger(L, data);
+	lua_pushinteger(L, totalvm);
+	return 3;
 }
 
 static int util_df(lua_State *L) {
@@ -86,6 +116,7 @@ static const struct luaL_Reg util_func[] = {
 	{"utf8charcode", utf8charcode},
 	{"isEmulated", isEmulated},
 	{"df", util_df},
+	{"memusage", memusage},
 	{NULL, NULL}
 };
 

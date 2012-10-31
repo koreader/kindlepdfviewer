@@ -20,13 +20,15 @@ function PICViewer:_drawReadingInfo()
 	local width = G_width
 	local face = Font:getFace("rifont", 20)
 	local page_width, page_height, page_components = self.doc:getOriginalPageSize()
+	local rss, data, totalvm = util.memusage()
 
 	-- display memory, time, battery and image info on top of page
 	fb.bb:paintRect(0, 0, width, 40+6*2, 0)
 	renderUtf8Text(fb.bb, 10, 15+6, face,
 		"M: "..
-		math.ceil( self.cache_current_memsize / 1024 ).."/"..math.ceil( self.cache_max_memsize / 1024 ).."k", true)
-	local txt = os.date("%a %d %b %Y %T").." ["..BatteryLevel().."]"
+		math.ceil( self.cache_current_memsize / 1024 ).."/"..math.ceil( self.cache_max_memsize / 1024 ).."k "..
+        rss.."/"..data.."/"..totalvm.."k", true)
+	local txt = os.date("%H:%M").." ["..BatteryLevel().."]"
 	local w = sizeUtf8Text(0, width, face, txt, true).x
 	renderUtf8Text(fb.bb, width - w - 10, 15+6, face, txt, true)
 	renderUtf8Text(fb.bb, 10, 15+6+22, face,

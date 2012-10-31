@@ -2189,6 +2189,7 @@ function UniReader:_drawReadingInfo()
 	local width, height = G_width, G_height
 	local numpages = self.doc:getPages()
 	local load_percent = (self.pageno / numpages)
+	local rss, data, totalvm = util.memusage()
 	-- changed to be the same font group as originaly intended
 	local face = Font:getFace("rifont", 20)
 
@@ -2196,9 +2197,10 @@ function UniReader:_drawReadingInfo()
 	fb.bb:paintRect(0, 0, width, 15+6*2, 0)
 	renderUtf8Text(fb.bb, 10, 15+6, face,
 		"M: "..
-		math.ceil( self.cache_current_memsize / 1024 ).."/"..math.ceil( self.cache_max_memsize / 1024 )..
-		" "..math.ceil( self.doc:getCacheSize() / 1024 ).."/"..math.ceil( self.cache_document_size / 1024 ).."k", true)
-	local txt = os.date("%a %d %b %Y %T").." ["..BatteryLevel().."]"
+		math.ceil( self.cache_current_memsize / 1024 ).."/"..math.ceil( self.cache_max_memsize / 1024 ).."k "..
+		math.ceil( self.doc:getCacheSize() / 1024 ).."/"..math.ceil( self.cache_document_size / 1024 ).."k "..
+        rss.."/"..data.."/"..totalvm.."k", true)
+	local txt = os.date("%H:%M").." ["..BatteryLevel().."]"
 	local w = sizeUtf8Text(0, width, face, txt, true).x
 	renderUtf8Text(fb.bb, width - w - 10, 15+6, face, txt, true)
 
