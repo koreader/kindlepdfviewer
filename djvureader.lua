@@ -114,14 +114,16 @@ function DJVUReader:_drawReadingInfo()
 	local load_percent = self.pageno/numpages
 	local face = Font:getFace("rifont", 20)
 	local page_width, page_height, page_dpi, page_gamma, page_type = self.doc:getPageInfo(self.pageno)
+	local rss, data, totalvm = util.memusage()
 
 	-- display memory, time, battery and DjVu info on top of page
 	fb.bb:paintRect(0, 0, width, 40+6*2, 0)
 	renderUtf8Text(fb.bb, 10, 15+6, face,
 		"M: "..
-		math.ceil( self.cache_current_memsize / 1024 ).."/"..math.ceil( self.cache_max_memsize / 1024 ).."k, "..
-		math.ceil( self.doc:getCacheSize() / 1024 ).."/"..math.ceil( self.cache_document_size / 1024 ).."k", true)
-	local txt = os.date("%a %d %b %Y %T").." ["..BatteryLevel().."]"
+		math.ceil( self.cache_current_memsize / 1024 ).."/"..math.ceil( self.cache_max_memsize / 1024 ).."k "..
+		math.ceil( self.doc:getCacheSize() / 1024 ).."/"..math.ceil( self.cache_document_size / 1024 ).."k "..
+        rss.."/"..data.."/"..totalvm.."k", true)
+	local txt = os.date("%H:%M").." ["..BatteryLevel().."]"
 	local w = sizeUtf8Text(0, width, face, txt, true).x
 	renderUtf8Text(fb.bb, width - w - 10, 15+6, face, txt, true)
 	renderUtf8Text(fb.bb, 10, 15+6+22, face,
