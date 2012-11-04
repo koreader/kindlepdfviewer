@@ -96,7 +96,8 @@ else
 end
 
 if util.isEmulated()==1 then
-	input.open("")
+	os.execute("rm -f emu_event && mkfifo emu_event")
+	input.open("emu_event")
 	-- SDL key codes
 	setEmuKeycodes()
 else

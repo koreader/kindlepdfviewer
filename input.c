@@ -225,6 +225,7 @@ static int closeInputDevices(lua_State *L) {
 #endif
 }
 
+
 static int waitForInput(lua_State *L) {
 	struct input_event input;
 	int n;
