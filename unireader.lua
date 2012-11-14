@@ -2696,42 +2696,42 @@ function UniReader:addAllCommands()
 		end)
 	-- to leave or to erase 8 hotkeys switching zoom-mode directly?
 
-	self.commands:add(KEY_A,nil,"A",
+	self.commands:add(KEY_A,MOD_SHIFT,"A",
 		"zoom to fit page",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_PAGE)
 		end)
-	self.commands:add(KEY_A,MOD_SHIFT,"A",
+	self.commands:add(KEY_A,nil,"A",
 		"zoom to fit content",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_CONTENT)
 		end)
-	self.commands:add(KEY_S,nil,"S",
+	self.commands:add(KEY_S,MOD_SHIFT,"S",
 		"zoom to fit page width",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_PAGE_WIDTH)
 		end)
-	self.commands:add(KEY_S,MOD_SHIFT,"S",
+	self.commands:add(KEY_S,nil,"S",
 		"zoom to fit content width",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_CONTENT_WIDTH)
 		end)
-	self.commands:add(KEY_D,nil,"D",
+	self.commands:add(KEY_D,MOD_SHIFT,"D",
 		"zoom to fit page height",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_PAGE_HEIGHT)
 		end)
-	self.commands:add(KEY_D,MOD_SHIFT,"D",
+	self.commands:add(KEY_D,nil,"D",
 		"zoom to fit content height",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_CONTENT_HEIGHT)
 		end)
-	self.commands:add(KEY_F,nil,"F",
+	self.commands:add(KEY_F,MOD_SHIFT,"F",
 		"zoom to fit margin 2-column mode",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_CONTENT_HALF_WIDTH_MARGIN)
 		end)
-	self.commands:add(KEY_F,MOD_SHIFT,"F",
+	self.commands:add(KEY_F,nil,"F",
 		"zoom to fit content 2-column mode",
 		function(unireader)
 			unireader:setglobalzoom_mode(unireader.ZOOM_FIT_TO_CONTENT_HALF_WIDTH)
