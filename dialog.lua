@@ -157,7 +157,7 @@ function InfoMessage:chooseEventForMethod(event)
 	event = event or 0
 	local item_no = 0
 	local event_list = {
-		"Messages (e.g. 'Battery logging ON')",
+		"Messages (e.g. 'Battery logging on')",
 		"Warnings (e.g. 'Already first jump!')",
 		"Errors (e.g. 'Zip contains improper content!')",
 		"Confirmations (e.g. 'Press Y to confirm')",
