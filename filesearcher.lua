@@ -284,7 +284,6 @@ function FileSearcher:choose(keywords)
 	self.pagedirty = true
 	self.markerdirty = false
 
-	
 	-- if given keywords, set new result according to keywords.
 	-- Otherwise, display the previous search result.
 	if keywords then
@@ -292,7 +291,7 @@ function FileSearcher:choose(keywords)
 	end
 	-- NuPogodi, 30.09.12: immediate quit (no redraw), if empty -- there is nothing to do in empty list anyway
 	if #self.result < 1 then
-		InfoMessage:inform("No search hits found ", DINFO_NODELAY, 1, MSG_WARN)
+		InfoMessage:inform("No search hits found ", DINFO_DELAY, 1, MSG_WARN)
 		return nil
 	end
 
