@@ -2958,7 +2958,7 @@ function UniReader:addAllCommands()
 	self.commands:add(KEY_X,MOD_SHIFT,"X",
 		"modify page bbox",
 		function(unireader)
-			self:modBBox(unireader)
+			unireader:modBBox()
 		end)
 	self.commands:add(KEY_MENU,nil,"Menu",
 		"toggle info box",
