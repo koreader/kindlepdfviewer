@@ -274,7 +274,7 @@ static int waitForInput(lua_State *L) {
 	 * timeout at all.
 	 */
 	num = select(nfds, &fds, NULL, NULL, (usecs < 0) ? NULL : &timeout);
-	if(num < 0) {
+	if(num <= 0) {
 		return luaL_error(L, "Waiting for input failed: %d\n", errno);
 	}
 
@@ -299,8 +299,9 @@ static int waitForInput(lua_State *L) {
 		}
 
 		int ticks = SDL_GetTicks();
-		if (usecs < 0)
+		if (usecs < 0) {
 			SDL_WaitEvent(&event);
+		}
 		else {
 			while (SDL_GetTicks()-ticks <= usecs/1000) {
 				if (SDL_PollEvent(&event)) break;
