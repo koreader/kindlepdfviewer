@@ -180,6 +180,8 @@ function FileChooser:setPath(newPath)
 
 		-- Dijkstra will hate me for this...
 		if newPath == oldPath then
+			self.page = 1
+			self.current = 1
 			return
 		end
 
@@ -653,10 +655,9 @@ Switching this mode on should allow developers & beta-testers to use some unstab
 and/or dangerous functions able to crash the reader. ]]
 
 function FileChooser:changeFileChooserMode()
-	local face_list = { "Safe mode for beginners", "Advanced mode for experienced users", "Expert mode for beta-testers & developers" }
 	local modes_menu = SelectMenu:new{
 		menu_title = "Set user privilege level",
-		item_array = face_list,
+		item_array = {"Safe mode for beginners", "Advanced mode for experienced users", "Expert mode for beta-testers & developers"},
 		current_entry = self.filemanager_expert_mode - 1,
 		}
 	local m = modes_menu:choose(0, G_height)
