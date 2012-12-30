@@ -2,6 +2,49 @@ require "cache"
 require "ui/geometry"
 require "ui/screen"
 require "ui/device"
+require "ui/reader/readerconfig"
+
+Configurable = {}
+
+function Configurable:hash(sep)
+	local hash = ""
+	local excluded = {multi_threads = true,}
+	for key,value in pairs(self) do
+		if type(value) == "number" and not excluded[key] then
+			hash = hash..sep..value
+		end
+	end
+	return hash
+end
+
+function Configurable:loadDefaults()
+	for i=1,#KOPTOptions do
+		local options = KOPTOptions[i].options
+		for j=1,#KOPTOptions[i].options do
+			local key = KOPTOptions[i].options[j].name
+			self[key] = KOPTOptions[i].options[j].default_value
+		end
+	end
+end
+
+function Configurable:loadSettings(settings, prefix)
+	for key,value in pairs(self) do
+		if type(value) == "number" then
+			saved_value = settings:readSetting(prefix..key)
+			self[key] = (saved_value == nil) and self[key] or saved_value
+			--Debug("Configurable:loadSettings", "key", key, "saved value", saved_value,"Configurable.key", self[key])
+		end
+	end
+	--Debug("loaded config:", dump(Configurable))
+end
+
+function Configurable:saveSettings(settings, prefix)
+	for key,value in pairs(self) do
+		if type(value) == "number" then
+			settings:saveSetting(prefix..key, value)
+		end
+	end
+end
 
 -- Any document processed by K2pdfopt is called a koptdocument
 KoptDocument = Document:new{
@@ -12,26 +55,11 @@ KoptDocument = Document:new{
 	dc_null = DrawContext.new(),
 	screen_size = Screen:getSize(),
 	screen_dpi = Device:getModel() == "KindlePaperWhite" and 212 or 167,
-	configurable = {
-		font_size = 1.0,
-		page_margin = 0.06,
-		line_spacing = 1.2,
-		word_spacing = 0.15,
-		quality = 1.0,
-		text_wrap = 1,
-		defect_size = 1.0,
-		trim_page = 0,
-		detect_indent = 1,
-		multi_threads = 0,
-		auto_straighten = 0,
-		justification = -1,
-		max_columns = 2,
-		contrast = 1.0,
-		screen_rotation = 0,
-	}
+	configurable = Configurable,
 }
 
 function KoptDocument:init()
+	self.configurable:loadDefaults()
 	self.file_type = string.lower(string.match(self.file, ".+%.([^.]+)") or "")
 	if self.file_type == "pdf" then
 		local ok
@@ -42,6 +70,7 @@ function KoptDocument:init()
 		end
 		self.is_open = true
 		self.info.has_pages = true
+		self.info.configurable = true
 		if self._document:needsPassword() then
 			self.is_locked = true
 		else
@@ -62,6 +91,7 @@ function KoptDocument:init()
 		end
 		self.is_open = true
 		self.info.has_pages = true
+		self.info.configurable = true
 		self:_readMetadata()
 	end
 end
@@ -146,7 +176,7 @@ end
 -- calculates page dimensions
 function KoptDocument:getPageDimensions(pageno, zoom, rotation)
 	-- check cached page size
-	local hash = "kctx|"..self.file.."|"..pageno
+	local hash = "kctx|"..self.file.."|"..pageno.."|"..self.configurable:hash('|')
 	local cached = Cache:check(hash)
 	if not cached then
 		local kc = self:getKOPTContext(pageno)
@@ -161,7 +191,7 @@ function KoptDocument:getPageDimensions(pageno, zoom, rotation)
 		Cache:insert(hash, CacheItem:new{ kctx = kc })
 		return page_size
 	end
-	DEBUG("Found cached koptcontex on page", pageno, cached)
+	--DEBUG("Found cached koptcontex on page", pageno, cached)
 	local fullwidth, fullheight = cached.kctx:getPageDim()
 	local page_size = Geom:new{ w = fullwidth, h = fullheight }
 	return page_size
@@ -169,7 +199,7 @@ end
 
 function KoptDocument:renderPage(pageno, rect, zoom, rotation, render_mode)
 	self.render_mode = render_mode
-	local hash = "renderpg|"..self.file.."|"..pageno.."|"..zoom.."|"..rotation
+	local hash = "renderpg|"..self.file.."|"..pageno.."|"..self.configurable:hash('|')
 	local page_size = self:getPageDimensions(pageno, zoom, rotation)
 	-- this will be the size we actually render
 	local size = page_size
@@ -184,9 +214,12 @@ function KoptDocument:renderPage(pageno, rect, zoom, rotation, render_mode)
 			return
 		end
 		-- only render required part
-		hash = "renderpg|"..self.file.."|"..pageno.."|"..zoom.."|"..rotation.."|"..tostring(rect)
+		hash = "renderpg|"..self.file.."|"..pageno.."|"..self.configurable:hash('|').."|"..tostring(rect)
 		size = rect
 	end
+	
+	local cached = Cache:check(hash)
+	if cached then return cached end
 
 	-- prepare cache item with contained blitbuffer	
 	local tile = CacheItem:new{
@@ -197,13 +230,16 @@ function KoptDocument:renderPage(pageno, rect, zoom, rotation, render_mode)
 	}
 
 	-- draw to blitbuffer
-	local kc_hash = "kctx|"..self.file.."|"..pageno
+	local kc_hash = "kctx|"..self.file.."|"..pageno.."|"..self.configurable:hash('|')
 	local page = self._document:openPage(pageno)
 	local cached = Cache:check(kc_hash)
 	if cached then
 		page:rfdraw(cached.kctx, tile.bb)
 		page:close()
-		Cache:insert(hash, tile)
+		DEBUG("cached hash", hash)
+		if not Cache:check(hash) then
+			Cache:insert(hash, tile)
+		end
 		return tile
 	end
 	DEBUG("Error: cannot render page before reflowing.")
