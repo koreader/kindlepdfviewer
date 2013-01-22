@@ -21,6 +21,8 @@ CREReader = UniReader:new{
 	line_space_percent = 100,
 	view_mode = DCREREADER_VIEW_MODE,
 	view_pan_step = nil,
+	default_css = nil,
+	css = nil,
 }
 
 function CREReader:init()
@@ -100,13 +102,13 @@ function CREReader:open(filename)
 	if not io.open("./data/"..file_type..".css") then
 		file_type = "cr3"
 	end
-	local style_sheet = "./data/"..file_type..".css"
+	self.default_css = "./data/"..file_type..".css"
 	-- default to scroll mode
 	local view_mode = self.SCROLL_VIEW_MODE
 	if self.view_mode == "page" then
 		view_mode = self.PAGE_VIEW_MODE
 	end
-	ok, self.doc = pcall(cre.newDocView, style_sheet, G_width, G_height, view_mode)
+	ok, self.doc = pcall(cre.newDocView, G_width, G_height, view_mode)
 	if not ok then
 		return false, "Error opening cre-document. " -- self.doc, will contain error message
 	end
@@ -152,11 +154,18 @@ function CREReader:loadSpecialSettings()
 	if self.font_zoom ~= 0 then
 		local i = math.abs(self.font_zoom)
 		local step = self.font_zoom / i
-		while i>0 do
+		while i > 0 do
 			self.doc:zoomFont(step)
-			i=i-1
+			i = i - 1
 		end
 	end
+
+	self.css = self.settings:readSetting("css")
+	if not self.css then
+		self.css = self.default_css
+		self.doc:setStyleSheet(self.css)
+	end
+
 	self.doc:loadDocument(self.filename)
 end
 
@@ -181,6 +190,7 @@ function CREReader:saveSpecialSettings()
 	self.settings:saveSetting("line_space_percent", self.line_space_percent)
 	self.settings:saveSetting("font_zoom", self.font_zoom)
 	self.settings:saveSetting("view_mode", self.view_mode)
+	self.settings:saveSetting("css", self.css)
 end
 
 function CREReader:saveLastPageOrPos()
@@ -883,6 +893,46 @@ function CREReader:adjustCreReaderCommands()
 			self:redrawCurrentPage()
 		end
 	)
+	self.commands:add(KEY_S, nil, "S",
+		"change render style",
+		function(self)
+			local css_list = {"clear external styles"}
+			for f in lfs.dir("./data") do
+				if lfs.attributes("./data/"..f, "mode") == "file" and string.match(f, "%.css$") then
+				  table.insert(css_list, f)
+				end
+			end
+			-- define the current font in face_list
+			local item_no = 0
+			while css_list[item_no] ~= self.css and item_no < #css_list do
+				item_no = item_no + 1
+			end
+			local css_menu = SelectMenu:new{
+				menu_title = "Stylesheet",
+				item_array = css_list,
+				current_entry = item_no - 1,
+			}
+			item_no = css_menu:choose(0, G_height)
+			if item_no then
+				local prev_xpointer = self.doc:getXPointer()
+				if css_list[item_no] == "clear external styles" then
+					css_list[item_no] = nil
+				end
+				if self.css ~= css_list[item_no] then
+					if not css_list[item_no] then
+						InfoMessage:inform("Clearing external styles", DINFO_NODELAY, 1, MSG_AUX)
+						self.doc:setStyleSheet("")
+					else
+						InfoMessage:inform("Style change to "..css_list[item_no].." ", DINFO_NODELAY, 1, MSG_AUX)
+						self.doc:setStyleSheet("./data/"..css_list[item_no])
+					end
+					self.css = css_list[item_no]
+					self.toc = nil
+					self:goto(prev_xpointer, nil, "xpointer")
+				end
+			end
+		end
+	)
 end
 
 ----------------------------------------------------
@@ -932,4 +982,14 @@ end
 function CREReader:clearSelection()
 	Debug("clearSelection")
 	self.doc:clearSelection()
+end
+
+----------------------------------------------------
+--- style sheets
+----------------------------------------------------
+function CREReader:setStyleSheet(new_css)
+	if self.css ~= new_css then
+		self.doc:setStyleSheet(new_css)
+		self:redrawCurrentPage()
+	end
 end
