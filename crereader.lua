@@ -945,10 +945,10 @@ function CREReader:adjustCreReaderCommands()
 					end
 					self.toc = nil
 					self:goto(prev_xpointer, nil, "xpointer")
-				else
-					self:redrawCurrentPage()
+					return
 				end
 			end
+			self:redrawCurrentPage()
 		end
 	)
 	self.commands:add(KEY_S, MOD_ALT, "S",
