@@ -1055,6 +1055,12 @@ function UniReader:saveLastPageOrPos()
 	self.settings:saveSetting("last_page", self.pageno)
 end
 
+function UniReader:cacheFreeItem(key)
+	self.cache[key].bb:free()
+	self.cache_current_memsize = self.cache_current_memsize - self.cache[key].size
+	self.cache[key] = nil
+end
+
 -- guarantee that we have enough memory in cache
 function UniReader:cacheClaim(size)
 	if(size > self.cache_max_memsize) then
@@ -1079,9 +1085,7 @@ function UniReader:cacheClaim(size)
 		-- cache slot is at end of life, so kick it out
 		if oldest_cache_key then
 			Debug("free cache:", oldest_cache_key, "ttl:", self.cache[oldest_cache_key].ttl)
-			self.cache_current_memsize = self.cache_current_memsize - self.cache[oldest_cache_key].size
-			self.cache[oldest_cache_key].bb:free()
-			self.cache[oldest_cache_key] = nil
+			self:cacheFreeItem(oldest_cache_key)
 		end
 	end
 	self.cache_current_memsize = self.cache_current_memsize + size
@@ -1147,6 +1151,8 @@ function UniReader:drawOrCache(no, preCache)
 			return pagehash,
 				offset_x_in_page - self.cache[pagehash].x,
 				offset_y_in_page - self.cache[pagehash].y
+		else
+			self:cacheFreeItem(pagehash)
 		end
 	end
 	-- okay, we do not have it in cache yet.
