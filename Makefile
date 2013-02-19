@@ -300,6 +300,6 @@ customupdate: all
 	rm $(INSTALL_DIR)/fonts/droid/DroidSansFallbackFull.ttf
 	cp -r git-rev resources $(INSTALL_DIR)
 	mkdir $(INSTALL_DIR)/fonts/host
-	zip -9 -r kindlepdfviewer-$(VERSION).zip $(INSTALL_DIR) launchpad/ kite/ extensions/
+	zip -9 -r kindlepdfviewer-$(VERSION).zip $(INSTALL_DIR) launchpad/ extensions/
 	rm -rf $(INSTALL_DIR)
 	@echo "copy kindlepdfviewer-$(VERSION).zip to /mnt/us/customupdates and install with shift+shift+I"
