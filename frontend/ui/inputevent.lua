@@ -402,13 +402,15 @@ function Input:handleTouchEv(ev)
 			--self.cur_x = self.cur_ev.x or self.cur_x
 			--self.cur_y = self.cur_ev.y or self.cur_y
 			-- send ev to state machine
-			local touch_ges = GestureDetector:feedEvent(self.cur_ev)
+			local ok, touch_ges = pcall(function () GestureDetector:feedEvent(self.cur_ev) end)
 			--self.last_ev_timev = self.cur_ev.timev
 			--self.cur_ev = {}
-			if touch_ges then
+			if ok and touch_ges then
 				return Event:new("Gesture", 
 					GestureDetector:adjustGesCoordinate(touch_ges)
 				)
+			else
+				return Event:new("GestureError", touch_ges)
 			end
 		end
 	elseif ev.type == EV_ABS then
