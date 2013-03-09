@@ -996,6 +996,7 @@ function CREReader:searchHighLight(search)
 
 	if found then
 		self.pos = pos -- first metch position
+		self.view_mode = "scroll"
 		self:redrawCurrentPage()
 		InfoMessage:inform( found.." hits '"..search.."' pos "..pos, DINFO_DELAY, 1, MSG_WARN)
 	else
