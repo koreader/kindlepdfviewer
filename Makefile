@@ -8,21 +8,31 @@ VERSION=$(shell git describe HEAD)
 # subdirectory we use to build the installation bundle
 INSTALL_DIR=kindlepdfviewer
 
+# subdirectory we use to setup emulation environment
+EMU_DIR=emu
+
 # files to copy from main directory
 LUA_FILES=battery.lua commands.lua crereader.lua defaults.lua dialog.lua djvureader.lua readerchooser.lua filechooser.lua filehistory.lua fileinfo.lua filesearcher.lua font.lua graphics.lua helppage.lua image.lua inputbox.lua keys.lua pdfreader.lua koptconfig.lua koptreader.lua picviewer.lua reader.lua rendertext.lua screen.lua selectmenu.lua settings.lua unireader.lua widget.lua
 
 all: koreader-base/koreader-base koreader-base/extr
 
-koreader-base/koreader-base:
-	cd koreader-base && make koreader-base
-
-koreader-base/extr:
-	cd koreader-base && make extr
+koreader-base/koreader-base koreader-base/extr:
+	make -C koreader-base extr koreader-base
 
 fetchthirdparty:
 	git submodule init
 	git submodule update
 	cd koreader-base && make fetchthirdparty
+
+bootstrapemu:
+	test -d $(EMU_DIR) || mkdir $(EMU_DIR)
+	test -d $(EMU_DIR)/libs-emu || (cd $(EMU_DIR) && ln -s ../koreader-base/libs-emu ./)
+	test -d $(EMU_DIR)/fonts || (cd $(EMU_DIR) && ln -s ../koreader-base/fonts ./)
+	test -d $(EMU_DIR)/data || (cd $(EMU_DIR) && ln -s ../koreader-base/data ./)
+	test -d $(EMU_DIR)/resources || (cd $(EMU_DIR) && ln -s ../resources ./)
+	test -e $(EMU_DIR)/koreader-base || (cd $(EMU_DIR) && ln -s ../koreader-base/koreader-base ./)
+	test -e $(EMU_DIR)/extr || (cd $(EMU_DIR) && ln -s ../koreader-base/extr ./)
+	rm -f $(EMU_DIR)/*.lua && (cd $(EMU_DIR) && ln -s ../*.lua ./)
 
 clean:
 	cd koreader-base && make clean
