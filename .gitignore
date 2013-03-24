@@ -1,42 +1,12 @@
 *.swp
 lua
-lua-*
-.reader.kpdfview.lua
-settings.reader.lua
-mupdf-thirdparty.zip
-djvulibre*
-cr3cache
-history
-crash.log
 .vimrc
 git-rev
-data
-fonts
-kpdfview
-slider_watcher
 *.o
 
 kindlepdfviewer-*.zip
 
 /.cproject
 /.project
-/.reader.kpdfview
 
-kpvcrlib/CMakeCache.txt
-kpvcrlib/CMakeFiles/
-kpvcrlib/cmake_install.cmake
-kpvcrlib/Makefile
-
-popen-noshell/libpopen_noshell.a
-popen-noshell/*.o
-popen-noshell/.svn/
-popen-noshell/CREDITS
-popen-noshell/Makefile
-popen-noshell/README
-popen-noshell/performance_tests/
-popen-noshell/popen_noshell.c
-popen-noshell/popen_noshell.h
-popen-noshell/popen_noshell_examples.c
-popen-noshell/popen_noshell_tests.c
-popen-noshell/popen_noshell_tests.cpp
-
+emu
