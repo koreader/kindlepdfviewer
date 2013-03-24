@@ -1,4 +1,4 @@
-#!./kpdfview
+#!./koreader-base
 --[[
     KindlePDFViewer: a reader implementation
     Copyright (C) 2011 Hans-Werner Hilse <hilse@web.de>
