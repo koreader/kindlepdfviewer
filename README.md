@@ -13,7 +13,6 @@ The application is licensed under the GPLv3 (see COPYING file).
 Building
 ========
 
-
 Follow these steps:
 
 * fetch thirdparty sources
@@ -27,6 +26,7 @@ Follow these steps:
 			* install CREngine sources into subfolder "kpvcrlib/crengine"
 			* install LuaJit sources into subfolder "luajit-2.0"
 			* install popen_noshell sources into subfolder "popen-noshell"
+			* install libk2pdfopt sources into subfolder "libk2pdfopt"
 
 	* automatically fetch thirdparty sources with Makefile:
 		* make sure you have patch, wget, unzip, git and svn installed
@@ -35,19 +35,21 @@ Follow these steps:
 * adapt Makefile to your needs
 
 * run `make thirdparty`. This will build MuPDF (plus the libraries it depends
-  on), libDjvuLibre, CREngine and Lua.
+  on), libDjvuLibre, CREngine, libk2pdfopt and Lua.
 
-* run `make`. This will build the kpdfview application
+* run `make`. This will build the koreader-base application
 
 
 Running
 =======
 
-The user interface (or what's there yet) is scripted in Lua. See "reader.lua".
+In real eink devices
+---------------------
+The user interface is scripted in Lua. See "reader.lua".
 It uses the Linux feature to run scripts by using a corresponding line at its
 start.
 
-So you might just call that script. Note that the script and the kpdfview
+So you might just call that script. Note that the script and the koreader-base
 binary currently must be in the same directory.
 
 You would then just call reader.lua, giving the document file path, or any
@@ -56,35 +58,30 @@ usage notes.  The reader.lua script can also show a file chooser: it will do
 this when you call it with a directory (instead of a file) as first argument.
 
 
-Device emulation
-================
-
-The code also features a device emulation. You need SDL headers and library
-for this. It allows to develop on a standard PC and saves precious development
-time. It might also compose the most unfriendly desktop PDF reader, depending
-on your view.
-
-If you are using Fedora Core Linux, do `yum install SDL SDL-devel`.
-If you are using Ubuntu, install `libsdl-dev1.2` package.
-
-To build in "emulation mode", you need to run make like this:
-	make clean cleanthirdparty
-	EMULATE_READER=1 make thirdparty kpdfview
-
-And run the emulator like this:
-```
-./reader.lua /PATH/TO/PDF.pdf
-```
-
-or:
-```
-./reader.lua /ANY/PATH
-```
-
-By default emulation will provide DXG resolution of 824*1200. It can be
-specified at compile time, this is example for Kindle 3:
+In emulator
+-----------
+You need to first compile koreader-base in emulation mode.
+  * If you have built kindlepdfviewer in real mode before, you need to
+    clean it up:
 
 ```
-EMULATE_READER_W=600 EMULATE_READER_H=800 EMULATE_READER=1 make kpdfview
+make clean && make cleanthirdparty
 ```
 
+  * Then compile with emulation mode flag:
+
+```
+EMULATE_READER=1 make
+```
+
+  * You may want to see README.md in koreader-base for more information.
+
+
+Next run `make bootstrapemu` to setup basic runtime environment needed by
+emulation mode. A new emu directory will be created.
+
+
+Last, run the emulator with following command:
+```
+cd emu && reader.lua -d ./
+```
