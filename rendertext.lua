@@ -30,7 +30,7 @@ function getGlyph(face, charcode)
 	local hash = glyphCacheHash(face.hash, charcode)
 
 	if glyphcache[hash] == nil then
-		local glyph = face.ftface:renderGlyph(charcode)
+		local glyph = face.ftface:renderGlyph(charcode, 0, 1.0)
 		local size = glyph.bb:getWidth() * glyph.bb:getHeight() / 2 + 32
 		glyphCacheClaim(size);
 		glyphcache[hash] = {
