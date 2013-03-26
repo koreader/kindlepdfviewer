@@ -126,7 +126,7 @@ function renderUtf8TextWidth(buffer, x, y, face, text, kerning, w)
 			if kerning and (prevcharcode ~= 0) then
 				pen_x = pen_x + face.ftface:getKerning(prevcharcode, charcode)
 			end
-			buffer:addblitFrom(glyph.bb, x + pen_x + glyph.l, y - glyph.t, 0, 0, glyph.bb:getWidth(), glyph.bb:getHeight())
+			buffer:addblitFrom(glyph.bb, x + pen_x + glyph.l, y - glyph.t, 0, 0, glyph.bb:getWidth(), glyph.bb:getHeight(), 1)
 			pen_x = pen_x + glyph.ax
 			prevcharcode = charcode
 		else
