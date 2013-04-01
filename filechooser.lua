@@ -288,6 +288,11 @@ function FileChooser:choose()
 	end -- while
 end
 
+function FileChooser:backToParentDir()
+	local path = string.gsub(self.path, "(.*)/[^/]+/?$", "%1")
+	self:setPath(path)
+end
+
 -- add available commands
 function FileChooser:addAllCommands()
 	self.commands = Commands:new{}
@@ -385,6 +390,13 @@ function FileChooser:addAllCommands()
 			self.pagedirty = true
 		end
 	)
+	self.commands:add(KEY_FW_LEFT, nil, "joypad left",
+		"go back to parent directory",
+		function(self)
+			self:backToParentDir()
+			self.pagedirty = true
+		end
+	)
 	self.commands:add(KEY_FW_RIGHT, nil, "joypad right",
 		"show document information",
 		function(self)
@@ -409,8 +421,7 @@ function FileChooser:addAllCommands()
 		function(self)
 			local newdir = self.dirs[self.perpage*(self.page-1)+self.current]
 			if newdir == ".." then
-				local path = string.gsub(self.path, "(.*)/[^/]+/?$", "%1")
-				self:setPath(path)
+				self:backToParentDir()
 			elseif newdir then
 				self:setPath(self.path.."/"..newdir)
 			else
@@ -432,7 +443,7 @@ function FileChooser:addAllCommands()
 					InfoMessage:inform("Press 'Y' to confirm ", DINFO_NODELAY, 0, MSG_CONFIRM)
 					if ReturnKey() == KEY_Y then self:deleteFileAtPosition(pos) end
 				end
-			elseif self.dirs[pos] == ".." then 
+			elseif self.dirs[pos] == ".." then
 				warningUnsupportedFunction()
 			else -- other folders
 				if InfoMessage.InfoMethod[MSG_CONFIRM] == 0 then -- silent regime
@@ -690,7 +701,7 @@ function gotoTargetItem(target_item, all_items, current_item, current_page, perp
 		current_page = target_page
 		pagedirty = true
 		markerdirty = true
-	elseif target_curr ~= current_item then 
+	elseif target_curr ~= current_item then
 		markerdirty = true
 	end
 	return target_curr, current_page, markerdirty, pagedirty
