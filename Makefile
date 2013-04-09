@@ -33,6 +33,7 @@ bootstrapemu:
 	test -e $(EMU_DIR)/koreader-base || (cd $(EMU_DIR) && ln -s ../koreader-base/koreader-base ./)
 	test -e $(EMU_DIR)/extr || (cd $(EMU_DIR) && ln -s ../koreader-base/extr ./)
 	rm -f $(EMU_DIR)/*.lua && (cd $(EMU_DIR) && ln -s ../*.lua ./)
+	test -e $(EMU_DIR)/history || (mkdir $(EMU_DIR)/history)
 
 clean:
 	cd koreader-base && make clean
