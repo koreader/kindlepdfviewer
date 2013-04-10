@@ -59,8 +59,8 @@ function openFile(filename)
 end
 
 function showusage()
-	print(_("usage: ./reader.lua [OPTION] ... path")
-	print(_("Read PDF/DjVu/ePub/MOBI/FB2/CHM/HTML/TXT/DOC/RTF/JPEG on your E-Ink reader")
+	print(_("usage: ./reader.lua [OPTION] ... path"))
+	print(_("Read PDF/DjVu/ePub/MOBI/FB2/CHM/HTML/TXT/DOC/RTF/JPEG on your E-Ink reader"))
 	print("")
 	print(_("-d, --debug               start in debug mode"))
 	print(_("                          (floating point notation, e.g. \"1.5\")"))
