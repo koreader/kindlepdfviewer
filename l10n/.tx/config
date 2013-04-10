@@ -1,0 +1,9 @@
+[main]
+host = https://www.transifex.com
+
+[kindlepdfviewer.kindlepdfviewer]
+file_filter = <lang>/kindlepdfviewer.po
+source_file = templates/kindlepdfviewer.pot
+source_lang = en
+type = PO
+
