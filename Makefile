@@ -41,6 +41,7 @@ bootstrapemu:
 	test -d $(EMU_DIR)/resources || (cd $(EMU_DIR) && ln -s ../resources ./)
 	test -e $(EMU_DIR)/koreader-base || (cd $(EMU_DIR) && ln -s ../koreader-base/koreader-base ./)
 	test -e $(EMU_DIR)/extr || (cd $(EMU_DIR) && ln -s ../koreader-base/extr ./)
+	test -e $(EMU_DIR)/$(MO_DIR) || (cd $(EMU_DIR) && ln -s ../$(MO_DIR) ./)
 	rm -f $(EMU_DIR)/*.lua && (cd $(EMU_DIR) && ln -s ../*.lua ./)
 	test -e $(EMU_DIR)/history || (mkdir $(EMU_DIR)/history)
 
