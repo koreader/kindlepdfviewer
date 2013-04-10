@@ -1,13 +1,13 @@
 Font = {
 	fontmap = {
 		cfont = "droid/DroidSansFallback.ttf",		-- filemanager: for menu contents
-		tfont = "droid/DroidSans.ttf",		-- filemanager: for title
-		ffont = "droid/DroidSans.ttf",		-- filemanager: for footer
-		infofont = "droid/DroidSans.ttf",	-- info messages
+		tfont = "droid/DroidSansFallback.ttf",		-- filemanager: for title
+		ffont = "droid/DroidSansFallback.ttf",		-- filemanager: for footer
+		infofont = "droid/DroidSansFallback.ttf",	-- info messages
 		rifont = "droid/DroidSans.ttf",		-- readers: for reading position info
 		scfont = "droid/DroidSansMono.ttf",	-- selectmenu: font for item shortcut
 		hpkfont = "droid/DroidSansMono.ttf",	-- help page: font for displaying keys
-		hfont = "droid/DroidSans.ttf",		-- help page: font for displaying help messages
+		hfont = "droid/DroidSansFallback.ttf",		-- help page: font for displaying help messages
 		infont = "droid/DroidSansMono.ttf",	-- inputbox: use mono for better distance controlling
 	},
 	fontdir = os.getenv("FONTDIR") or "./fonts",
