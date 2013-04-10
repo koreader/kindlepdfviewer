@@ -28,11 +28,12 @@ require "commands"
 require "dialog"
 require "readerchooser"
 require "defaults"
+require "gettext"
 
 function openFile(filename)
 	local reader = ReaderChooser:getReaderByName(filename)
 	if reader then
-		InfoMessage:inform("Opening document... ", DINFO_NODELAY, 0, MSG_AUX)
+		InfoMessage:inform(_("Opening document... "), DINFO_NODELAY, 0, MSG_AUX)
 		reader:preLoadSettings(filename)
 		local ok, err = reader:open(filename)
 		if ok then
@@ -50,7 +51,7 @@ function openFile(filename)
 				Debug("openFile(): "..err)
 				InfoMessage:inform(err:sub(1,30), DINFO_DELAY, 1, MSG_ERROR)
 			else
-				InfoMessage:inform("Error opening document ", DINFO_DELAY, 1, MSG_ERROR)
+				InfoMessage:inform(_("Error opening document "), DINFO_DELAY, 1, MSG_ERROR)
 			end
 		end
 	end
@@ -58,20 +59,20 @@ function openFile(filename)
 end
 
 function showusage()
-	print("usage: ./reader.lua [OPTION] ... path")
-	print("Read PDF/DjVu/ePub/MOBI/FB2/CHM/HTML/TXT/DOC/RTF/JPEG on your E-Ink reader")
+	print(_("usage: ./reader.lua [OPTION] ... path")
+	print(_("Read PDF/DjVu/ePub/MOBI/FB2/CHM/HTML/TXT/DOC/RTF/JPEG on your E-Ink reader")
 	print("")
-	print("-d, --debug               start in debug mode")
-	print("                          (floating point notation, e.g. \"1.5\")")
-	print("-h, --help                show this usage help")
+	print(_("-d, --debug               start in debug mode"))
+	print(_("                          (floating point notation, e.g. \"1.5\")"))
+	print(_("-h, --help                show this usage help"))
 	print("")
-	print("If you give the name of a directory instead of a file path, a file")
-	print("chooser will show up and let you select a PDF|DJVU file")
+	print(_("If you give the name of a directory instead of a file path, a file"))
+	print(_("chooser will show up and let you select a PDF|DJVU file"))
 	print("")
-	print("If you don't pass any path, the last viewed document will be opened")
+	print(_("If you don't pass any path, the last viewed document will be opened"))
 	print("")
-	print("This software is licensed under the GPLv3.")
-	print("See http://github.com/koreader/kindlepdfviewer for more info.")
+	print(_("This software is licensed under the GPLv3."))
+	print(_("See http://github.com/koreader/kindlepdfviewer for more info."))
 	return
 end
 
@@ -81,7 +82,7 @@ end
 
 local argidx = 1
 if ARGV[1] == "-d" then
-	argidx = argidx + 1	
+	argidx = argidx + 1
 else
 	Debug = function() end
 	dump = function() end
@@ -94,7 +95,7 @@ if vfile then
 	G_program_version = G_program_version:gsub("[\n\r]+", "")
 	vfile.close()
 else
-	G_program_version = "(unknown version)"
+	G_program_version = _("(unknown version)")
 end
 
 if util.isEmulated()==1 then
