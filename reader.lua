@@ -105,7 +105,7 @@ if util.isEmulated()==1 then
 	-- SDL key codes
 	setEmuKeycodes()
 else
-	input.open("slider")
+	input.open("fake_events")
 	input.open("/dev/input/event0")
 	input.open("/dev/input/event1")
 
