@@ -51,7 +51,7 @@ clean:
 cleanthirdparty:
 	cd koreader-base && make cleanthirdparty
 
-customupdate: koreader-base/koreader-base koreader-base/extr
+customupdate: koreader-base/koreader-base koreader-base/extr mo
 	# ensure that the binaries were built for ARM
 	file koreader-base/koreader-base | grep ARM || exit 1
 	file koreader-base/extr | grep ARM || exit 1
