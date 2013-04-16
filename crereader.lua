@@ -261,7 +261,7 @@ function CREReader:goto(pos, is_ignore_jump, pos_type)
 			self:addJump(prev_xpointer)
 		end
 	end
-	self.doc:drawCurrentPage(self.nulldc, fb.bb)
+	self.doc:drawCurrentPage(fb.bb)
 
 	Debug("## self.show_overlap "..self.show_overlap)
 	if self.show_overlap < 0
