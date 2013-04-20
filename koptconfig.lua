@@ -185,6 +185,8 @@ KOPTConfig = {
 	ITEM_SPACING_H = 10,   -- items horisontal spacing
 	OPT_NAME_FONT_SIZE = 20,  -- option name font size
 	OPT_ITEM_FONT_SIZE = 16, -- option item font size
+
+    BGCOLOR = 3, -- background color
 	
 	-- last pos text is drawn
 	text_pos = 0,
@@ -213,7 +215,7 @@ function KOPTConfig:drawOptionName(xpos, ypos, option_index, text, font_face, re
 		--Debug("drawing option name:", KOPTOptions[option_index].option_text)
 		local text_len = sizeUtf8Text(0, G_width, font_face, text, true).x
 		local draw_index = KOPTOptions[option_index].draw_index
-		renderUtf8Text(fb.bb, xpos-text_len, ypos+self.OPTION_SPACING_V*(draw_index-1), font_face, text, true)
+		renderUtf8Text(fb.bb, xpos-text_len, ypos+self.OPTION_SPACING_V*(draw_index-1), font_face, text, true, self.BGCOLOR/15, 1.0)
 	end
 end
 
@@ -231,7 +233,7 @@ function KOPTConfig:drawOptionItem(xpos, ypos, option_index, item_index, text, f
 	end
 	if KOPTOptions[option_index].text_dirty or redraw then
 		--Debug("drawing option:", KOPTOptions[option_index].option_text, "item:", text)
-		renderUtf8Text(fb.bb, xpos, ypos, font_face, text, true)
+		renderUtf8Text(fb.bb, xpos, ypos, font_face, text, true, self.BGCOLOR/15, 1.0)
 	end
 	
 	local text_len = sizeUtf8Text(0, G_width, font_face, text, true).x
@@ -327,7 +329,7 @@ function KOPTConfig:config(reader)
 	local topleft_x, topleft_y = (fb.bb:getWidth()-width)/2, fb.bb:getHeight()-self.MARGIN_BOTTOM-height
 	local botleft_x, botleft_y = topleft_x, topleft_y+height
 	
-	self:drawBox(topleft_x, topleft_y, width, height, 3, 15)
+	self:drawBox(topleft_x, topleft_y, width, height, self.BGCOLOR, 15)
 	self:drawOptions(topleft_x, topleft_y, name_font, item_font, true, false)
 	fb:refresh(1, topleft_x, topleft_y, width, height)
 	
@@ -337,7 +339,7 @@ function KOPTConfig:config(reader)
 		
 		if self.config_change and self.confirm_change then
 			self.koptreader:redrawWithoutPrecache()
-			self:drawBox(topleft_x, topleft_y, width, height, 3, 15)
+			self:drawBox(topleft_x, topleft_y, width, height, self.BGCOLOR, 15)
 			self:drawOptions(topleft_x, topleft_y, name_font, item_font, true, false)
 			fb:refresh(1, topleft_x, topleft_y, width, height)
 			self.config_change = false
