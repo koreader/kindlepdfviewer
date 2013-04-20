@@ -34,6 +34,8 @@ ReaderChooser = {
 	title_font_size = 23,  -- title font size
 	item_font_size = 20,   -- reader item font size
 	option_font_size = 17, -- option font size
+    
+    BGCOLOR = 3, -- background color
 	
 	-- title text
 	TITLE = "Complete action using",
@@ -144,7 +146,7 @@ end
 
 function ReaderChooser:drawTitle(text, xpos, ypos, w, font_face)
 	-- draw title text
-	renderUtf8Text(fb.bb, xpos+10, ypos+self.title_H, font_face, text, true)
+	renderUtf8Text(fb.bb, xpos+10, ypos+self.title_H, font_face, text, true, self.BGCOLOR/15, 1.0)
 	-- draw title bar
 	fb.bb:paintRect(xpos, ypos+self.title_H+self.title_bar_H, w, 3, 5)
 	
@@ -152,7 +154,7 @@ end
 
 function ReaderChooser:drawReaderItem(name, xpos, ypos, font_face)
 	-- draw reader name
-	renderUtf8Text(fb.bb, xpos+self.margin_I, ypos, font_face, name, true)
+	renderUtf8Text(fb.bb, xpos+self.margin_I, ypos, font_face, name, true, self.BGCOLOR/15, 1.0)
 	return sizeUtf8Text(0, G_width, font_face, name, true).x
 end
 
@@ -163,11 +165,13 @@ function ReaderChooser:drawOptions(xpos, ypos, barcolor, bgcolor, font_face)
 	fb.bb:paintRect(xpos, ypos, width, optbar_T, barcolor)
 	fb.bb:paintRect(xpos+(width-optbar_T)/2, ypos, optbar_T, self.options_H, barcolor)
 	-- draw option cell
-	fb.bb:paintRect(xpos, ypos+optbar_T, (width-optbar_T)/2, self.options_H-optbar_T, bgcolor+3*(self.remember_preference and 1 or 0))
-	fb.bb:paintRect(xpos+(width+optbar_T)/2, ypos+optbar_T, (width-optbar_T)/2, self.options_H-optbar_T, bgcolor+3*(self.remember_association and 1 or 0))
+    local left_cell_bcolor = bgcolor+3*(self.remember_preference and 1 or 0)
+    local right_cell_bcolor = bgcolor+3*(self.remember_association and 1 or 0)
+	fb.bb:paintRect(xpos, ypos+optbar_T, (width-optbar_T)/2, self.options_H-optbar_T, left_cell_bcolor)
+	fb.bb:paintRect(xpos+(width+optbar_T)/2, ypos+optbar_T, (width-optbar_T)/2, self.options_H-optbar_T, right_cell_bcolor)
 	-- draw option text
-	renderUtf8Text(fb.bb, xpos+self.margin_O, ypos+self.options_H/2+8, font_face, self.OPTION_TYPE, true)
-	renderUtf8Text(fb.bb, xpos+width/2+self.margin_O, ypos+self.options_H/2+8, font_face, self.OPTION_FILE, true)
+	renderUtf8Text(fb.bb, xpos+self.margin_O, ypos+self.options_H/2+8, font_face, self.OPTION_TYPE, true, left_cell_bcolor/15, 1.0)
+	renderUtf8Text(fb.bb, xpos+width/2+self.margin_O, ypos+self.options_H/2+8, font_face, self.OPTION_FILE, true, right_cell_bcolor/15, 1.0)
 	fb:refresh(1, xpos, ypos, width, self.options_H-optbar_T)
 end
 
@@ -189,7 +193,7 @@ function ReaderChooser:choose(readers)
 	local botleft_x, botleft_y = topleft_x, topleft_y+height
 	
 	Debug("Drawing box")
-	self:drawBox(topleft_x, topleft_y, width, height, 3, 3)
+	self:drawBox(topleft_x, topleft_y, width, height, self.BGCOLOR, 3)
 	Debug("Drawing title")
 	self:drawTitle(self.TITLE, topleft_x, topleft_y, width, tface)
 	

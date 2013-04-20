@@ -74,7 +74,7 @@ function HelpPage:show(ypos, height, commands, title)
 							key = key:sub(1,modStart-1)..key:sub(modEnd+1)
 							local box = sizeUtf8Text( x, fb.bb:getWidth(), face, aMod.d, true)
 							fb.bb:paintRect(x, ypos + spacing*c - box.y_top + vert_S, box.x + self.title_H, box.y_top + box.y_bottom, self.bg_color)
-							local pen_x = renderUtf8Text(fb.bb, x, ypos + spacing*c + vert_S, face, aMod.d.." + ", true)
+							local pen_x = renderUtf8Text(fb.bb, x, ypos + spacing*c + vert_S, face, aMod.d.." + ", true, self.bg_color/15, 1.0)
 							x = x + pen_x
 							max_x = math.max(max_x, pen_x)
 						end
@@ -82,7 +82,7 @@ function HelpPage:show(ypos, height, commands, title)
 					Debug("key:"..key)
 					local box = sizeUtf8Text( x, fb.bb:getWidth(), face, key , true)
 					fb.bb:paintRect(x, ypos + spacing*c - box.y_top + vert_S, box.x, box.y_top + box.y_bottom, self.bg_color)
-					local pen_x = renderUtf8Text(fb.bb, x, ypos + spacing*c  + vert_S, face, key, true)
+					local pen_x = renderUtf8Text(fb.bb, x, ypos + spacing*c  + vert_S, face, key, true, self.bg_color/15, 1.0)
 					x = x + pen_x
 					max_x = math.max(max_x, x)
 				end
