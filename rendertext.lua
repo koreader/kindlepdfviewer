@@ -26,11 +26,13 @@ function glyphCacheClaim(size)
 	return true
 end
 
-function getGlyph(face, charcode)
-	local hash = glyphCacheHash(face.hash, charcode)
+function getGlyph(face, charcode, bgcolor, fgcolor)
+    if bgcolor == nil then bgcolor = 0.0 end
+	if fgcolor == nil then fgcolor = 1.0 end
+	local hash = glyphCacheHash(face.hash, charcode, bgcolor, fgcolor)
 
 	if glyphcache[hash] == nil then
-		local glyph = face.ftface:renderGlyph(charcode, 0, 1.0)
+		local glyph = face.ftface:renderGlyph(charcode, bgcolor, fgcolor)
 		local size = glyph.bb:getWidth() * glyph.bb:getHeight() / 2 + 32
 		glyphCacheClaim(size);
 		glyphcache[hash] = {
@@ -45,8 +47,8 @@ function getGlyph(face, charcode)
 	return glyphcache[hash].glyph
 end
 
-function glyphCacheHash(face, charcode)
-	return face..'_'..charcode;
+function glyphCacheHash(face, charcode, bgcolor, fgcolor)
+	return face..'_'..charcode..'_'..bgcolor..'_'..fgcolor
 end
 
 function clearGlyphCache()
@@ -84,7 +86,7 @@ function sizeUtf8Text(x, width, face, text, kerning)
 	return { x = pen_x, y_top = pen_y_top, y_bottom = pen_y_bottom}
 end
 
-function renderUtf8Text(buffer, x, y, face, text, kerning)
+function renderUtf8Text(buffer, x, y, face, text, kerning, bgcolor, fgcolor)
 	if not text then
 		Debug("renderUtf8Text called without text");
 		return 0
@@ -98,7 +100,7 @@ function renderUtf8Text(buffer, x, y, face, text, kerning)
 	for uchar in string.gfind(text, "([%z\1-\127\194-\244][\128-\191]*)") do
 		if pen_x < buffer_width then
 			local charcode = util.utf8charcode(uchar)
-			local glyph = getGlyph(face, charcode)
+			local glyph = getGlyph(face, charcode, bgcolor, fgcolor)
 			if kerning and (prevcharcode ~= 0) then
 				pen_x = pen_x + face.ftface:getKerning(prevcharcode, charcode)
 			end

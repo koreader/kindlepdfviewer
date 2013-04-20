@@ -59,15 +59,15 @@ function DrawTitle(text, lmargin, y, height, color, font_face)
 
 	local t = BatteryLevel() .. os.date(" %H:%M")
 	r = sizeUtf8Text(0, G_width, font_face, t, true).x
-	renderUtf8Text(fb.bb, G_width-r-lmargin, height-10, font_face, t, true)
+	renderUtf8Text(fb.bb, G_width-r-lmargin, height-10, font_face, t, true, color/15, 1.0)
 
 	r = G_width - r - 2 * lmargin - 10 -- let's leave small gap
 	if sizeUtf8Text(0, G_width, font_face, text, true).x <= r then
-		renderUtf8Text(fb.bb, lmargin, height-10, font_face, text, true)
+		renderUtf8Text(fb.bb, lmargin, height-10, font_face, text, true, color/15, 1.0)
 	else
-		t = renderUtf8Text(fb.bb, lmargin, height-10, font_face, "...", true)
+		t = renderUtf8Text(fb.bb, lmargin, height-10, font_face, "...", true, color/15, 1.0)
 		text = getProperTitleLength(text, font_face, r-t)
-		renderUtf8Text(fb.bb, lmargin+t, height-10, font_face, text, true)
+		renderUtf8Text(fb.bb, lmargin+t, height-10, font_face, text, true, color/15, 1.0)
 	end
 end
 
