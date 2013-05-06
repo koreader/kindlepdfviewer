@@ -6,11 +6,35 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/koreader/koreader-base/issues\n"
-"POT-Creation-Date: 2013-04-10 00:43+0000\n"
+"POT-Creation-Date: 2013-05-06 06:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: keys.lua:109
+msgid ""
+"\n"
+"MOD_ALT = "
+msgstr ""
+
+#: keys.lua:111
+msgid ""
+"\n"
+"MOD_ANY = "
+msgstr ""
+
+#: keys.lua:112
+msgid ""
+"\n"
+"MOD_SHIFT_DISPLAY = "
+msgstr ""
+
+#: keys.lua:110
+msgid ""
+"\n"
+"MOD_SHIFT_OR_ALT = "
+msgstr ""
 
 #: reader.lua:66
 msgid ""
@@ -29,6 +53,21 @@ msgid ""
 " items)"
 msgstr ""
 
+#: rendertext.lua:146
+msgid ""
+" or uchar == "
+msgstr ""
+
+#: pdfreader.lua:90
+msgid ""
+"%d attachment(s) saved "
+msgstr ""
+
+#: crereader.lua:1012
+msgid ""
+"%d hits '%s' pos %d"
+msgstr ""
+
 #: unireader.lua:2374
 msgid ""
 "' not found in document "
@@ -39,9 +78,39 @@ msgid ""
 "' page "
 msgstr ""
 
+#: crereader.lua:1016
+msgid ""
+"'%s' not found in document "
+msgstr ""
+
 #: reader.lua:98
 msgid ""
 "(unknown version)"
+msgstr ""
+
+#: koptreader.lua:555
+msgid ""
+")\n"
+"	--Debug(\"loaded configurable:\", dump(self.configurable))\n"
+"	-- backup global variable that may be changed in koptreader\n"
+"	self.orig_globalzoom_mode = self.settings:readSetting(\"globalzoom_mode\") or -1\n"
+"	self.orig_dbackground_color = DBACKGROUND_COLOR\n"
+"	DBACKGROUND_COLOR = 0\n"
+"end\n"
+"\n"
+"function KOPTReader:saveSpecialSettings()\n"
+"	self.settings:saveSetting(\"kopt_offset_y\", self.offset_y)\n"
+"	self.configurable:saveSettings(self.settings, "
+msgstr ""
+
+#: koptreader.lua:221
+msgid ""
+").."
+msgstr ""
+
+#: inputbox.lua:216
+msgid ""
+",		"
 msgstr ""
 
 #: reader.lua:65
@@ -54,19 +123,157 @@ msgid ""
 "-h, --help                show this usage help"
 msgstr ""
 
+#: koptreader.lua:221
+msgid ""
+"..bbox.x0.."
+msgstr ""
+
+#: koptreader.lua:221
+msgid ""
+"..bbox.x1.."
+msgstr ""
+
+#: koptreader.lua:221
+msgid ""
+"..bbox.y0.."
+msgstr ""
+
+#: koptreader.lua:221
+msgid ""
+"..bbox.y1\n"
+"	Debug("
+msgstr ""
+
+#: rendertext.lua:51
+msgid ""
+"..bgcolor.."
+msgstr ""
+
+#: rendertext.lua:51
+msgid ""
+"..charcode.."
+msgstr ""
+
+#: rendertext.lua:51
+msgid ""
+"..fgcolor\n"
+"end\n"
+"\n"
+"function clearGlyphCache()\n"
+"	glyphcache = {}\n"
+"	glyphcache_current_memsize = 0\n"
+"end\n"
+"\n"
+"function sizeUtf8Text(x, width, face, text, kerning)\n"
+"	if not text then\n"
+"		Debug(\"sizeUtf8Text called without text\");\n"
+"		return\n"
+"	end\n"
+"\n"
+"	-- may still need more adaptive pen placement when kerning,\n"
+"	-- see: http://freetype.org/freetype2/docs/glyphs/glyphs-4.html\n"
+"	local pen_x = 0\n"
+"	local pen_y_top = 0\n"
+"	local pen_y_bottom = 0\n"
+"	local prevcharcode = 0\n"
+"	for uchar in string.gfind(text, \"([%z-W94-¤][\n"
+"8-91]*)\") do\n"
+"		if pen_x < (width - x) then\n"
+"			local charcode = util.utf8charcode(uchar)\n"
+"			local glyph = getGlyph(face, charcode)\n"
+"			if kerning and (prevcharcode ~= 0) then\n"
+"				pen_x = pen_x + face.ftface:getKerning(prevcharcode, charcode)\n"
+"			end\n"
+"			pen_x = pen_x + glyph.ax\n"
+"			pen_y_top = math.max(pen_y_top, glyph.t)\n"
+"			pen_y_bottom = math.max(pen_y_bottom, glyph.bb:getHeight() - glyph.t)\n"
+"			--Debug(\"ax:\"..glyph.ax..\" t:\"..glyph.t..\" r:\"..glyph.r..\" h:\"..glyph.bb:getHeight()..\" w:\"..glyph.bb:getWidth()..\" yt:\"..pen_y_top..\" yb:\"..pen_y_bottom)\n"
+"			prevcharcode = charcode\n"
+"		end  -- if pen_x < (width -x)\n"
+"	end -- for uchar\n"
+"\n"
+"	return { x = pen_x, y_top = pen_y_top, y_bottom = pen_y_bottom}\n"
+"end\n"
+"\n"
+"function renderUtf8Text(buffer, x, y, face, text, kerning, bgcolor, fgcolor)\n"
+"	if not text then\n"
+"		Debug(\"renderUtf8Text called without text\");\n"
+"		return 0\n"
+"	end\n"
+"\n"
+"	-- may still need more adaptive pen placement when kerning,\n"
+"	-- see: http://freetype.org/freetype2/docs/glyphs/glyphs-4.html\n"
+"	local pen_x = 0\n"
+"	local prevcharcode = 0\n"
+"	local buffer_width = buffer:getWidth()\n"
+"	for uchar in string.gfind(text, \"([%z-W94-¤][\n"
+"8-91]*)\") do\n"
+"		if pen_x < buffer_width then\n"
+"			local charcode = util.utf8charcode(uchar)\n"
+"			local glyph = getGlyph(face, charcode, bgcolor, fgcolor)\n"
+"			if kerning and (prevcharcode ~= 0) then\n"
+"				pen_x = pen_x + face.ftface:getKerning(prevcharcode, charcode)\n"
+"			end\n"
+"			buffer:addblitFrom(glyph.bb, x + pen_x + glyph.l, y - glyph.t, 0, 0, glyph.bb:getWidth(), glyph.bb:getHeight(), 1)\n"
+"			pen_x = pen_x + glyph.ax\n"
+"			prevcharcode = charcode\n"
+"		end -- if pen_x < buffer_width\n"
+"	end -- for uchar\n"
+"\n"
+"	return pen_x\n"
+"end\n"
+"\n"
+"-- render UTF8 text restricted by width "
+msgstr ""
+
+#: unireader.lua:1130
+msgid ""
+"..self.globalgamma\n"
+"	if self.cache[pagehash] ~= nil then\n"
+"		-- we have something in cache, check if it contains the requested part\n"
+"		if self.cache[pagehash].x <= offset_x_in_page\n"
+"			and self.cache[pagehash].y <= offset_y_in_page\n"
+"			and ( self.cache[pagehash].x + self.cache[pagehash].w >= offset_x_in_page + width\n"
+"				or self.cache[pagehash].w >= self.fullwidth - 1)\n"
+"			and ( self.cache[pagehash].y + self.cache[pagehash].h >= offset_y_in_page + height\n"
+"				or self.cache[pagehash].h >= self.fullheight - 1)\n"
+"		then\n"
+"			-- requested part is within cached tile\n"
+"			-- ...so properly clean page\n"
+"			page:close()\n"
+"			-- ...and give it more time to live (ttl), except if we"
+msgstr ""
+
+#: unireader.lua:1130
+msgid ""
+"..self.globalrotate.."
+msgstr ""
+
+#: unireader.lua:1130
+msgid ""
+"..self.globalzoom.."
+msgstr ""
+
 #: unireader.lua:2932
 msgid ""
 "Align the viewport to "
 msgstr ""
 
+#: crereader.lua:846
 #: unireader.lua:2695
 msgid ""
 "Already first jump "
 msgstr ""
 
+#: crereader.lua:858
 #: unireader.lua:2712
 msgid ""
 "Already last jump "
+msgstr ""
+
+#: djvureader.lua:63
+msgid ""
+"BLACK & WHITE (for b&w pages only, much faster)"
 msgstr ""
 
 #: unireader.lua:2827
@@ -74,11 +281,13 @@ msgid ""
 "Battery logging "
 msgstr ""
 
+#: crereader.lua:814
 #: unireader.lua:2848
 msgid ""
 "Bookmark added"
 msgstr ""
 
+#: crereader.lua:812
 #: unireader.lua:2846
 msgid ""
 "Bookmark already exists"
@@ -89,9 +298,84 @@ msgid ""
 "Bookmarks ("
 msgstr ""
 
+#: crereader.lua:432
+msgid ""
+"Bookmarks (%d) items"
+msgstr ""
+
+#: djvureader.lua:61
+msgid ""
+"COLOUR (works for both colour and b&w pages)"
+msgstr ""
+
+#: djvureader.lua:69
+msgid ""
+"COLOUR BACKGROUND (show only background)"
+msgstr ""
+
+#: djvureader.lua:71
+msgid ""
+"COLOUR FOREGROUND (show only foreground)"
+msgstr ""
+
+#: djvureader.lua:65
+msgid ""
+"COLOUR ONLY (slightly faster than COLOUR)"
+msgstr ""
+
+#: crereader.lua:800
+msgid ""
+"Changing font-weight..."
+msgstr ""
+
+#: crereader.lua:873
+msgid ""
+"Changing gamma to %d. "
+msgstr ""
+
+#: crereader.lua:690
+msgid ""
+"Changing line space to %d%% "
+msgstr ""
+
+#: crereader.lua:906
+msgid ""
+"Changing to %s mode..."
+msgstr ""
+
+#: crereader.lua:945
+msgid ""
+"Clearing external styles"
+msgstr ""
+
 #: unireader.lua:2158
 msgid ""
 "Current Page "
+msgstr ""
+
+#: crereader.lua:368
+msgid ""
+"Current Page %d"
+msgstr ""
+
+#: crereader.lua:794
+msgid ""
+"Default document font applied "
+msgstr ""
+
+#: crereader.lua:975
+msgid ""
+"Embedded style off."
+msgstr ""
+
+#: crereader.lua:971
+msgid ""
+"Embedded style on."
+msgstr ""
+
+#: crereader.lua:114
+msgid ""
+"Error opening cre-document. "
 msgstr ""
 
 #: reader.lua:54
@@ -99,9 +383,24 @@ msgid ""
 "Error opening document "
 msgstr ""
 
+#: crereader.lua:92
+msgid ""
+"Error unzipping file. "
+msgstr ""
+
 #: unireader.lua:2113
 msgid ""
 "External links unsupported "
+msgstr ""
+
+#: crereader.lua:935
+msgid ""
+"External stylesheet"
+msgstr ""
+
+#: pdfreader.lua:94
+msgid ""
+"Failed to save attachments "
 msgstr ""
 
 #: unireader.lua:2740
@@ -154,9 +453,31 @@ msgid ""
 "Fit zoom to page width"
 msgstr ""
 
+#: crereader.lua:751
+msgid ""
+"Formatting with %s"
+msgstr ""
+
+#: crereader.lua:779
+msgid ""
+"Formatting with %s \", face_list[item_no])),\n"
+"					DINFO_NODELAY, 1, MSG_AUX)\n"
+"				self.header_font = face_list[item_no]\n"
+"				G_reader_settings:saveSetting(\"header_font\", self.header_font)\n"
+"				self.doc:setHeaderFont(self.header_font)\n"
+"			end\n"
+"			self.toc = nil\n"
+"			self:goto(prev_xpointer, nil, \"xpointer"
+msgstr ""
+
 #: unireader.lua:2962
 msgid ""
 "Full refresh every N pages (0-200)"
+msgstr ""
+
+#: crereader.lua:770
+msgid ""
+"Header Font "
 msgstr ""
 
 #: unireader.lua:2264
@@ -174,9 +495,20 @@ msgid ""
 "If you give the name of a directory instead of a file path, a file"
 msgstr ""
 
+#: crereader.lua:372
 #: unireader.lua:2162
 msgid ""
 "Jump History"
+msgstr ""
+
+#: crereader.lua:820
+msgid ""
+"Jump between bookmarks"
+msgstr ""
+
+#: djvureader.lua:67
+msgid ""
+"MASK ONLY (for b&w pages only)"
 msgstr ""
 
 #: unireader.lua:3021
@@ -236,6 +568,11 @@ msgid ""
 "New gamma is"
 msgstr ""
 
+#: unireader.lua:3682
+msgid ""
+"New page bbox "
+msgstr ""
+
 #: unireader.lua:2647
 msgid ""
 "New zoom is"
@@ -252,10 +589,21 @@ msgid ""
 "No HighLights found "
 msgstr ""
 
+#: crereader.lua:478
 #: unireader.lua:2094
 #: unireader.lua:2573
 msgid ""
 "No Table of Contents "
+msgstr ""
+
+#: pdfreader.lua:88
+msgid ""
+"No attachments found "
+msgstr ""
+
+#: crereader.lua:428
+msgid ""
+"No bookmark found "
 msgstr ""
 
 #: unireader.lua:2191
@@ -263,6 +611,7 @@ msgid ""
 "No bookmarks found "
 msgstr ""
 
+#: crereader.lua:363
 #: unireader.lua:2153
 msgid ""
 "No jump history found "
@@ -278,6 +627,16 @@ msgid ""
 "No text available "
 msgstr ""
 
+#: unireader.lua:407
+msgid ""
+"No visible text "
+msgstr ""
+
+#: djvureader.lua:27
+msgid ""
+"Not a valid DjVu file"
+msgstr ""
+
 #: reader.lua:36
 msgid ""
 "Opening document... "
@@ -286,6 +645,11 @@ msgstr ""
 #: unireader.lua:2807
 msgid ""
 "Page:"
+msgstr ""
+
+#: crereader.lua:717
+msgid ""
+"Position in percent:"
 msgstr ""
 
 #: reader.lua:63
@@ -308,9 +672,19 @@ msgid ""
 "Right-To-Left mode "
 msgstr ""
 
+#: pdfreader.lua:80
+msgid ""
+"Saving attachments..."
+msgstr ""
+
 #: reader.lua:75
 msgid ""
 "See http://github.com/koreader/kindlepdfviewer for more info."
+msgstr ""
+
+#: djvureader.lua:58
+msgid ""
+"Select DjVu page rendering mode"
 msgstr ""
 
 #: unireader.lua:2749
@@ -318,9 +692,19 @@ msgid ""
 "Select mode to zoom pages"
 msgstr ""
 
+#: crereader.lua:951
+msgid ""
+"Style change to %s "
+msgstr ""
+
 #: unireader.lua:2101
 msgid ""
 "Table of Contents ("
+msgstr ""
+
+#: crereader.lua:742
+msgid ""
+"Text Font"
 msgstr ""
 
 #: reader.lua:74
@@ -328,11 +712,17 @@ msgid ""
 "This software is licensed under the GPLv3."
 msgstr ""
 
+#: crereader.lua:96
+msgid ""
+"Zip contains improper content. "
+msgstr ""
+
 #: unireader.lua:2736
 msgid ""
 "Zoom by value"
 msgstr ""
 
+#: crereader.lua:808
 #: unireader.lua:2842
 msgid ""
 "add bookmark to current page"
@@ -343,9 +733,29 @@ msgid ""
 "bottom"
 msgstr ""
 
+#: crereader.lua:733
+msgid ""
+"change document font"
+msgstr ""
+
+#: crereader.lua:761
+msgid ""
+"change header font"
+msgstr ""
+
+#: crereader.lua:914
+msgid ""
+"change render style"
+msgstr ""
+
 #: reader.lua:70
 msgid ""
 "chooser will show up and let you select a PDF|DJVU file"
+msgstr ""
+
+#: crereader.lua:916
+msgid ""
+"clear external styles"
 msgstr ""
 
 #: unireader.lua:2946
@@ -366,6 +776,21 @@ msgstr ""
 #: unireader.lua:2807
 msgid ""
 "current page "
+msgstr ""
+
+#: crereader.lua:717
+msgid ""
+"current: "
+msgstr ""
+
+#: pdfreader.lua:31
+msgid ""
+"damaged page tree"
+msgstr ""
+
+#: crereader.lua:864
+msgid ""
+"decrease/increase gamma"
 msgstr ""
 
 #: unireader.lua:2716
@@ -393,11 +818,13 @@ msgid ""
 "enter highlight mode"
 msgstr ""
 
+#: crereader.lua:831
 #: unireader.lua:2678
 msgid ""
 "go backward in jump history"
 msgstr ""
 
+#: crereader.lua:851
 #: unireader.lua:2699
 msgid ""
 "go forward in jump history"
@@ -423,6 +850,16 @@ msgid ""
 "increase/decrease Y-panning step"
 msgstr ""
 
+#: crereader.lua:660
+msgid ""
+"increase/decrease font size"
+msgstr ""
+
+#: crereader.lua:680
+msgid ""
+"increase/decrease line spacing"
+msgstr ""
+
 #: unireader.lua:3026
 msgid ""
 "invert page bbox"
@@ -433,6 +870,7 @@ msgid ""
 "jump between bookmarks"
 msgstr ""
 
+#: crereader.lua:703
 #: unireader.lua:2724
 msgid ""
 "jump to 0%, 10% .. 90%, 100% of document"
@@ -468,9 +906,24 @@ msgid ""
 "on "
 msgstr ""
 
+#: crereader.lua:713
+msgid ""
+"open 'go to position' input box"
+msgstr ""
+
 #: unireader.lua:3338
 msgid ""
 "page links shortcut keys"
+msgstr ""
+
+#: crereader.lua:887
+msgid ""
+"pan %d pixels downwards"
+msgstr ""
+
+#: crereader.lua:879
+msgid ""
+"pan %d pixels upwards"
 msgstr ""
 
 #: unireader.lua:3053
@@ -513,9 +966,39 @@ msgid ""
 "rotate screen 90Â° counterclockwise"
 msgstr ""
 
+#: crereader.lua:608
+msgid ""
+"rotate screen clockwise"
+msgstr ""
+
+#: crereader.lua:600
+msgid ""
+"rotate screen counterclockwise"
+msgstr ""
+
+#: pdfreader.lua:71
+msgid ""
+"save all attachments on this page"
+msgstr ""
+
+#: crereader.lua:639
+msgid ""
+"scroll %s pages backwards/forward"
+msgstr ""
+
+#: crereader.lua:617
+msgid ""
+"scroll to previous/next chapter"
+msgstr ""
+
 #: unireader.lua:3314
 msgid ""
 "search and highlight text"
+msgstr ""
+
+#: djvureader.lua:47
+msgid ""
+"select djvu page rendering mode"
 msgstr ""
 
 #: unireader.lua:2991
@@ -568,6 +1051,16 @@ msgid ""
 "toggle crop mode"
 msgstr ""
 
+#: crereader.lua:965
+msgid ""
+"toggle embedded stylesheet"
+msgstr ""
+
+#: crereader.lua:798
+msgid ""
+"toggle font-weight: bold <> normal"
+msgstr ""
+
 #: unireader.lua:3041
 msgid ""
 "toggle info box"
@@ -588,6 +1081,11 @@ msgid ""
 "toggle showing page overlap areas"
 msgstr ""
 
+#: crereader.lua:895
+msgid ""
+"toggle view mode"
+msgstr ""
+
 #: unireader.lua:2932
 msgid ""
 "top "
@@ -596,6 +1094,16 @@ msgstr ""
 #: reader.lua:62
 msgid ""
 "usage: ./reader.lua [OPTION] ... path"
+msgstr ""
+
+#: crereader.lua:790
+msgid ""
+"use document font as default font"
+msgstr ""
+
+#: pdfreader.lua:22
+msgid ""
+"wrong or missing password"
 msgstr ""
 
 #: unireader.lua:2643
