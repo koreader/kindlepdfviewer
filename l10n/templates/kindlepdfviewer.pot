@@ -6,35 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/koreader/koreader-base/issues\n"
-"POT-Creation-Date: 2013-05-06 06:36+0000\n"
+"POT-Creation-Date: 2013-05-06 06:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: keys.lua:109
-msgid ""
-"\n"
-"MOD_ALT = "
-msgstr ""
-
-#: keys.lua:111
-msgid ""
-"\n"
-"MOD_ANY = "
-msgstr ""
-
-#: keys.lua:112
-msgid ""
-"\n"
-"MOD_SHIFT_DISPLAY = "
-msgstr ""
-
-#: keys.lua:110
-msgid ""
-"\n"
-"MOD_SHIFT_OR_ALT = "
-msgstr ""
 
 #: reader.lua:66
 msgid ""
@@ -51,11 +27,6 @@ msgstr ""
 #: unireader.lua:2264
 msgid ""
 " items)"
-msgstr ""
-
-#: rendertext.lua:146
-msgid ""
-" or uchar == "
 msgstr ""
 
 #: pdfreader.lua:90
@@ -88,31 +59,6 @@ msgid ""
 "(unknown version)"
 msgstr ""
 
-#: koptreader.lua:555
-msgid ""
-")\n"
-"	--Debug(\"loaded configurable:\", dump(self.configurable))\n"
-"	-- backup global variable that may be changed in koptreader\n"
-"	self.orig_globalzoom_mode = self.settings:readSetting(\"globalzoom_mode\") or -1\n"
-"	self.orig_dbackground_color = DBACKGROUND_COLOR\n"
-"	DBACKGROUND_COLOR = 0\n"
-"end\n"
-"\n"
-"function KOPTReader:saveSpecialSettings()\n"
-"	self.settings:saveSetting(\"kopt_offset_y\", self.offset_y)\n"
-"	self.configurable:saveSettings(self.settings, "
-msgstr ""
-
-#: koptreader.lua:221
-msgid ""
-").."
-msgstr ""
-
-#: inputbox.lua:216
-msgid ""
-",		"
-msgstr ""
-
 #: reader.lua:65
 msgid ""
 "-d, --debug               start in debug mode"
@@ -121,137 +67,6 @@ msgstr ""
 #: reader.lua:67
 msgid ""
 "-h, --help                show this usage help"
-msgstr ""
-
-#: koptreader.lua:221
-msgid ""
-"..bbox.x0.."
-msgstr ""
-
-#: koptreader.lua:221
-msgid ""
-"..bbox.x1.."
-msgstr ""
-
-#: koptreader.lua:221
-msgid ""
-"..bbox.y0.."
-msgstr ""
-
-#: koptreader.lua:221
-msgid ""
-"..bbox.y1\n"
-"	Debug("
-msgstr ""
-
-#: rendertext.lua:51
-msgid ""
-"..bgcolor.."
-msgstr ""
-
-#: rendertext.lua:51
-msgid ""
-"..charcode.."
-msgstr ""
-
-#: rendertext.lua:51
-msgid ""
-"..fgcolor\n"
-"end\n"
-"\n"
-"function clearGlyphCache()\n"
-"	glyphcache = {}\n"
-"	glyphcache_current_memsize = 0\n"
-"end\n"
-"\n"
-"function sizeUtf8Text(x, width, face, text, kerning)\n"
-"	if not text then\n"
-"		Debug(\"sizeUtf8Text called without text\");\n"
-"		return\n"
-"	end\n"
-"\n"
-"	-- may still need more adaptive pen placement when kerning,\n"
-"	-- see: http://freetype.org/freetype2/docs/glyphs/glyphs-4.html\n"
-"	local pen_x = 0\n"
-"	local pen_y_top = 0\n"
-"	local pen_y_bottom = 0\n"
-"	local prevcharcode = 0\n"
-"	for uchar in string.gfind(text, \"([%z-W94-¤][\n"
-"8-91]*)\") do\n"
-"		if pen_x < (width - x) then\n"
-"			local charcode = util.utf8charcode(uchar)\n"
-"			local glyph = getGlyph(face, charcode)\n"
-"			if kerning and (prevcharcode ~= 0) then\n"
-"				pen_x = pen_x + face.ftface:getKerning(prevcharcode, charcode)\n"
-"			end\n"
-"			pen_x = pen_x + glyph.ax\n"
-"			pen_y_top = math.max(pen_y_top, glyph.t)\n"
-"			pen_y_bottom = math.max(pen_y_bottom, glyph.bb:getHeight() - glyph.t)\n"
-"			--Debug(\"ax:\"..glyph.ax..\" t:\"..glyph.t..\" r:\"..glyph.r..\" h:\"..glyph.bb:getHeight()..\" w:\"..glyph.bb:getWidth()..\" yt:\"..pen_y_top..\" yb:\"..pen_y_bottom)\n"
-"			prevcharcode = charcode\n"
-"		end  -- if pen_x < (width -x)\n"
-"	end -- for uchar\n"
-"\n"
-"	return { x = pen_x, y_top = pen_y_top, y_bottom = pen_y_bottom}\n"
-"end\n"
-"\n"
-"function renderUtf8Text(buffer, x, y, face, text, kerning, bgcolor, fgcolor)\n"
-"	if not text then\n"
-"		Debug(\"renderUtf8Text called without text\");\n"
-"		return 0\n"
-"	end\n"
-"\n"
-"	-- may still need more adaptive pen placement when kerning,\n"
-"	-- see: http://freetype.org/freetype2/docs/glyphs/glyphs-4.html\n"
-"	local pen_x = 0\n"
-"	local prevcharcode = 0\n"
-"	local buffer_width = buffer:getWidth()\n"
-"	for uchar in string.gfind(text, \"([%z-W94-¤][\n"
-"8-91]*)\") do\n"
-"		if pen_x < buffer_width then\n"
-"			local charcode = util.utf8charcode(uchar)\n"
-"			local glyph = getGlyph(face, charcode, bgcolor, fgcolor)\n"
-"			if kerning and (prevcharcode ~= 0) then\n"
-"				pen_x = pen_x + face.ftface:getKerning(prevcharcode, charcode)\n"
-"			end\n"
-"			buffer:addblitFrom(glyph.bb, x + pen_x + glyph.l, y - glyph.t, 0, 0, glyph.bb:getWidth(), glyph.bb:getHeight(), 1)\n"
-"			pen_x = pen_x + glyph.ax\n"
-"			prevcharcode = charcode\n"
-"		end -- if pen_x < buffer_width\n"
-"	end -- for uchar\n"
-"\n"
-"	return pen_x\n"
-"end\n"
-"\n"
-"-- render UTF8 text restricted by width "
-msgstr ""
-
-#: unireader.lua:1130
-msgid ""
-"..self.globalgamma\n"
-"	if self.cache[pagehash] ~= nil then\n"
-"		-- we have something in cache, check if it contains the requested part\n"
-"		if self.cache[pagehash].x <= offset_x_in_page\n"
-"			and self.cache[pagehash].y <= offset_y_in_page\n"
-"			and ( self.cache[pagehash].x + self.cache[pagehash].w >= offset_x_in_page + width\n"
-"				or self.cache[pagehash].w >= self.fullwidth - 1)\n"
-"			and ( self.cache[pagehash].y + self.cache[pagehash].h >= offset_y_in_page + height\n"
-"				or self.cache[pagehash].h >= self.fullheight - 1)\n"
-"		then\n"
-"			-- requested part is within cached tile\n"
-"			-- ...so properly clean page\n"
-"			page:close()\n"
-"			-- ...and give it more time to live (ttl), except if we"
-msgstr ""
-
-#: unireader.lua:1130
-msgid ""
-"..self.globalrotate.."
-msgstr ""
-
-#: unireader.lua:1130
-msgid ""
-"..self.globalzoom.."
 msgstr ""
 
 #: unireader.lua:2932
