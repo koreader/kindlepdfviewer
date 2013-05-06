@@ -404,7 +404,7 @@ function UniReader:startHighLightMode()
 			end
 		end
 
-		InfoMessage:inform("No visible text ", DINFO_DELAY, 1, MSG_WARN);
+		InfoMessage:inform(_("No visible text "), DINFO_DELAY, 1, MSG_WARN);
 		Debug("_findFirstWordInView none found in", t)
 
 		return nil
@@ -3679,7 +3679,7 @@ function UniReader:modBBox()
 	x,y,w,h = self:getRectInScreen( new_bbox["x0"], new_bbox["y0"], new_bbox["x1"], new_bbox["y1"] )
 	fb.bb:invertRect( x,y, w,h )
 	--fb.bb:invertRect( x+1,y+1, w-2,h-2 ) -- just border?
-	InfoMessage:inform("New page bbox ", DINFO_DELAY, 1, MSG_WARN, "New page bounding box")
+	InfoMessage:inform(_("New page bbox "), DINFO_DELAY, 1, MSG_WARN, "New page bounding box")
 	self:redrawCurrentPage()
 
 	self.rcount = self.rcountmax -- force next full refresh

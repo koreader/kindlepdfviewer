@@ -89,11 +89,11 @@ function CREReader:open(filename)
 		file_type = self:ZipContentExt(filename)
 	end
 	if not file_type then
-		return false, "Error unzipping file. "
+		return false, _("Error unzipping file. ")
 	end
 	-- if the zip entry is not cre-document
 	if ReaderChooser:getReaderByType(file_type) ~= CREReader then
-		return false, "Zip contains improper content. "
+		return false, _("Zip contains improper content. ")
 	end
 	-- these two format use the same css file
 	if file_type == "html" then
@@ -111,7 +111,7 @@ function CREReader:open(filename)
 	end
 	ok, self.doc = pcall(cre.newDocView, G_width, G_height, view_mode)
 	if not ok then
-		return false, "Error opening cre-document. " -- self.doc, will contain error message
+		return false, _("Error opening cre-document. ") -- self.doc, will contain error message
 	end
 	self.doc:setHeaderFont(self.header_font)
 	self.filename = filename
@@ -360,16 +360,16 @@ function CREReader:showJumpHist()
 	end
 
 	if #menu_items == 0 then
-		InfoMessage:inform("No jump history found ", DINFO_DELAY, 1, MSG_WARN)
+		InfoMessage:inform(_("No jump history found "), DINFO_DELAY, 1, MSG_WARN)
 	else
 		-- if cur points to head, draw entry for current page
 		if self.jump_history.cur > #self.jump_history then
 			table.insert(menu_items,
-				"Current Page "..self.pageno)
+				string.format(_("Current Page %d"), self.pageno))
 		end
 
 		jump_menu = SelectMenu:new{
-			menu_title = "Jump History",
+			menu_title = _("Jump History"),
 			item_array = menu_items,
 		}
 		item_no = jump_menu:choose(0, G_height)
@@ -425,11 +425,11 @@ function CREReader:showBookMarks()
 			.." "..v.notes.." @ "..v.datetime)
 	end
 	if #menu_items == 0 then
-		return InfoMessage:inform("No bookmark found ", DINFO_DELAY, 1, MSG_WARN)
+		return InfoMessage:inform(_("No bookmark found "), DINFO_DELAY, 1, MSG_WARN)
 	end
 	while true do
 		local bkmk_menu = SelectMenu:new{
-			menu_title = "Bookmarks ("..tostring(#menu_items).." items)",
+			menu_title = string.format(_("Bookmarks (%d) items"), #menu_items),
 			item_array = menu_items,
 			deletable = true,
 		}
@@ -475,7 +475,7 @@ function CREReader:gotoPrevNextTocEntry(direction)
 		self:fillToc()
 	end
 	if #self.toc == 0 then
-		InfoMessage:inform("No Table of Contents ", DINFO_DELAY, 1, MSG_WARN)
+		InfoMessage:inform(_("No Table of Contents "), DINFO_DELAY, 1, MSG_WARN)
 		return
 	end
 	-- search for current TOC-entry
@@ -597,7 +597,7 @@ function CREReader:adjustCreReaderCommands()
 
 	-- CCW-rotation
 	self.commands:add(KEY_K, nil, "K",
-		"rotate screen counterclockwise",
+		_("rotate screen counterclockwise"),
 		function(self)
 			self:screenRotate("anticlockwise")
 			self.toc = nil
@@ -605,7 +605,7 @@ function CREReader:adjustCreReaderCommands()
 	)
 	-- CW-rotation
 	self.commands:add(KEY_J, nil, "J",
-		"rotate screen clockwise",
+		_("rotate screen clockwise"),
 		function(self)
 			self:screenRotate("clockwise")
 			self.toc = nil
@@ -614,7 +614,7 @@ function CREReader:adjustCreReaderCommands()
 	-- navigate between chapters by Shift+Up & Shift-Down
 	self.commands:addGroup(MOD_SHIFT.."up/down",{
 		Keydef:new(KEY_FW_UP,MOD_SHIFT), Keydef:new(KEY_FW_DOWN,MOD_SHIFT)},
-		"scroll to previous/next chapter",
+		_("scroll to previous/next chapter"),
 		function(self)
 				if keydef.keycode == KEY_FW_UP then
 					local toc_no = -1
@@ -636,7 +636,7 @@ function CREReader:adjustCreReaderCommands()
 	local scrollpages = 10
 	self.commands:addGroup(MOD_SHIFT.."left/right",
 		{Keydef:new(KEY_FW_LEFT,MOD_SHIFT),Keydef:new(KEY_FW_RIGHT,MOD_SHIFT)},
-		"scroll "..scrollpages.." pages backwards/forward",
+		string.format(_("scroll %s pages backwards/forward"), scrollpages),
 		function(self)
 			if self.view_mode == "scroll" then
 				if keydef.keycode == KEY_FW_LEFT then
@@ -657,7 +657,7 @@ function CREReader:adjustCreReaderCommands()
 	self.commands:addGroup(MOD_SHIFT.."< >",{
 		Keydef:new(KEY_PGBCK,MOD_SHIFT),Keydef:new(KEY_PGFWD,MOD_SHIFT),
 		Keydef:new(KEY_LPGBCK,MOD_SHIFT),Keydef:new(KEY_LPGFWD,MOD_SHIFT)},
-		"increase/decrease font size",
+		_("increase/decrease font size"),
 		function(self)
 			local delta = 1
 			local change = "Increasing"
@@ -677,7 +677,7 @@ function CREReader:adjustCreReaderCommands()
 	self.commands:addGroup(MOD_ALT.."< >",{
 		Keydef:new(KEY_PGBCK,MOD_ALT),Keydef:new(KEY_PGFWD,MOD_ALT),
 		Keydef:new(KEY_LPGBCK,MOD_ALT),Keydef:new(KEY_LPGFWD,MOD_ALT)},
-		"increase/decrease line spacing",
+		_("increase/decrease line spacing"),
 		function(self)
 			if keydef.keycode == KEY_PGBCK or keydef.keycode == KEY_LPGBCK then
 				self.line_space_percent = self.line_space_percent - 10
@@ -686,8 +686,9 @@ function CREReader:adjustCreReaderCommands()
 				self.line_space_percent = self.line_space_percent + 10
 				self.line_space_percent = math.min(self.line_space_percent, 200)
 			end
-			InfoMessage:inform("Changing line space to "..self.line_space_percent.."% ", DINFO_NODELAY, 1, MSG_AUX)
-			Debug("line spacing set to", self.line_space_percent)
+			InfoMessage:inform(
+				string.format(_("Changing line space to %d%% "), self.line_space_percent),
+				DINFO_NODELAY, 1, MSG_AUX)
 			local prev_xpointer = self.doc:getXPointer()
 			self.doc:setDefaultInterlineSpace(self.line_space_percent)
 			self.toc = nil
@@ -699,11 +700,8 @@ function CREReader:adjustCreReaderCommands()
 		numeric_keydefs[i]=Keydef:new(KEY_1+i-1, nil, tostring(i%10))
 	end
 	self.commands:addGroup("[1, 2 .. 9, 0]",numeric_keydefs,
-		"jump to 0%, 10% .. 90%, 100% of document",
+		_("jump to 0%, 10% .. 90%, 100% of document"),
 		function(self, keydef)
-			Debug('jump to position: '..
-				math.floor(self.doc:getFullHeight()*(keydef.keycode-KEY_1)/9)..
-				'/'..self.doc:getFullHeight())
 			if self.view_mode == "scroll" then
 				self:goto(math.floor(self.doc:getFullHeight()*(keydef.keycode-KEY_1)/9))
 			else
@@ -712,11 +710,11 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_G,nil,"G",
-		"open 'go to position' input box",
+		_("open 'go to position' input box"),
 		function(unireader)
 			local height = self.doc:getFullHeight()
 			local position = NumInputBox:input(G_height-100, 100,
-				"Position in percent:", "current: "..math.floor((self.pos / height)*100), true)
+				_("Position in percent:"), _("current: ")..math.floor((self.pos / height)*100), true)
 			-- convert string to number
 			if position and pcall(function () position = position + 0 end) then
 				if position >= 0 and position <= 100 then
@@ -732,7 +730,7 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_F, nil, "F",
-		"change document font",
+		_("change document font"),
 		function(self)
 			local face_list = cre.getFontFaces()
 			-- define the current font in face_list
@@ -741,7 +739,7 @@ function CREReader:adjustCreReaderCommands()
 				item_no = item_no + 1
 			end
 			local fonts_menu = SelectMenu:new{
-				menu_title = "Text Font",
+				menu_title = _("Text Font"),
 				item_array = face_list,
 				current_entry = item_no - 1,
 			}
@@ -749,7 +747,9 @@ function CREReader:adjustCreReaderCommands()
 			local prev_xpointer = self.doc:getXPointer()
 			if item_no then
 				Debug(face_list[item_no])
-				InfoMessage:inform("Formatting with "..face_list[item_no].." ", DINFO_NODELAY, 1, MSG_AUX)
+				InfoMessage:inform(
+					string.format(_("Formatting with %s" ), face_list[item_no]),
+					DINFO_NODELAY, 1, MSG_AUX)
 				self.doc:setFontFace(face_list[item_no])
 				self.font_face = face_list[item_no]
 			end
@@ -758,7 +758,7 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_H, MOD_SHIFT, "H",
-		"change header font",
+		_("change header font"),
 		function(self)
 			local face_list = cre.getFontFaces()
 			-- define the current font in face_list
@@ -767,7 +767,7 @@ function CREReader:adjustCreReaderCommands()
 				item_no = item_no + 1
 			end
 			local fonts_menu = SelectMenu:new{
-				menu_title = "Header Font ",
+				menu_title = _("Header Font "),
 				item_array = face_list,
 				current_entry = item_no - 1,
 			}
@@ -775,7 +775,9 @@ function CREReader:adjustCreReaderCommands()
 			local prev_xpointer = self.doc:getXPointer()
 			if item_no then
 				Debug(face_list[item_no])
-				InfoMessage:inform("Formatting with "..face_list[item_no].." ", DINFO_NODELAY, 1, MSG_AUX)
+				InfoMessage:inform(
+					string.format(_("Formatting with %s ", face_list[item_no])),
+					DINFO_NODELAY, 1, MSG_AUX)
 				self.header_font = face_list[item_no]
 				G_reader_settings:saveSetting("header_font", self.header_font)
 				self.doc:setHeaderFont(self.header_font)
@@ -785,17 +787,17 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_F, MOD_SHIFT, "F",
-		"use document font as default font",
+		_("use document font as default font"),
 		function(self)
 			self.default_font = self.font_face
 			G_reader_settings:saveSetting("cre_font", self.font_face)
-			InfoMessage:inform("Default document font set ", DINFO_DELAY, 1, MSG_WARN)
+			InfoMessage:inform(_("Default document font applied "), DINFO_DELAY, 1, MSG_WARN)
 		end
 	)
 	self.commands:add(KEY_F, MOD_ALT, "F",
-		"toggle font-weight: bold <> normal",
+		_("toggle font-weight: bold <> normal"),
 		function(self)
-			InfoMessage:inform("Changing font-weight...", DINFO_NODELAY, 1, MSG_AUX)
+			InfoMessage:inform(_("Changing font-weight..."), DINFO_NODELAY, 1, MSG_AUX)
 			local prev_xpointer = self.doc:getXPointer()
 			self.doc:toggleFontBolder()
 			self.toc = nil
@@ -803,19 +805,19 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_B, MOD_ALT, "B",
-		"add bookmark to current page",
+		_("add bookmark to current page"),
 		function(self)
 			ok = self:addBookmark(self.doc:getXPointer())
 			if not ok then
-				InfoMessage:drawTopMsg("Bookmark already exists")
+				InfoMessage:drawTopMsg(_("Bookmark already exists"))
 			else
-				InfoMessage:drawTopMsg("Bookmark added")
+				InfoMessage:drawTopMsg(_("Bookmark added"))
 			end
 		end
 	)
 	self.commands:addGroup(MOD_ALT.."K/L",{
 		Keydef:new(KEY_K,MOD_ALT), Keydef:new(KEY_L,MOD_ALT)},
-		"Jump between bookmarks",
+		_("Jump between bookmarks"),
 		function(unireader,keydef)
 			local bm = nil
 			if keydef.keycode == KEY_K then
@@ -826,7 +828,7 @@ function CREReader:adjustCreReaderCommands()
 			if bm then self:goto(bm.page, true, "xpointer") end
 		end)
 	self.commands:add(KEY_BACK, nil, "Back",
-		"go backward in jump history",
+		_("go backward in jump history"),
 		function(self)
 			local prev_jump_no = 0
 			if self.jump_history.cur > #self.jump_history then
@@ -841,25 +843,25 @@ function CREReader:adjustCreReaderCommands()
 				self.jump_history.cur = prev_jump_no
 				self:goto(self.jump_history[prev_jump_no].page, true, "xpointer")
 			else
-				InfoMessage:inform("Already first jump ", DINFO_DELAY, 1, MSG_WARN)
+				InfoMessage:inform(_("Already first jump "), DINFO_DELAY, 1, MSG_WARN)
 			end
 		end
 	)
 	self.commands:add(KEY_BACK, MOD_SHIFT, "Back",
-		"go forward in jump history",
+		_("go forward in jump history"),
 		function(self)
 			local next_jump_no = self.jump_history.cur + 1
 			if next_jump_no <= #self.jump_history then
 				self.jump_history.cur = next_jump_no
 				self:goto(self.jump_history[next_jump_no].page, true, "xpointer")
 			else
-				InfoMessage:inform("Already last jump ", DINFO_DELAY, 1, MSG_WARN)
+				InfoMessage:inform(_("Already last jump "), DINFO_DELAY, 1, MSG_WARN)
 			end
 		end
 	)
 	self.commands:addGroup("vol-/+",
 		{Keydef:new(KEY_VPLUS,nil), Keydef:new(KEY_VMINUS,nil)},
-		"decrease/increase gamma",
+		_("decrease/increase gamma"),
 		function(self, keydef)
 			local delta = 1
 			if keydef.keycode == KEY_VMINUS then
@@ -867,12 +869,14 @@ function CREReader:adjustCreReaderCommands()
 			end
 			cre.setGammaIndex(self.gamma_index+delta)
 			self.gamma_index = cre.getGammaIndex()
-			InfoMessage:inform("Changing gamma to "..self.gamma_index..". ", DINFO_NODELAY, 1, MSG_AUX)
+			InfoMessage:inform(
+				string.format(_("Changing gamma to %d. "), self.gamma_index),
+				DINFO_NODELAY, 1, MSG_AUX)
 			self:redrawCurrentPage()
 		end
 	)
 	self.commands:add(KEY_FW_UP, nil, "joypad up",
-		"pan "..self.shift_y.." pixels upwards",
+		string.format(_("pan %d pixels upwards"), self.shift_y),
 		function(self)
 			if self.view_mode == "scroll" then
 				self:goto(self.pos - self.shift_y)
@@ -880,7 +884,7 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_FW_DOWN, nil, "joypad down",
-		"pan "..self.shift_y.." pixels downwards",
+		string.format(_("pan %d pixels downwards"), self.shift_y),
 		function(self)
 			if self.view_mode == "scroll" then
 				self:goto(self.pos + self.shift_y)
@@ -888,7 +892,7 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_V, nil, "V",
-		"toggle view mode",
+		_("toggle view mode"),
 		function(self)
 			local view_mode_code = self.PAGE_VIEW_MODE
 			if self.view_mode == "page" then
@@ -898,16 +902,18 @@ function CREReader:adjustCreReaderCommands()
 				self.view_mode = "page"
 			end
 			self.settings:saveSetting("view_mode", self.view_mode)
-			InfoMessage:inform("Changing to "..self.view_mode.." mode...", DINFO_DELAY, 1, MSG_AUX)
+			InfoMessage:inform(
+				string.format(_("Changing to %s mode..."), self.view_mode),
+				DINFO_DELAY, 1, MSG_AUX)
 			self.doc:setViewMode(view_mode_code)
 			self.toc = nil
 			self:redrawCurrentPage()
 		end
 	)
 	self.commands:add(KEY_S, nil, "S",
-		"change render style",
+		_("change render style"),
 		function(self)
-			local css_list = {"clear external styles"}
+			local css_list = {_("clear external styles")}
 			local css_path_list = {""}
 			for f in lfs.dir("./data") do
 				if lfs.attributes("./data/"..f, "mode") == "file" and string.match(f, "%.css$") then
@@ -926,7 +932,7 @@ function CREReader:adjustCreReaderCommands()
 				end
 			end
 			local css_menu = SelectMenu:new{
-				menu_title = "External stylesheet",
+				menu_title = _("External stylesheet"),
 				item_array = css_list,
 				current_entry = item_no - 1,
 			}
@@ -935,11 +941,15 @@ function CREReader:adjustCreReaderCommands()
 				local prev_xpointer = self.doc:getXPointer()
 				if self.css ~= css_path_list[item_no] then
 					if not css_path_list[item_no] then
-						InfoMessage:inform("Clearing external styles", DINFO_NODELAY, 1, MSG_AUX)
+						InfoMessage:inform(
+							_("Clearing external styles"),
+							DINFO_NODELAY, 1, MSG_AUX)
 						self.doc:setStyleSheet("")
 						self.css = nil
 					else
-						InfoMessage:inform("Style change to "..css_list[item_no].." ", DINFO_NODELAY, 1, MSG_AUX)
+						InfoMessage:inform(
+							string.format(_("Style change to %s "), css_list[item_no]),
+							DINFO_NODELAY, 1, MSG_AUX)
 						self.doc:setStyleSheet(css_path_list[item_no])
 						self.css = css_path_list[item_no]
 					end
@@ -952,17 +962,17 @@ function CREReader:adjustCreReaderCommands()
 		end
 	)
 	self.commands:add(KEY_S, MOD_ALT, "S",
-		"toggle embedded stylesheet",
+		_("toggle embedded stylesheet"),
 		function(self)
 			local prev_xpointer = self.doc:getXPointer()
 			if self.embedded_css == false then
 				self.doc:setEmbeddedStyleSheet(1)
 				self.embedded_css = true
-				InfoMessage:inform("Embedded style on.", DINFO_NODELAY, 1, MSG_AUX)
+				InfoMessage:inform(_("Embedded style on."), DINFO_NODELAY, 1, MSG_AUX)
 			else
 				self.doc:setEmbeddedStyleSheet(0)
 				self.embedded_css = false
-				InfoMessage:inform("Embedded style off.", DINFO_NODELAY, 1, MSG_AUX)
+				InfoMessage:inform(_("Embedded style off."), DINFO_NODELAY, 1, MSG_AUX)
 			end
 			self.toc = nil
 			self:goto(prev_xpointer, nil, "xpointer")
@@ -998,9 +1008,13 @@ function CREReader:searchHighLight(search)
 		self.pos = pos -- first metch position
 		self.view_mode = "scroll"
 		self:redrawCurrentPage()
-		InfoMessage:inform( found.." hits '"..search.."' pos "..pos, DINFO_DELAY, 1, MSG_WARN)
+		InfoMessage:inform(
+			string.format(_("%d hits '%s' pos %d"), found, search, pos),
+			DINFO_DELAY, 1, MSG_WARN)
 	else
-		InfoMessage:inform( "'"..search.."' not found in document ", DINFO_DELAY, 1, MSG_WARN)
+		InfoMessage:inform(
+			string.format(_("'%s' not found in document "), search),
+			DINFO_DELAY, 1, MSG_WARN)
 	end
 
 	self.last_search.search = search
