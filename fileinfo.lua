@@ -26,7 +26,7 @@ end
 
 function FileInfo:FormatSize(size)
 	if not tonumber(size) then
-		return "Invalid"
+		return _("Invalid")
 	elseif size < 1024 then
 		return size.." Bytes"
 	elseif size < 2^20 then
@@ -74,7 +74,7 @@ function FileInfo:getFolderContent()
 		if j == "file" then
 			files = files + 1
 			ftype = string.match(name, ".+%.([^.]+)")
-			if FileChooser.filemanager_mode == FileChooser.UNRESTRICTED or 
+			if FileChooser.filemanager_mode == FileChooser.UNRESTRICTED or
 				(ftype and ReaderChooser:getReaderByType(string.lower(ftype))) then
 				books = books + 1
 			end
@@ -84,8 +84,11 @@ function FileInfo:getFolderContent()
 	end
 	tmp:close()
 	-- add 2 entries; might be joined / splitted
-	table.insert(self.result, {dir = "Contents", name = dirs.." sub-folder(s) / "..files.." file(s) / "..books.." book(s)"})
-	table.insert(self.result, {dir = "Size", name = self:FormatSize(size*1024)})
+	table.insert(self.result, {
+		dir = _("Contents"),
+		name = string.format(_("%d sub-folder(s) / %d file(s) / %d book(s)"), dirs, files, books)
+	})
+	table.insert(self.result, {dir = _("Size"), name = self:FormatSize(size*1024)})
 end
 
 function FileInfo:init(path, fname)
@@ -96,9 +99,9 @@ function FileInfo:init(path, fname)
 
 	if fname then
 		self.pathfile = path.."/"..fname
-		table.insert(self.result, {dir = "Name", name = fname} )
+		table.insert(self.result, {dir = _("Name"), name = fname} )
 		self.commands:add({KEY_ENTER, KEY_FW_PRESS}, nil, "Enter",
-			"open document",
+			_("open document"),
 			function(self)
 				openFile(self.pathfile)
 				self.pagedirty = true
@@ -111,10 +114,10 @@ function FileInfo:init(path, fname)
 			i = string.find(path, "/", i+1)
 			if i == nil then break else j=i end
 		end
-		table.insert(self.result, {dir = "Name", name = path:sub(j+1,-1) } )
-		table.insert(self.result, {dir = "Path", name = path:sub(1,j) } )
+		table.insert(self.result, {dir = _("Name"), name = path:sub(j+1,-1) } )
+		table.insert(self.result, {dir = _("Path"), name = path:sub(1,j) } )
 		self.commands:add({KEY_ENTER, KEY_FW_PRESS}, nil, "Enter",
-			"goto folder",
+			_("goto folder"),
 			function(self)
 				return "goto"
 			end)
@@ -122,29 +125,29 @@ function FileInfo:init(path, fname)
 
 	local tmp, output
 	if fname then -- file info
-		table.insert(self.result, {dir = "Path", name = path.."/"} )
-		table.insert(self.result, {dir = "Size", name = self:FormatSize(lfs.attributes(self.pathfile, "size"))} )
+		table.insert(self.result, {dir = _("Path"), name = path.."/"} )
+		table.insert(self.result, {dir = _("Size"), name = self:FormatSize(lfs.attributes(self.pathfile, "size"))} )
 		-- total size of all unzipped entries for zips
 		local match = string.match(fname, ".+%.([^.]+)")
 		if match and string.lower(match) == "zip" then
-			table.insert(self.result, {dir = "Unpacked", name = self:FormatSize(getUnpackedZipSize(self.pathfile))} )
+			table.insert(self.result, {dir = _("Unpacked"), name = self:FormatSize(getUnpackedZipSize(self.pathfile))} )
 		end
 	else -- folder info
 		self:getFolderContent()
 	end
 
-	table.insert(self.result, {dir = "Free space", name = self:formatDiskSizeInfo()})
-	table.insert(self.result, {dir = "Status changed", name = self:FileCreated(self.pathfile, "change")})
-	table.insert(self.result, {dir = "Modified", name = self:FileCreated(self.pathfile, "modification")})
-	table.insert(self.result, {dir = "Accessed", name = self:FileCreated(self.pathfile, "access")})
+	table.insert(self.result, {dir = _("Free space"), name = self:formatDiskSizeInfo()})
+	table.insert(self.result, {dir = _("Status changed"), name = self:FileCreated(self.pathfile, "change")})
+	table.insert(self.result, {dir = _("Modified"), name = self:FileCreated(self.pathfile, "modification")})
+	table.insert(self.result, {dir = _("Accessed"), name = self:FileCreated(self.pathfile, "access")})
 
 	if fname then
 		-- if the document was already opened
 		local history = DocToHistory(self.pathfile)
 		if not FileExists(history) then
-			table.insert(self.result, {dir = "Last read", name = "Never"})
+			table.insert(self.result, {dir = _("Last read"), name = "Never"})
 		else
-			table.insert(self.result, {dir = "Last read", name = self:FileCreated(history, "change")})
+			table.insert(self.result, {dir = _("Last read"), name = self:FileCreated(history, "change")})
 			local ext = string.match(self.pathfile, ".+%.([^.]+)")
 			local file_type = ext and ext:lower() or "txt"
 			local to_search, add, factor = "[\"last_percent\"]", "%", 100
@@ -156,7 +159,7 @@ function FileInfo:init(path, fname)
 			for line in io.lines(history) do
 				if string.match(line, "%b[]") == to_search then
 					local cdc = tonumber(string.match(line, "%d+")) / factor
-					table.insert(self.result, {dir = "Completed", name = string.format("%d", cdc)..add })
+					table.insert(self.result, {dir = _("Completed"), name = string.format("%d", cdc)..add })
 				end
 			end
 		end
@@ -180,7 +183,8 @@ function FileInfo:show(path, name)
 			fface = Font:getFace("ffont", 16)
 			-- drawing
 			fb.bb:paintRect(0, 0, G_width, G_height, 0)
-			DrawTitle(name and "Document Information" or "Folder Information", self.margin_H, 0, self.title_H, 3, tface)
+			DrawTitle(name and _("Document Information") or _("Folder Information"),
+				self.margin_H, 0, self.title_H, 3, tface)
 			-- now calculating xrcol-position for the right column
 			width = 0
 			for c = 1, self.items do
@@ -195,7 +199,7 @@ function FileInfo:show(path, name)
 						G_width - self.margin_H - xrcol, 1.65).y - y
 			end
 			-- NuPogodi, 29.09.12: restored footer > to see 'Press H for help'
-			DrawFooter("Page 1 of 1",fface,self.foot_H)
+			DrawFooter(_("Page 1 of 1"), fface,self.foot_H)
 			fb:refresh(0)
 			self.pagedirty = false
 		end
@@ -217,27 +221,27 @@ end
 function FileInfo:addAllCommands()
 	self.commands = Commands:new{}
 	self.commands:add(KEY_SPACE, nil, "Space",
-		"refresh page manually",
+		_("refresh page manually"),
 		function(self)
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_H,nil,"H",
-		"show help page",
+		_("show help page"),
 		function(self)
 			HelpPage:show(0, G_height, self.commands)
 			self.pagedirty = true
 		end
 	)
 	self.commands:add({KEY_F, KEY_AA}, nil, "F, Aa",
-		"change font faces",
+		_("change font faces"),
 		function(self)
 			Font:chooseFonts()
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_L, nil, "L",
-		"last documents",
+		_("last documents"),
 		function(self)
 			FileHistory:init()
 			FileHistory:choose("")
@@ -245,7 +249,7 @@ function FileInfo:addAllCommands()
 		end
 	)
 	self.commands:add({KEY_BACK, KEY_FW_LEFT}, nil, "Back, FW-Left",
-		"back",
+		_("back"),
 		function(self)
 			return "break"
 		end
