@@ -75,7 +75,7 @@ function DrawFooter(text,font_face,h)
 	local y = G_height - 7
 	-- just dirty fix to have the same footer everywhere
 	local x = FileChooser.margin_H --(G_width / 2) - 50
-	renderUtf8Text(fb.bb, x, y, font_face, text.." - Press H for help", true)
+	renderUtf8Text(fb.bb, x, y, font_face, text.._(" - Press H for help"), true)
 end
 
 function DrawFileItem(name,x,y,image)
@@ -233,7 +233,8 @@ function FileChooser:choose()
 			end
 			-- draw footer
 			all_page = math.ceil(self.items/self.perpage)
-			DrawFooter("Page "..self.page.." of "..all_page,fface,self.foot_H)
+			DrawFooter(string.format(_("Page %d of %d"), self.page, all_page),
+				fface, self.foot_H)
 			-- draw menu title
 			local msg = self.exception_message and self.exception_message:match("[^%:]+:%d+: (.*)") or self.path
 			self.exception_message = nil
@@ -298,14 +299,14 @@ function FileChooser:addAllCommands()
 	self.commands = Commands:new{}
 
 	self.commands:add(KEY_SPACE, nil, "Space",
-		"refresh file list",
+		_("refresh file list"),
 		function(self)
 			self:setPath(self.path)
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_FW_DOWN, nil, "joypad down",
-		"next item",
+		_("next item"),
 		function(self)
 			if self.current == self.perpage then
 				if self.page < (self.items / self.perpage) then
@@ -323,7 +324,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_FW_UP, nil, "joypad up",
-		"previous item",
+		_("previous item"),
 		function(self)
 			if self.current == 1 then
 				if self.page > 1 then
@@ -341,7 +342,7 @@ function FileChooser:addAllCommands()
 	local numeric_keydefs, i = {}
 	for i=1, 10 do numeric_keydefs[i]=Keydef:new(KEY_1+i-1, nil, tostring(i%10)) end
 	self.commands:addGroup("[1, 2 .. 9, 0]", numeric_keydefs,
-		"item at position 0%, 10% .. 90%, 100%",
+		_("item at position 0%, 10% .. 90%, 100%"),
 		function(self)
 			local target_item = math.ceil(self.items * (keydef.keycode-KEY_1) / 9)
 			self.current, self.page, self.markerdirty, self.pagedirty =
@@ -349,7 +350,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add({KEY_PGFWD, KEY_LPGFWD}, nil, ">",
-		"next page",
+		_("next page"),
 		function(self)
 			if self.page < (self.items / self.perpage) then
 				if self.current + self.page*self.perpage > self.items then
@@ -364,7 +365,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add({KEY_PGBCK, KEY_LPGBCK}, nil, "<",
-		"previous page",
+		_("previous page"),
 		function(self)
 			if self.page > 1 then
 				self.page = self.page - 1
@@ -376,7 +377,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_G, nil, "G", -- NuPogodi, 01.10.12: goto page No.
-		"goto page",
+		_("goto page"),
 		function(self)
 			local n = math.ceil(self.items / self.perpage)
 			local page = NumInputBox:input(G_height-100, 100, "Page:", "current page "..self.page.." of "..n, true)
@@ -391,14 +392,14 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_FW_LEFT, nil, "joypad left",
-		"go back to parent directory",
+		_("go back to parent directory"),
 		function(self)
 			self:backToParentDir()
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_FW_RIGHT, nil, "joypad right",
-		"show document information",
+		_("show document information"),
 		function(self)
 			local folder = self.dirs[self.perpage*(self.page-1)+self.current]
 			if folder then
@@ -417,7 +418,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add({KEY_ENTER, KEY_FW_PRESS}, nil, "Enter",
-		"open document / goto folder",
+		_("open document / goto folder"),
 		function(self)
 			local newdir = self.dirs[self.perpage*(self.page-1)+self.current]
 			if newdir == ".." then
@@ -433,7 +434,7 @@ function FileChooser:addAllCommands()
 	)
 	-- modified to delete both files and empty folders
 	self.commands:add(KEY_DEL, nil, "Del",
-		"delete selected item",
+		_("delete selected item"),
 		function(self)
 			local pos = self.perpage*(self.page-1)+self.current
 			if pos > #self.dirs then -- file
@@ -457,7 +458,7 @@ function FileChooser:addAllCommands()
 		end -- function
 	)
 	self.commands:add(KEY_R, MOD_SHIFT, "R",
-		"rename file",
+		_("rename file"),
 		function(self)
 			local oldname = self:FullFileName()
 			if oldname then
@@ -480,46 +481,46 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_M, MOD_ALT, "M",
-		"set file manager mode",
+		_("set file manager mode"),
 		function(self)
 			self:setFileManagerMode()
 		end
 	)
 	self.commands:add(KEY_E, nil, "E",
-		"configure event notifications",
+		_("configure event notifications"),
 		function(self)
 			InfoMessage:chooseNotificatonMethods()
 			self.pagedirty = true
 		end
 	)
 	self.commands:addGroup("Vol-/+", {Keydef:new(KEY_VPLUS,nil), Keydef:new(KEY_VMINUS,nil)},
-		"decrease/increase sound volume",
+		_("decrease/increase sound volume"),
 		function(self)
 			InfoMessage:incrSoundVolume(keydef.keycode == KEY_VPLUS and 1 or -1)
 		end
 	)
 	self.commands:addGroup(MOD_SHIFT.."Vol-/+", {Keydef:new(KEY_VPLUS,MOD_SHIFT), Keydef:new(KEY_VMINUS,MOD_SHIFT)},
-		"decrease/increase TTS-engine speed",
+		_("decrease/increase TTS-engine speed"),
 		function(self)
 			InfoMessage:incrTTSspeed(keydef.keycode == KEY_VPLUS and 1 or -1)
 		end
 	)
 	self.commands:add({KEY_F, KEY_AA}, nil, "F, Aa",
-		"change font faces",
+		_("change font faces"),
 		function(self)
 			Font:chooseFonts()
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_H,nil,"H",
-		"show help page",
+		_("show help page"),
 		function(self)
 			HelpPage:show(0, G_height, self.commands, "Hotkeys  "..G_program_version)
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_L, nil, "L",
-		"show last documents",
+		_("show last documents"),
 		function(self)
 			FileHistory:init()
 			FileHistory:choose("")
@@ -528,7 +529,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_S, nil, "S",
-		"search files (single space matches all)",
+		_("search files (single space matches all)"),
 		function(self)
 			local keywords = InputBox:input(0, 0, "Search:")
 			if keywords then
@@ -540,7 +541,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_C, MOD_SHIFT, "C",
-		"copy file to 'clipboard'",
+		_("copy file to 'clipboard'"),
 		function(self)
 			local file = self:FullFileName()
 			if file then
@@ -553,7 +554,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_X, MOD_SHIFT, "X",
-		"move file to 'clipboard'",
+		_("move file to 'clipboard'"),
 		function(self)
 			-- TODO (NuPogodi, 27.09.12): overwrite?
 			local file = self:FullFileName()
@@ -571,7 +572,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_V, MOD_SHIFT, "V",
-		"paste file(s) from 'clipboard'",
+		_("paste file(s) from 'clipboard'"),
 		function(self)
 			-- TODO (NuPogodi, 27.09.12): first test whether the clipboard is empty & answer respectively
 			-- TODO (NuPogodi, 27.09.12): overwrite?
@@ -587,7 +588,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_DOT, MOD_ALT, ".",
-		"toggle battery level logging",
+		_("toggle battery level logging"),
 		function(self)
 			G_battery_logging = not G_battery_logging
 			InfoMessage:inform("Battery logging "..(G_battery_logging and "on " or "off "), DINFO_DELAY, 1, MSG_AUX)
@@ -595,7 +596,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_B, MOD_SHIFT, "B",
-		"show content of 'clipboard'",
+		_("show content of 'clipboard'"),
 		function(self)
 			-- save the current directory in order to
 			-- return from clipboard via ".." entry
@@ -608,7 +609,7 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_N, MOD_SHIFT, "N",
-		"make new folder",
+		_("make new folder"),
 		function(self)
 			local folder = InputBox:input(0, 0, "New Folder:")
 			if folder then
@@ -620,14 +621,15 @@ function FileChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_K, MOD_SHIFT, "K",
-		"run calculator",
+		_("run calculator"),
 		function(self)
 			local CalcBox = InputBox:new{ inputmode = MODE_CALC }
 			CalcBox:input(0, 0, "Calc ")
 			self.pagedirty = true
 		end
 	)
-	self.commands:addGroup("Home, Alt + Back", { Keydef:new(KEY_HOME, nil),Keydef:new(KEY_BACK, MOD_ALT)}, "exit",
+	self.commands:addGroup("Home, Alt + Back", { Keydef:new(KEY_HOME, nil),Keydef:new(KEY_BACK, MOD_ALT)},
+		_("exit"),
 		function(self)
 			return "break"
 		end
@@ -658,8 +660,11 @@ end
 
 function FileChooser:setFileManagerMode()
 	local modes_menu = SelectMenu:new{
-		menu_title = "Set file manager mode",
-		item_array = {"Restricted", "Unrestricted"},
+		menu_title = _("Set file manager mode"),
+		item_array = {
+			_("Restricted"),
+			_("Unrestricted"),
+		},
 		current_entry = self.filemanager_mode - 1,
 		}
 	local m = modes_menu:choose(0, G_height)
@@ -678,7 +683,7 @@ function FileChooser:deleteFolderAtPosition(pos)
 		self.items = #self.dirs + #self.files
 		self.current, self.page = gotoTargetItem(pos, self.items, pos, self.page, self.perpage)
 	else
-		InfoMessage:inform("Directory not empty ", DINFO_DELAY, 1, MSG_ERROR)
+		InfoMessage:inform(_("Directory not empty "), DINFO_DELAY, 1, MSG_ERROR)
 	end
 end
 
@@ -708,6 +713,6 @@ function gotoTargetItem(target_item, all_items, current_item, current_page, perp
 end
 
 function warningUnsupportedFunction()
-	InfoMessage:inform("Unsupported function ", DINFO_DELAY, 1, MSG_WARN)
+	InfoMessage:inform(_("Unsupported function "), DINFO_DELAY, 1, MSG_WARN)
 	return nil
 end
