@@ -8,6 +8,7 @@ require "koptreader"
 require "picviewer"
 require "crereader"
 require "defaults"
+require "gettext"
 
 registry = {
 	-- registry format:
