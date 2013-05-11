@@ -34,15 +34,15 @@ ReaderChooser = {
 	title_font_size = 23,  -- title font size
 	item_font_size = 20,   -- reader item font size
 	option_font_size = 17, -- option font size
-    
+
     BGCOLOR = 3, -- background color
-	
+
 	-- title text
-	TITLE = "Complete action using",
+	TITLE = _("Complete action using"),
 	-- options text
-	OPTION_TYPE = "Remember this type(T)",
-	OPTION_FILE = "Remember this file(F)",
-	
+	OPTION_TYPE = _("Remember this type(T)"),
+	OPTION_FILE = _("Remember this file(F)"),
+
 	-- data variables
 	readers = {},
 	final_choice = nil,
@@ -94,7 +94,7 @@ function ReaderChooser:getReaderByName(filename)
 		if reader_association and reader_association ~= "N/A" then
 			file_settings:close()
 			return registry[reader_association][1]
-		
+
 		elseif reader_preferences and reader_association ~= "N/A" then
 			default_reader = reader_preferences[file_type]
 			if default_reader then
@@ -124,7 +124,7 @@ function ReaderChooser:getReaderByName(filename)
 			file_settings:close()
 			return nil
 		end
-		
+
 	elseif #readers == 1 then
 		return registry[readers[1]][1]
 	else
@@ -149,7 +149,7 @@ function ReaderChooser:drawTitle(text, xpos, ypos, w, font_face)
 	renderUtf8Text(fb.bb, xpos+10, ypos+self.title_H, font_face, text, true, self.BGCOLOR/15, 1.0)
 	-- draw title bar
 	fb.bb:paintRect(xpos, ypos+self.title_H+self.title_bar_H, w, 3, 5)
-	
+
 end
 
 function ReaderChooser:drawReaderItem(name, xpos, ypos, font_face)
@@ -183,34 +183,34 @@ function ReaderChooser:choose(readers)
 	self.markerdirty = false
 	self.optiondirty = true
 	self:addAllCommands()
-	
+
 	local tface = Font:getFace("tfont", self.title_font_size)
 	local cface = Font:getFace("cfont", self.item_font_size)
 	local fface = Font:getFace("ffont", self.option_font_size)
-	
+
 	local width, height = self.WIDTH, self.HEIGHT
 	local topleft_x, topleft_y = (fb.bb:getWidth()-width)/2, (fb.bb:getHeight()-height)/2
 	local botleft_x, botleft_y = topleft_x, topleft_y+height
-	
+
 	Debug("Drawing box")
 	self:drawBox(topleft_x, topleft_y, width, height, self.BGCOLOR, 3)
 	Debug("Drawing title")
 	self:drawTitle(self.TITLE, topleft_x, topleft_y, width, tface)
-	
+
 	local reader_text_width = {}
 	for index,name in ipairs(self.readers) do
 		Debug("Drawing reader:",index,name)
 		reader_text_width[index] = self:drawReaderItem(name, topleft_x, topleft_y+self.title_H+self.spacing*index+10, cface)
 	end
-	
+
 	fb:refresh(1, topleft_x, topleft_y, width, height)
-	
+
 	-- paint first reader marker
 	local xmarker = topleft_x + self.margin_I
 	local ymarker = topleft_y + self.title_H + self.title_bar_H
 	fb.bb:paintRect(xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3, 15)
 	fb:refresh(1, xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3)
-	
+
 	local ev, keydef, command, ret_code
 	while true do
 		if self.markerdirty then
@@ -220,12 +220,12 @@ function ReaderChooser:choose(readers)
 			fb:refresh(1, xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3)
 			self.markerdirty = false
 		end
-		
+
 		if self.optiondirty then
 			self:drawOptions(botleft_x, botleft_y-self.options_H, 5, 3, fface)
 			self.optiondirty = false
 		end
-			
+
 		ev = input.saveWaitForEvent()
 		ev.code = adjustKeyEvents(ev)
 		if ev.type == EV_KEY and ev.value ~= EVENT_VALUE_KEY_RELEASE then
@@ -254,7 +254,7 @@ end
 function ReaderChooser:addAllCommands()
 	self.commands = Commands:new{}
 	self.commands:add(KEY_FW_DOWN, nil, "joypad down",
-		"next item",
+		_("next item"),
 		function(self)
 			self.last_item = self.current_item
 			self.current_item = (self.current_item + #self.readers + 1)%#self.readers
@@ -266,7 +266,7 @@ function ReaderChooser:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_FW_UP, nil, "joypad up",
-		"previous item",
+		_("previous item"),
 		function(self)
 			self.last_item = self.current_item
 			self.current_item = (self.current_item + #self.readers - 1)%#self.readers
@@ -277,32 +277,32 @@ function ReaderChooser:addAllCommands()
 			self.markerdirty = true
 		end
 	)
-	
+
 	self.commands:add(KEY_T, nil, "T",
-		"remember reader choice for this type",
+		_("remember reader choice for this type"),
 		function(self)
 			self.remember_preference = not self.remember_preference
 			self.optiondirty = true
 		end
 	)
-	
+
 	self.commands:add(KEY_F, nil, "F",
-		"remember reader choice for this file",
+		_("remember reader choice for this file"),
 		function(self)
 			self.remember_association = not self.remember_association
 			self.optiondirty = true
 		end
 	)
-	
+
 	self.commands:add({KEY_ENTER, KEY_FW_PRESS}, nil, "Enter",
-		"choose reader",
+		_("choose reader"),
 		function(self)
 			self.final_choice = self.current_item
 			return "break"
 		end
 	)
 	self.commands:add(KEY_BACK, nil, "Back",
-		"back",
+		_("back"),
 		function(self)
 			return "break"
 		end
