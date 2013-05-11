@@ -77,16 +77,16 @@ function Font:chooseItemForFont(initial)
 	local description -- additional info to display in menu
 	-- define auxilary function
 	function add_element(_index)
-		if	_index == "cfont" 	then	description = "filemanager: menu contents"
-		elseif	_index == "tfont"	then	description = "filemanager: header title"
-		elseif	_index == "ffont"	then	description = "filemanager: footer"
-		elseif	_index == "rifont"	then	description = "readers: reading position info"
-		elseif	_index == "scfont"	then	description = "selectmenu: item shortcuts"
-		elseif	_index == "hpkfont"	then	description = "help page: hotkeys"
-		elseif	_index == "hfont"	then	description = "help page: description"
-		elseif	_index == "infont"	then	description = "inputbox: on-screen keyboard & user input"
-		elseif	_index == "infofont" then	description = "info messages"
-		else	--[[ not included in Font.fontmap ]] description = "nothing; not used anymore"
+		if	_index == "cfont" 	then	description = _("filemanager: menu contents")
+		elseif	_index == "tfont"	then	description = _("filemanager: header title")
+		elseif	_index == "ffont"	then	description = _("filemanager: footer")
+		elseif	_index == "rifont"	then	description = _("readers: reading position info")
+		elseif	_index == "scfont"	then	description = _("selectmenu: item shortcuts")
+		elseif	_index == "hpkfont"	then	description = _("help page: hotkeys")
+		elseif	_index == "hfont"	then	description = _("help page: description")
+		elseif	_index == "infont"	then	description = _("inputbox: on-screen keyboard & user input")
+		elseif	_index == "infofont" then	description = _("info messages")
+		else	--[[ not included in Font.fontmap ]] description = _("nothing; not used anymore")
 		end
 		-- then, search for number of initial item in the list Font.fontmap
 		if not item_found then
@@ -102,7 +102,7 @@ function Font:chooseItemForFont(initial)
 
 	-- goto menu to select the item which font should be changed
 	local items_menu = SelectMenu:new{
-		menu_title = "Select item to change",
+		menu_title = _("Select item to change"),
 		item_array = items_list,
 		current_entry = item_no - 1,
 		own_glyph = 2, -- use Font.fontmap-values to render 'items_menu'-items
@@ -121,10 +121,10 @@ function Font:chooseFontForItem(item_font)
 	local item_no = 0
 	local face_list = Font:getFontList()
 	while face_list[item_no] ~= Font.fontmap[item_font] and item_no < #face_list do
-		item_no = item_no + 1 
+		item_no = item_no + 1
 	end
 	local fonts_menu = SelectMenu:new{
-		menu_title = "Fonts Menu",
+		menu_title = _("Fonts Menu"),
 		item_array = face_list,
 		current_entry = item_no - 1,
 		own_glyph = 1, -- use the item from item_array to render 'fonts_menu'-items

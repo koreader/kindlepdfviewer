@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/koreader/koreader-base/issues\n"
-"POT-Creation-Date: 2013-05-06 06:39+0000\n"
+"POT-Creation-Date: 2013-05-11 15:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,6 +15,11 @@ msgstr ""
 #: reader.lua:66
 msgid ""
 "                          (floating point notation, e.g. \"1.5\")"
+msgstr ""
+
+#: filechooser.lua:78
+msgid ""
+" - Press H for help"
 msgstr ""
 
 #: unireader.lua:2366
@@ -37,6 +42,11 @@ msgstr ""
 #: crereader.lua:1012
 msgid ""
 "%d hits '%s' pos %d"
+msgstr ""
+
+#: fileinfo.lua:89
+msgid ""
+"%d sub-folder(s) / %d file(s) / %d book(s)"
 msgstr ""
 
 #: unireader.lua:2374
@@ -67,6 +77,16 @@ msgstr ""
 #: reader.lua:67
 msgid ""
 "-h, --help                show this usage help"
+msgstr ""
+
+#: fileinfo.lua:142
+msgid ""
+"Accessed"
+msgstr ""
+
+#: helppage.lua:62
+msgid ""
+"Active Hotkeys"
 msgstr ""
 
 #: unireader.lua:2932
@@ -163,6 +183,21 @@ msgid ""
 "Clearing external styles"
 msgstr ""
 
+#: readerchooser.lua:42
+msgid ""
+"Complete action using"
+msgstr ""
+
+#: fileinfo.lua:162
+msgid ""
+"Completed"
+msgstr ""
+
+#: fileinfo.lua:88
+msgid ""
+"Contents"
+msgstr ""
+
 #: unireader.lua:2158
 msgid ""
 "Current Page "
@@ -176,6 +211,16 @@ msgstr ""
 #: crereader.lua:794
 msgid ""
 "Default document font applied "
+msgstr ""
+
+#: filechooser.lua:686
+msgid ""
+"Directory not empty "
+msgstr ""
+
+#: fileinfo.lua:186
+msgid ""
+"Document Information"
 msgstr ""
 
 #: crereader.lua:975
@@ -268,6 +313,16 @@ msgid ""
 "Fit zoom to page width"
 msgstr ""
 
+#: fileinfo.lua:186
+msgid ""
+"Folder Information"
+msgstr ""
+
+#: font.lua:127
+msgid ""
+"Fonts Menu"
+msgstr ""
+
 #: crereader.lua:751
 msgid ""
 "Formatting with %s"
@@ -275,14 +330,12 @@ msgstr ""
 
 #: crereader.lua:779
 msgid ""
-"Formatting with %s \", face_list[item_no])),\n"
-"					DINFO_NODELAY, 1, MSG_AUX)\n"
-"				self.header_font = face_list[item_no]\n"
-"				G_reader_settings:saveSetting(\"header_font\", self.header_font)\n"
-"				self.doc:setHeaderFont(self.header_font)\n"
-"			end\n"
-"			self.toc = nil\n"
-"			self:goto(prev_xpointer, nil, \"xpointer"
+"Formatting with %s "
+msgstr ""
+
+#: fileinfo.lua:139
+msgid ""
+"Free space"
 msgstr ""
 
 #: unireader.lua:2962
@@ -310,6 +363,11 @@ msgid ""
 "If you give the name of a directory instead of a file path, a file"
 msgstr ""
 
+#: fileinfo.lua:29
+msgid ""
+"Invalid"
+msgstr ""
+
 #: crereader.lua:372
 #: unireader.lua:2162
 msgid ""
@@ -319,6 +377,17 @@ msgstr ""
 #: crereader.lua:820
 msgid ""
 "Jump between bookmarks"
+msgstr ""
+
+#: filehistory.lua:306
+msgid ""
+"Last Documents (%d items)"
+msgstr ""
+
+#: fileinfo.lua:148
+#: fileinfo.lua:150
+msgid ""
+"Last read"
 msgstr ""
 
 #: djvureader.lua:67
@@ -364,6 +433,17 @@ msgstr ""
 #: unireader.lua:2672
 msgid ""
 "Min zoom step: "
+msgstr ""
+
+#: fileinfo.lua:141
+msgid ""
+"Modified"
+msgstr ""
+
+#: fileinfo.lua:102
+#: fileinfo.lua:117
+msgid ""
+"Name"
 msgstr ""
 
 #: unireader.lua:3250
@@ -437,6 +517,11 @@ msgid ""
 "No reader associated"
 msgstr ""
 
+#: filehistory.lua:293
+msgid ""
+"No reading history "
+msgstr ""
+
 #: unireader.lua:396
 msgid ""
 "No text available "
@@ -448,6 +533,7 @@ msgid ""
 msgstr ""
 
 #: djvureader.lua:27
+#: koptreader.lua:102
 msgid ""
 "Not a valid DjVu file"
 msgstr ""
@@ -457,9 +543,30 @@ msgid ""
 "Opening document... "
 msgstr ""
 
+#: filechooser.lua:236
+msgid ""
+"Page %d of %d"
+msgstr ""
+
+#: helppage.lua:98
+msgid ""
+"Page %d of %d - Back to close this page"
+msgstr ""
+
+#: fileinfo.lua:202
+msgid ""
+"Page 1 of 1"
+msgstr ""
+
 #: unireader.lua:2807
 msgid ""
 "Page:"
+msgstr ""
+
+#: fileinfo.lua:118
+#: fileinfo.lua:128
+msgid ""
+"Path"
 msgstr ""
 
 #: crereader.lua:717
@@ -482,6 +589,26 @@ msgid ""
 "Reader preferences reset"
 msgstr ""
 
+#: readerchooser.lua:45
+msgid ""
+"Remember this file(F)"
+msgstr ""
+
+#: readerchooser.lua:44
+msgid ""
+"Remember this type(T)"
+msgstr ""
+
+#: koptreader.lua:300
+msgid ""
+"Rendering in background..."
+msgstr ""
+
+#: filechooser.lua:665
+msgid ""
+"Restricted"
+msgstr ""
+
 #: unireader.lua:2922
 msgid ""
 "Right-To-Left mode "
@@ -502,9 +629,30 @@ msgid ""
 "Select DjVu page rendering mode"
 msgstr ""
 
+#: font.lua:105
+msgid ""
+"Select item to change"
+msgstr ""
+
 #: unireader.lua:2749
 msgid ""
 "Select mode to zoom pages"
+msgstr ""
+
+#: filechooser.lua:663
+msgid ""
+"Set file manager mode"
+msgstr ""
+
+#: fileinfo.lua:91
+#: fileinfo.lua:129
+msgid ""
+"Size"
+msgstr ""
+
+#: fileinfo.lua:140
+msgid ""
+"Status changed"
 msgstr ""
 
 #: crereader.lua:951
@@ -527,6 +675,21 @@ msgid ""
 "This software is licensed under the GPLv3."
 msgstr ""
 
+#: fileinfo.lua:133
+msgid ""
+"Unpacked"
+msgstr ""
+
+#: filechooser.lua:666
+msgid ""
+"Unrestricted"
+msgstr ""
+
+#: filechooser.lua:716
+msgid ""
+"Unsupported function "
+msgstr ""
+
 #: crereader.lua:96
 msgid ""
 "Zip contains improper content. "
@@ -543,6 +706,13 @@ msgid ""
 "add bookmark to current page"
 msgstr ""
 
+#: filehistory.lua:279
+#: fileinfo.lua:252
+#: readerchooser.lua:306
+msgid ""
+"back"
+msgstr ""
+
 #: unireader.lua:2932
 msgid ""
 "bottom"
@@ -553,14 +723,31 @@ msgid ""
 "change document font"
 msgstr ""
 
+#: filechooser.lua:509
+#: filehistory.lua:220
+#: fileinfo.lua:237
+msgid ""
+"change font faces"
+msgstr ""
+
 #: crereader.lua:761
 msgid ""
 "change header font"
 msgstr ""
 
+#: koptreader.lua:609
+msgid ""
+"change koptreader configuration"
+msgstr ""
+
 #: crereader.lua:914
 msgid ""
 "change render style"
+msgstr ""
+
+#: readerchooser.lua:299
+msgid ""
+"choose reader"
 msgstr ""
 
 #: reader.lua:70
@@ -583,9 +770,15 @@ msgid ""
 "close document"
 msgstr ""
 
+#: filechooser.lua:490
 #: unireader.lua:3501
 msgid ""
 "configure event notifications"
+msgstr ""
+
+#: filechooser.lua:544
+msgid ""
+"copy file to 'clipboard'"
 msgstr ""
 
 #: unireader.lua:2807
@@ -598,9 +791,15 @@ msgid ""
 "current: "
 msgstr ""
 
+#: koptreader.lua:96
 #: pdfreader.lua:31
 msgid ""
 "damaged page tree"
+msgstr ""
+
+#: filechooser.lua:503
+msgid ""
+"decrease/increase TTS-engine speed"
 msgstr ""
 
 #: crereader.lua:864
@@ -613,14 +812,34 @@ msgid ""
 "decrease/increase gamma 10%"
 msgstr ""
 
+#: filechooser.lua:497
+msgid ""
+"decrease/increase sound volume"
+msgstr ""
+
 #: unireader.lua:2654
 msgid ""
 "decrease/increase zoom step"
 msgstr ""
 
+#: filehistory.lua:250
+msgid ""
+"delete history entry"
+msgstr ""
+
+#: filechooser.lua:437
+msgid ""
+"delete selected item"
+msgstr ""
+
 #: unireader.lua:3021
 msgid ""
 "disabled"
+msgstr ""
+
+#: filehistory.lua:183
+msgid ""
+"document details"
 msgstr ""
 
 #: unireader.lua:3021
@@ -631,6 +850,31 @@ msgstr ""
 #: unireader.lua:3301
 msgid ""
 "enter highlight mode"
+msgstr ""
+
+#: filechooser.lua:632
+msgid ""
+"exit"
+msgstr ""
+
+#: font.lua:82
+msgid ""
+"filemanager: footer"
+msgstr ""
+
+#: font.lua:81
+msgid ""
+"filemanager: header title"
+msgstr ""
+
+#: font.lua:80
+msgid ""
+"filemanager: menu contents"
+msgstr ""
+
+#: filechooser.lua:395
+msgid ""
+"go back to parent directory"
 msgstr ""
 
 #: crereader.lua:831
@@ -655,6 +899,27 @@ msgid ""
 "go to prev/next TOC entry"
 msgstr ""
 
+#: fileinfo.lua:120
+msgid ""
+"goto folder"
+msgstr ""
+
+#: filechooser.lua:380
+#: filehistory.lua:168
+msgid ""
+"goto page"
+msgstr ""
+
+#: font.lua:86
+msgid ""
+"help page: description"
+msgstr ""
+
+#: font.lua:85
+msgid ""
+"help page: hotkeys"
+msgstr ""
+
 #: unireader.lua:3236
 msgid ""
 "increase/decrease X-panning step"
@@ -675,9 +940,30 @@ msgid ""
 "increase/decrease line spacing"
 msgstr ""
 
+#: font.lua:88
+msgid ""
+"info messages"
+msgstr ""
+
+#: font.lua:87
+msgid ""
+"inputbox: on-screen keyboard & user input"
+msgstr ""
+
 #: unireader.lua:3026
 msgid ""
 "invert page bbox"
+msgstr ""
+
+#: filehistory.lua:195
+msgid ""
+"invoke search inputbox"
+msgstr ""
+
+#: filechooser.lua:345
+#: filehistory.lua:133
+msgid ""
+"item at position 0%, 10% .. 90%, 100%"
 msgstr ""
 
 #: unireader.lua:2853
@@ -691,6 +977,16 @@ msgid ""
 "jump to 0%, 10% .. 90%, 100% of document"
 msgstr ""
 
+#: fileinfo.lua:244
+msgid ""
+"last documents"
+msgstr ""
+
+#: filechooser.lua:612
+msgid ""
+"make new folder"
+msgstr ""
+
 #: unireader.lua:2979
 msgid ""
 "manual full screen refresh"
@@ -699,6 +995,29 @@ msgstr ""
 #: unireader.lua:3036
 msgid ""
 "modify page bbox"
+msgstr ""
+
+#: filechooser.lua:557
+msgid ""
+"move file to 'clipboard'"
+msgstr ""
+
+#: filechooser.lua:309
+#: filehistory.lua:124
+#: readerchooser.lua:258
+msgid ""
+"next item"
+msgstr ""
+
+#: filechooser.lua:353
+#: filehistory.lua:141
+msgid ""
+"next page"
+msgstr ""
+
+#: font.lua:89
+msgid ""
+"nothing; not used anymore"
 msgstr ""
 
 #: unireader.lua:2922
@@ -726,6 +1045,21 @@ msgid ""
 "open 'go to position' input box"
 msgstr ""
 
+#: fileinfo.lua:104
+msgid ""
+"open document"
+msgstr ""
+
+#: filechooser.lua:421
+msgid ""
+"open document / goto folder"
+msgstr ""
+
+#: filehistory.lua:227
+msgid ""
+"open selected document"
+msgstr ""
+
 #: unireader.lua:3338
 msgid ""
 "page links shortcut keys"
@@ -746,9 +1080,58 @@ msgid ""
 "pan the active view"
 msgstr ""
 
+#: filechooser.lua:575
+msgid ""
+"paste file(s) from 'clipboard'"
+msgstr ""
+
+#: filechooser.lua:327
+#: filehistory.lua:118
+#: readerchooser.lua:270
+msgid ""
+"previous item"
+msgstr ""
+
+#: filechooser.lua:368
+#: filehistory.lua:156
+msgid ""
+"previous page"
+msgstr ""
+
 #: unireader.lua:2634
 msgid ""
 "previous/next page"
+msgstr ""
+
+#: font.lua:83
+msgid ""
+"readers: reading position info"
+msgstr ""
+
+#: filechooser.lua:302
+msgid ""
+"refresh file list"
+msgstr ""
+
+#: filehistory.lua:273
+#: fileinfo.lua:224
+msgid ""
+"refresh page manually"
+msgstr ""
+
+#: readerchooser.lua:291
+msgid ""
+"remember reader choice for this file"
+msgstr ""
+
+#: readerchooser.lua:283
+msgid ""
+"remember reader choice for this type"
+msgstr ""
+
+#: filechooser.lua:461
+msgid ""
+"rename file"
 msgstr ""
 
 #: unireader.lua:3009
@@ -791,6 +1174,11 @@ msgid ""
 "rotate screen counterclockwise"
 msgstr ""
 
+#: filechooser.lua:624
+msgid ""
+"run calculator"
+msgstr ""
+
 #: pdfreader.lua:71
 msgid ""
 "save all attachments on this page"
@@ -811,14 +1199,29 @@ msgid ""
 "search and highlight text"
 msgstr ""
 
+#: filechooser.lua:532
+msgid ""
+"search files (single space matches all)"
+msgstr ""
+
 #: djvureader.lua:47
 msgid ""
 "select djvu page rendering mode"
 msgstr ""
 
+#: font.lua:84
+msgid ""
+"selectmenu: item shortcuts"
+msgstr ""
+
 #: unireader.lua:2991
 msgid ""
 "set crop mode"
+msgstr ""
+
+#: filechooser.lua:484
+msgid ""
+"set file manager mode"
 msgstr ""
 
 #: unireader.lua:2959
@@ -836,6 +1239,19 @@ msgid ""
 "show bookmarks"
 msgstr ""
 
+#: filechooser.lua:599
+msgid ""
+"show content of 'clipboard'"
+msgstr ""
+
+#: filechooser.lua:402
+msgid ""
+"show document information"
+msgstr ""
+
+#: filechooser.lua:516
+#: filehistory.lua:111
+#: fileinfo.lua:230
 #: unireader.lua:2817
 msgid ""
 "show help page"
@@ -844,6 +1260,11 @@ msgstr ""
 #: unireader.lua:2866
 msgid ""
 "show jump history"
+msgstr ""
+
+#: filechooser.lua:523
+msgid ""
+"show last documents"
 msgstr ""
 
 #: unireader.lua:2832
@@ -856,6 +1277,7 @@ msgid ""
 "show/hide link underlines"
 msgstr ""
 
+#: filechooser.lua:591
 #: unireader.lua:2823
 msgid ""
 "toggle battery level logging"
@@ -891,9 +1313,21 @@ msgid ""
 "toggle right-to-left mode on/off"
 msgstr ""
 
+#: commands.lua:167
+#: commands.lua:183
+msgid ""
+"toggle screen saver"
+msgstr ""
+
 #: unireader.lua:2902
 msgid ""
 "toggle showing page overlap areas"
+msgstr ""
+
+#: commands.lua:198
+#: commands.lua:214
+msgid ""
+"toggle usb drive mode"
 msgstr ""
 
 #: crereader.lua:895
@@ -916,6 +1350,7 @@ msgid ""
 "use document font as default font"
 msgstr ""
 
+#: koptreader.lua:87
 #: pdfreader.lua:22
 msgid ""
 "wrong or missing password"
