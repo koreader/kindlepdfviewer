@@ -95,7 +95,7 @@ function Commands:del(keycode, modifier, keydescr)
 
 	if not keydescr then
 		for k,v in pairs(self.map) do
-			if v.keydef.keycode == keycode 
+			if v.keydef.keycode == keycode
 			and v.keydef.modifier == modifier then
 				keydef = k
 				break
@@ -164,7 +164,7 @@ function Commands:new(obj)
 	setmetatable(obj.map, mt)
 
 	obj:add(KEY_INTO_SCREEN_SAVER, nil, "Slider",
-		"toggle screen saver",
+		_("toggle screen saver"),
 		function()
 			--os.execute("echo 'screensaver in' >> /mnt/us/event_test.txt")
 			if G_charging_mode == false and G_screen_saver_mode == false then
@@ -180,7 +180,7 @@ function Commands:new(obj)
 		end
 	)
 	obj:add(KEY_OUTOF_SCREEN_SAVER, nil, "Slider",
-		"toggle screen saver",
+		_("toggle screen saver"),
 		function()
 			--os.execute("echo 'screensaver out' >> /mnt/us/event_test.txt")
 			if G_screen_saver_mode == true and G_charging_mode == false then
@@ -195,7 +195,7 @@ function Commands:new(obj)
 		end
 	)
 	obj:add(KEY_CHARGING, nil, "plugin/out usb",
-		"toggle usb drive mode",
+		_("toggle usb drive mode"),
 		function()
 			--os.execute("echo 'usb in' >> /mnt/us/event_test.txt")
 			if G_charging_mode == false and G_screen_saver_mode == false then
@@ -211,7 +211,7 @@ function Commands:new(obj)
 		end
 	)
 	obj:add(KEY_NOT_CHARGING, nil, "plugin/out usb",
-		"toggle usb drive mode",
+		_("toggle usb drive mode"),
 		function()
 			--os.execute("echo 'usb out' >> /mnt/us/event_test.txt")
 			if G_charging_mode == true and G_screen_saver_mode == false then

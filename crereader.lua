@@ -776,7 +776,7 @@ function CREReader:adjustCreReaderCommands()
 			if item_no then
 				Debug(face_list[item_no])
 				InfoMessage:inform(
-					string.format(_("Formatting with %s ", face_list[item_no])),
+					string.format(_("Formatting with %s "), face_list[item_no]),
 					DINFO_NODELAY, 1, MSG_AUX)
 				self.header_font = face_list[item_no]
 				G_reader_settings:saveSetting("header_font", self.header_font)

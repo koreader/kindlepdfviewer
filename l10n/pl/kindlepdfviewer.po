@@ -2,7 +2,7 @@
 # Copyright (C) 2005-2013 KOReader Development Team
 # 
 # Translators:
-# houqp <dave2008713@gmail.com>, 2013
+# danan_72 <piotr.martyni@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: KindlePdfViewer\n"
@@ -10,16 +10,16 @@ msgstr ""
 "POT-Creation-Date: 2013-05-11 15:44+0000\n"
 "PO-Revision-Date: 2013-05-11 16:21+0000\n"
 "Last-Translator: houqp <dave2008713@gmail.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/kindlepdfviewer/language/zh_CN/)\n"
+"Language-Team: Polish (http://www.transifex.com/projects/p/kindlepdfviewer/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_CN\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: reader.lua:66
 msgid "                          (floating point notation, e.g. \"1.5\")"
-msgstr ""
+msgstr "(notacja liczby zmiennoprzecinkowej, np. \"1.5\")"
 
 #: filechooser.lua:78
 msgid " - Press H for help"
@@ -27,11 +27,11 @@ msgstr ""
 
 #: unireader.lua:2366
 msgid " hits '"
-msgstr ""
+msgstr "trafień '"
 
 #: unireader.lua:2101 unireader.lua:2195 unireader.lua:2264
 msgid " items)"
-msgstr ""
+msgstr "elementów)"
 
 #: pdfreader.lua:90
 msgid "%d attachment(s) saved "
@@ -47,11 +47,11 @@ msgstr ""
 
 #: unireader.lua:2374
 msgid "' not found in document "
-msgstr ""
+msgstr "' nie istnieje w dokumencie"
 
 #: unireader.lua:2366
 msgid "' page "
-msgstr ""
+msgstr "' strona"
 
 #: crereader.lua:1016
 msgid "'%s' not found in document "
@@ -59,15 +59,15 @@ msgstr ""
 
 #: reader.lua:98
 msgid "(unknown version)"
-msgstr ""
+msgstr "(nieznana wersja)"
 
 #: reader.lua:65
 msgid "-d, --debug               start in debug mode"
-msgstr ""
+msgstr "-d, --debug uruchomienie w trybie debugowania"
 
 #: reader.lua:67
 msgid "-h, --help                show this usage help"
-msgstr ""
+msgstr "-h, --help wyświetlenie pomocy dotyczącej użycia"
 
 #: fileinfo.lua:142
 msgid "Accessed"
@@ -79,15 +79,15 @@ msgstr ""
 
 #: unireader.lua:2932
 msgid "Align the viewport to "
-msgstr ""
+msgstr "Wyrównaj obszar do"
 
 #: crereader.lua:846 unireader.lua:2695
 msgid "Already first jump "
-msgstr ""
+msgstr "Dotarłeś już do pierwszego przeskoku"
 
 #: crereader.lua:858 unireader.lua:2712
 msgid "Already last jump "
-msgstr ""
+msgstr "Dotarłeś już do ostatniego przeskoku"
 
 #: djvureader.lua:63
 msgid "BLACK & WHITE (for b&w pages only, much faster)"
@@ -95,19 +95,19 @@ msgstr ""
 
 #: unireader.lua:2827
 msgid "Battery logging "
-msgstr ""
+msgstr "Logowanie zużycia baterii"
 
 #: crereader.lua:814 unireader.lua:2848
 msgid "Bookmark added"
-msgstr ""
+msgstr "Zakładka została dodana"
 
 #: crereader.lua:812 unireader.lua:2846
 msgid "Bookmark already exists"
-msgstr ""
+msgstr "Zakładka już istnieje"
 
 #: unireader.lua:2195
 msgid "Bookmarks ("
-msgstr ""
+msgstr "Zakładki ("
 
 #: crereader.lua:432
 msgid "Bookmarks (%d) items"
@@ -163,7 +163,7 @@ msgstr ""
 
 #: unireader.lua:2158
 msgid "Current Page "
-msgstr ""
+msgstr "Bieżąca strona"
 
 #: crereader.lua:368
 msgid "Current Page %d"
@@ -195,7 +195,7 @@ msgstr ""
 
 #: reader.lua:54
 msgid "Error opening document "
-msgstr ""
+msgstr "Błąd otwarcia dokumentu"
 
 #: crereader.lua:92
 msgid "Error unzipping file. "
@@ -203,7 +203,7 @@ msgstr ""
 
 #: unireader.lua:2113
 msgid "External links unsupported "
-msgstr ""
+msgstr "Łącza zewnętrzne nieobsługiwane"
 
 #: crereader.lua:935
 msgid "External stylesheet"
@@ -215,43 +215,43 @@ msgstr ""
 
 #: unireader.lua:2740
 msgid "Fit zoom to content"
-msgstr ""
+msgstr "Dopasowanie do tekstu/zawartości"
 
 #: unireader.lua:2746
 msgid "Fit zoom to content half-width"
-msgstr ""
+msgstr "Dopas. do połowy szerokości tekstu/zawartości"
 
 #: unireader.lua:2745
 msgid "Fit zoom to content half-width with margin"
-msgstr ""
+msgstr "Dopas. do połowy szer. tekstu/zawartości z marginesami"
 
 #: unireader.lua:2742
 msgid "Fit zoom to content height"
-msgstr ""
+msgstr "Dopasowanie do wysokości tekstu/zawartości"
 
 #: unireader.lua:2744
 msgid "Fit zoom to content height with panoraming"
-msgstr ""
+msgstr "Dopas. do wysokości tekstu/zawartości z panoram."
 
 #: unireader.lua:2741
 msgid "Fit zoom to content width"
-msgstr ""
+msgstr "Dopasowanie do szerokości tekstu/zawartości"
 
 #: unireader.lua:2743
 msgid "Fit zoom to content width with panoraming"
-msgstr ""
+msgstr "Dopas. do szerokości tekstu/zawartości z panoram."
 
 #: unireader.lua:2737
 msgid "Fit zoom to page"
-msgstr ""
+msgstr "Dopasowanie do strony"
 
 #: unireader.lua:2739
 msgid "Fit zoom to page height"
-msgstr ""
+msgstr "Dopasowanie do wysokości strony"
 
 #: unireader.lua:2738
 msgid "Fit zoom to page width"
-msgstr ""
+msgstr "Dopasowanie do szerokości strony"
 
 #: fileinfo.lua:186
 msgid "Folder Information"
@@ -275,7 +275,7 @@ msgstr ""
 
 #: unireader.lua:2962
 msgid "Full refresh every N pages (0-200)"
-msgstr ""
+msgstr "Pełne odświeżanie po N stronach (0-200)"
 
 #: crereader.lua:770
 msgid "Header Font "
@@ -283,15 +283,15 @@ msgstr ""
 
 #: unireader.lua:2264
 msgid "HighLights ("
-msgstr ""
+msgstr "Podkreślenia ("
 
 #: reader.lua:72
 msgid "If you don't pass any path, the last viewed document will be opened"
-msgstr ""
+msgstr "Jeśli nie wskażesz żadnej ścieżki, zostanie otwarty ostatnio używany dokument"
 
 #: reader.lua:69
 msgid "If you give the name of a directory instead of a file path, a file"
-msgstr ""
+msgstr "Jeśli podasz nazwę katalogu zamiast ścieżki do pliku, plik"
 
 #: fileinfo.lua:29
 msgid "Invalid"
@@ -299,7 +299,7 @@ msgstr ""
 
 #: crereader.lua:372 unireader.lua:2162
 msgid "Jump History"
-msgstr ""
+msgstr "Historia przeskoków"
 
 #: crereader.lua:820
 msgid "Jump between bookmarks"
@@ -319,35 +319,35 @@ msgstr ""
 
 #: unireader.lua:3021
 msgid "Manual crop "
-msgstr ""
+msgstr "Ręczne przycięcie"
 
 #: unireader.lua:3013
 msgid "Manual crop setting removed "
-msgstr ""
+msgstr "Ustawienia ręcznego przycięcia zostały usunięte"
 
 #: unireader.lua:3006
 msgid "Manual crop setting saved "
-msgstr ""
+msgstr "Ustawienia ręcznego przycięcia zostały zapisane"
 
 #: unireader.lua:3245
 msgid "Max X-panning step: "
-msgstr ""
+msgstr "Maksymalny krok X-przes.:"
 
 #: unireader.lua:3276
 msgid "Max Y-panning step: "
-msgstr ""
+msgstr "Maksymalny krok Y-przes.:"
 
 #: unireader.lua:3261
 msgid "Min X-panning step: "
-msgstr ""
+msgstr "Minimalny krok X-przes.:"
 
 #: unireader.lua:3292
 msgid "Min Y-panning step is "
-msgstr ""
+msgstr "Minimalny krok Y-przes.:"
 
 #: unireader.lua:2672
 msgid "Min zoom step: "
-msgstr ""
+msgstr "Minimalny krok powiększenia:"
 
 #: fileinfo.lua:141
 msgid "Modified"
@@ -359,15 +359,15 @@ msgstr ""
 
 #: unireader.lua:3250 unireader.lua:3257
 msgid "New X-panning step: "
-msgstr ""
+msgstr "Nowy krok X-przes.:"
 
 #: unireader.lua:3281 unireader.lua:3288
 msgid "New Y-panning step: "
-msgstr ""
+msgstr "Nowy krok Y-przes.:"
 
 #: unireader.lua:1874
 msgid "New gamma is"
-msgstr ""
+msgstr "Nowa wartość gamma to "
 
 #: unireader.lua:3682
 msgid "New page bbox "
@@ -375,19 +375,19 @@ msgstr ""
 
 #: unireader.lua:2647
 msgid "New zoom is"
-msgstr ""
+msgstr "Nowy rozmiar to "
 
 #: unireader.lua:2660 unireader.lua:2668
 msgid "New zoom step: "
-msgstr ""
+msgstr "Nowy krok powiększenia:"
 
 #: unireader.lua:2259
 msgid "No HighLights found "
-msgstr ""
+msgstr "Brak podkreśleń"
 
 #: crereader.lua:478 unireader.lua:2094 unireader.lua:2573
 msgid "No Table of Contents "
-msgstr ""
+msgstr "Brak spisu treści"
 
 #: pdfreader.lua:88
 msgid "No attachments found "
@@ -399,15 +399,15 @@ msgstr ""
 
 #: unireader.lua:2191
 msgid "No bookmarks found "
-msgstr ""
+msgstr "Brak zakładek"
 
 #: crereader.lua:363 unireader.lua:2153
 msgid "No jump history found "
-msgstr ""
+msgstr "Brak historii przeskoków"
 
 #: unireader.lua:2950
 msgid "No reader associated"
-msgstr ""
+msgstr "Żaden czytnik nie jest powiązany"
 
 #: filehistory.lua:293
 msgid "No reading history "
@@ -415,7 +415,7 @@ msgstr ""
 
 #: unireader.lua:396
 msgid "No text available "
-msgstr ""
+msgstr "Brak tekstu"
 
 #: unireader.lua:407
 msgid "No visible text "
@@ -427,7 +427,7 @@ msgstr ""
 
 #: reader.lua:36
 msgid "Opening document... "
-msgstr "文档读取中……"
+msgstr "Otwieranie dokumentu..."
 
 #: filechooser.lua:236
 msgid "Page %d of %d"
@@ -443,7 +443,7 @@ msgstr ""
 
 #: unireader.lua:2807
 msgid "Page:"
-msgstr ""
+msgstr "Strona:"
 
 #: fileinfo.lua:118 fileinfo.lua:128
 msgid "Path"
@@ -456,15 +456,15 @@ msgstr ""
 #: reader.lua:63
 msgid ""
 "Read PDF/DjVu/ePub/MOBI/FB2/CHM/HTML/TXT/DOC/RTF/JPEG on your E-Ink reader"
-msgstr ""
+msgstr "Czytaj PDF/DjVu/ePub/MOBI/FB2/CHM/HTML/TXT/DOC/RTF/JPEG na swoim czytniku E-Ink"
 
 #: unireader.lua:2954
 msgid "Reader association cleared"
-msgstr ""
+msgstr "Powiązania czytnika zostały wyczyszczone"
 
 #: unireader.lua:2942
 msgid "Reader preferences reset"
-msgstr ""
+msgstr "Ustawienia czytnika zostały zresetowane"
 
 #: readerchooser.lua:45
 msgid "Remember this file(F)"
@@ -484,7 +484,7 @@ msgstr ""
 
 #: unireader.lua:2922
 msgid "Right-To-Left mode "
-msgstr ""
+msgstr "Tryb czytania od prawej do lewej"
 
 #: pdfreader.lua:80
 msgid "Saving attachments..."
@@ -492,7 +492,7 @@ msgstr ""
 
 #: reader.lua:75
 msgid "See http://github.com/koreader/kindlepdfviewer for more info."
-msgstr ""
+msgstr "Zobacz http://github.com/koreader/kindlepdfviewer, aby uzyskać więcej informacji."
 
 #: djvureader.lua:58
 msgid "Select DjVu page rendering mode"
@@ -504,7 +504,7 @@ msgstr ""
 
 #: unireader.lua:2749
 msgid "Select mode to zoom pages"
-msgstr ""
+msgstr "Wybierz tryb powiększenia"
 
 #: filechooser.lua:663
 msgid "Set file manager mode"
@@ -524,7 +524,7 @@ msgstr ""
 
 #: unireader.lua:2101
 msgid "Table of Contents ("
-msgstr ""
+msgstr "Spis treści ("
 
 #: crereader.lua:742
 msgid "Text Font"
@@ -532,7 +532,7 @@ msgstr ""
 
 #: reader.lua:74
 msgid "This software is licensed under the GPLv3."
-msgstr ""
+msgstr "Ten program jest na licencji GPLv3."
 
 #: fileinfo.lua:133
 msgid "Unpacked"
@@ -552,11 +552,11 @@ msgstr ""
 
 #: unireader.lua:2736
 msgid "Zoom by value"
-msgstr ""
+msgstr "Powiększenie przez wartość"
 
 #: crereader.lua:808 unireader.lua:2842
 msgid "add bookmark to current page"
-msgstr ""
+msgstr "dodaj zakładkę do bieżącej strony"
 
 #: filehistory.lua:279 fileinfo.lua:252 readerchooser.lua:306
 msgid "back"
@@ -564,7 +564,7 @@ msgstr ""
 
 #: unireader.lua:2932
 msgid "bottom"
-msgstr ""
+msgstr "dół"
 
 #: crereader.lua:733
 msgid "change document font"
@@ -592,7 +592,7 @@ msgstr ""
 
 #: reader.lua:70
 msgid "chooser will show up and let you select a PDF|DJVU file"
-msgstr ""
+msgstr "pojawi się okno wyboru pliku PDF|DJVU"
 
 #: crereader.lua:916
 msgid "clear external styles"
@@ -600,15 +600,15 @@ msgstr ""
 
 #: unireader.lua:2946
 msgid "clear reader association with this doc"
-msgstr ""
+msgstr "wyczyść powiązanie czytnika z tym plikiem"
 
 #: unireader.lua:3508
 msgid "close document"
-msgstr ""
+msgstr "zamknij dokument"
 
 #: filechooser.lua:490 unireader.lua:3501
 msgid "configure event notifications"
-msgstr ""
+msgstr "konf. powiadamiania o zdarzeniach"
 
 #: filechooser.lua:544
 msgid "copy file to 'clipboard'"
@@ -616,7 +616,7 @@ msgstr ""
 
 #: unireader.lua:2807
 msgid "current page "
-msgstr ""
+msgstr "bieżąca strona"
 
 #: crereader.lua:717
 msgid "current: "
@@ -636,7 +636,7 @@ msgstr ""
 
 #: unireader.lua:2716
 msgid "decrease/increase gamma 10%"
-msgstr ""
+msgstr "zmniejsz/zwiększ gamma o 10%"
 
 #: filechooser.lua:497
 msgid "decrease/increase sound volume"
@@ -644,7 +644,7 @@ msgstr ""
 
 #: unireader.lua:2654
 msgid "decrease/increase zoom step"
-msgstr ""
+msgstr "zmniejsz/zwiększ krok powiększenia"
 
 #: filehistory.lua:250
 msgid "delete history entry"
@@ -656,7 +656,7 @@ msgstr ""
 
 #: unireader.lua:3021
 msgid "disabled"
-msgstr ""
+msgstr "wyłączony"
 
 #: filehistory.lua:183
 msgid "document details"
@@ -664,11 +664,11 @@ msgstr ""
 
 #: unireader.lua:3021
 msgid "enabled"
-msgstr ""
+msgstr "włączony"
 
 #: unireader.lua:3301
 msgid "enter highlight mode"
-msgstr ""
+msgstr "wejście w tryb podkreślania"
 
 #: filechooser.lua:632
 msgid "exit"
@@ -692,19 +692,19 @@ msgstr ""
 
 #: crereader.lua:831 unireader.lua:2678
 msgid "go backward in jump history"
-msgstr ""
+msgstr "krok wstecz w historii przeskoków"
 
 #: crereader.lua:851 unireader.lua:2699
 msgid "go forward in jump history"
-msgstr ""
+msgstr "krok naprzód w historii przeskoków"
 
 #: unireader.lua:2803
 msgid "go to page"
-msgstr ""
+msgstr "idź do strony"
 
 #: unireader.lua:2622
 msgid "go to prev/next TOC entry"
-msgstr ""
+msgstr "idź do poprz./nast. pozycji spisu treści"
 
 #: fileinfo.lua:120
 msgid "goto folder"
@@ -724,11 +724,11 @@ msgstr ""
 
 #: unireader.lua:3236
 msgid "increase/decrease X-panning step"
-msgstr ""
+msgstr "zmniejsz/zwiększ krok X-przes."
 
 #: unireader.lua:3267
 msgid "increase/decrease Y-panning step"
-msgstr ""
+msgstr "zmniejsz/zwiększ krok Y-przes."
 
 #: crereader.lua:660
 msgid "increase/decrease font size"
@@ -748,7 +748,7 @@ msgstr ""
 
 #: unireader.lua:3026
 msgid "invert page bbox"
-msgstr ""
+msgstr "odwrócenie strony bbox"
 
 #: filehistory.lua:195
 msgid "invoke search inputbox"
@@ -760,11 +760,11 @@ msgstr ""
 
 #: unireader.lua:2853
 msgid "jump between bookmarks"
-msgstr ""
+msgstr "przeskok pomiędzy zakładkami"
 
 #: crereader.lua:703 unireader.lua:2724
 msgid "jump to 0%, 10% .. 90%, 100% of document"
-msgstr ""
+msgstr "przeskok do 0%, 10% .. 90, 100% ogl. dokumentu"
 
 #: fileinfo.lua:244
 msgid "last documents"
@@ -776,11 +776,11 @@ msgstr ""
 
 #: unireader.lua:2979
 msgid "manual full screen refresh"
-msgstr ""
+msgstr "ręczne odświeżenie ekranu"
 
 #: unireader.lua:3036
 msgid "modify page bbox"
-msgstr ""
+msgstr "edycja strony bbox"
 
 #: filechooser.lua:557
 msgid "move file to 'clipboard'"
@@ -800,19 +800,19 @@ msgstr ""
 
 #: unireader.lua:2922
 msgid "off"
-msgstr ""
+msgstr "wył."
 
 #: unireader.lua:2827
 msgid "off "
-msgstr ""
+msgstr "wył."
 
 #: unireader.lua:2922
 msgid "on"
-msgstr ""
+msgstr "wł."
 
 #: unireader.lua:2827
 msgid "on "
-msgstr ""
+msgstr "wł."
 
 #: crereader.lua:713
 msgid "open 'go to position' input box"
@@ -832,7 +832,7 @@ msgstr ""
 
 #: unireader.lua:3338
 msgid "page links shortcut keys"
-msgstr ""
+msgstr "klawisze skrótów do łączy strony"
 
 #: crereader.lua:887
 msgid "pan %d pixels downwards"
@@ -844,7 +844,7 @@ msgstr ""
 
 #: unireader.lua:3053
 msgid "pan the active view"
-msgstr ""
+msgstr "przes. aktywny widok"
 
 #: filechooser.lua:575
 msgid "paste file(s) from 'clipboard'"
@@ -860,7 +860,7 @@ msgstr ""
 
 #: unireader.lua:2634
 msgid "previous/next page"
-msgstr ""
+msgstr "poprzednia/następna strona"
 
 #: font.lua:83
 msgid "readers: reading position info"
@@ -888,27 +888,27 @@ msgstr ""
 
 #: unireader.lua:3009
 msgid "reset crop"
-msgstr ""
+msgstr "zresetuj przycięcie"
 
 #: unireader.lua:2938
 msgid "reset default reader preferences"
-msgstr ""
+msgstr "przywróć domyślne ustawienia czytnika"
 
 #: unireader.lua:2871
 msgid "rotate 10° clockwise"
-msgstr ""
+msgstr "obrót ekr. o 10° zgodnie ze wskaz. zeg."
 
 #: unireader.lua:2886
 msgid "rotate 10° counterclockwise"
-msgstr ""
+msgstr "obrót ekr. o 10° przeciwnie do wskaz. zeg."
 
 #: unireader.lua:2876
 msgid "rotate screen 90° clockwise"
-msgstr ""
+msgstr "obrót ekr. o 90° zgodnie ze wskaz. zeg."
 
 #: unireader.lua:2891
 msgid "rotate screen 90° counterclockwise"
-msgstr ""
+msgstr "obrót ekr. o 90° przeciwnie do wskaz. zeg."
 
 #: crereader.lua:608
 msgid "rotate screen clockwise"
@@ -936,7 +936,7 @@ msgstr ""
 
 #: unireader.lua:3314
 msgid "search and highlight text"
-msgstr ""
+msgstr "znajdź i podkreśl tekst"
 
 #: filechooser.lua:532
 msgid "search files (single space matches all)"
@@ -952,7 +952,7 @@ msgstr ""
 
 #: unireader.lua:2991
 msgid "set crop mode"
-msgstr ""
+msgstr "ustaw tryb przycięcia"
 
 #: filechooser.lua:484
 msgid "set file manager mode"
@@ -960,15 +960,15 @@ msgstr ""
 
 #: unireader.lua:2959
 msgid "set full screen refresh count"
-msgstr ""
+msgstr "ustaw licznik pełnego odświeżania ekranu"
 
 #: unireader.lua:3308
 msgid "show all highlights"
-msgstr ""
+msgstr "pokaż wszystkie podkreślenia"
 
 #: unireader.lua:2837
 msgid "show bookmarks"
-msgstr ""
+msgstr "pokaż zakładki"
 
 #: filechooser.lua:599
 msgid "show content of 'clipboard'"
@@ -980,11 +980,11 @@ msgstr ""
 
 #: filechooser.lua:516 filehistory.lua:111 fileinfo.lua:230 unireader.lua:2817
 msgid "show help page"
-msgstr ""
+msgstr "pokaż stronę pomocy"
 
 #: unireader.lua:2866
 msgid "show jump history"
-msgstr ""
+msgstr "pokaz historię przeskoków"
 
 #: filechooser.lua:523
 msgid "show last documents"
@@ -992,19 +992,19 @@ msgstr ""
 
 #: unireader.lua:2832
 msgid "show table of content (TOC)"
-msgstr ""
+msgstr "pokaż spis treści"
 
 #: unireader.lua:3329
 msgid "show/hide link underlines"
-msgstr ""
+msgstr "pokaż/ukryj podkreślenia łączy"
 
 #: filechooser.lua:591 unireader.lua:2823
 msgid "toggle battery level logging"
-msgstr ""
+msgstr "przełącznik logowania zużycia baterii"
 
 #: unireader.lua:3017
 msgid "toggle crop mode"
-msgstr ""
+msgstr "przełącz tryb przycięcia"
 
 #: crereader.lua:965
 msgid "toggle embedded stylesheet"
@@ -1016,15 +1016,15 @@ msgstr ""
 
 #: unireader.lua:3041
 msgid "toggle info box"
-msgstr ""
+msgstr "przełącznik informacji"
 
 #: unireader.lua:2910
 msgid "toggle page-keys mode: viewport/page"
-msgstr ""
+msgstr "przełącznik trybu klaw. strony: obszar/strona"
 
 #: unireader.lua:2918
 msgid "toggle right-to-left mode on/off"
-msgstr ""
+msgstr "przełącznik trybu czyt. od prawej do lewej wł./wył."
 
 #: commands.lua:167 commands.lua:183
 msgid "toggle screen saver"
@@ -1032,7 +1032,7 @@ msgstr ""
 
 #: unireader.lua:2902
 msgid "toggle showing page overlap areas"
-msgstr ""
+msgstr "przełącznik wyświetl. nakładających się obszarów strony"
 
 #: commands.lua:198 commands.lua:214
 msgid "toggle usb drive mode"
@@ -1044,11 +1044,11 @@ msgstr ""
 
 #: unireader.lua:2932
 msgid "top "
-msgstr ""
+msgstr "góra"
 
 #: reader.lua:62
 msgid "usage: ./reader.lua [OPTION] ... path"
-msgstr ""
+msgstr "użycie: ./reader.lua [OPCJE] ... ścieżka"
 
 #: crereader.lua:790
 msgid "use document font as default font"
@@ -1060,36 +1060,36 @@ msgstr ""
 
 #: unireader.lua:2643
 msgid "zoom out/in "
-msgstr ""
+msgstr "pomniejszenie/powiększenie"
 
 #: unireader.lua:2768
 msgid "zoom to fit content"
-msgstr ""
+msgstr "dopasowanie do tekstu/zawartości"
 
 #: unireader.lua:2798
 msgid "zoom to fit content 2-column mode"
-msgstr ""
+msgstr "dopasowanie do tekstu/zawartości w trybie 2-kolumnowym"
 
 #: unireader.lua:2788
 msgid "zoom to fit content height"
-msgstr ""
+msgstr "dopasowanie do wysokości tekstu/zawartości"
 
 #: unireader.lua:2778
 msgid "zoom to fit content width"
-msgstr ""
+msgstr "dopasowanie do szerokości tekstu/zawartości"
 
 #: unireader.lua:2793
 msgid "zoom to fit margin 2-column mode"
-msgstr ""
+msgstr "dopasowanie do marginesu w trybie 2-kolumnowym"
 
 #: unireader.lua:2763
 msgid "zoom to fit page"
-msgstr ""
+msgstr "dopasowanie do strony"
 
 #: unireader.lua:2783
 msgid "zoom to fit page height"
-msgstr ""
+msgstr "dopasowanie do wysokości strony"
 
 #: unireader.lua:2773
 msgid "zoom to fit page width"
-msgstr ""
+msgstr "dopasowanie do szerokości strony"
