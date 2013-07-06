@@ -62,7 +62,7 @@ function KOPTReader:makeContext()
 	kc:setDefectSize(self.configurable.defect_size)
 	kc:setLineSpacing(self.configurable.line_spacing)
 	kc:setWordSpacing(self.configurable.word_spacing)
-	
+
 	return kc
 end
 
@@ -72,7 +72,7 @@ function KOPTReader:open(filename)
 	-- to the maximum size you want it to grow
 	self.filename = filename
 	local file_type = string.lower(string.match(filename, ".+%.([^.]+)") or "")
-	
+
 	if file_type == "pdf" then
 		local ok
 		ok, self.doc = pcall(pdf.openDocument, filename, self.cache_document_size)
@@ -84,7 +84,7 @@ function KOPTReader:open(filename)
 			if not password or not self.doc:authenticatePassword(password) then
 				self.doc:close()
 				self.doc = nil
-				return false, "wrong or missing password"
+				return false, _("wrong or missing password")
 			end
 			-- password wrong or not entered
 		end
@@ -93,13 +93,13 @@ function KOPTReader:open(filename)
 			-- for PDFs, they might trigger errors later when accessing page tree
 			self.doc:close()
 			self.doc = nil
-			return false, "damaged page tree"
+			return false, _("damaged page tree")
 		end
 		return true
-		
+
 	elseif file_type == "djvu" then
 		if not validDJVUFile(filename) then
-			return false, "Not a valid DjVu file"
+			return false, _("Not a valid DjVu file")
 		end
 
 		local ok
@@ -121,21 +121,21 @@ function KOPTReader:showOrigPage()
 		-- TODO: error handling
 		return nil
 	end
-	
+
 	local dc = DrawContext.new()
 	self.globalzoom = width / pwidth
 	if height / pheight < self.globalzoom then
 		self.globalzoom = height / pheight
 	end
 	dc:setZoom(self.globalzoom)
-	
+
 	self.offset_x = 0
 	self.offset_y = 0
-	
+
 	local pagehash = no..'_orig_full_page'
 	if self.cache[pagehash] ~= nil then
 		page:close()
-		
+
 		local bb = self.cache[pagehash].bb
 		self.dest_x = 0
 		self.dest_y = 0
@@ -152,7 +152,7 @@ function KOPTReader:showOrigPage()
 		fb:refresh(1)
 		return
 	end
-	
+
 	local tile = { x = 0, y = 0, w = width, h = height }
 	-- can we cache the full page?
 	local max_cache = self.cache_max_memsize
@@ -182,7 +182,7 @@ function KOPTReader:showOrigPage()
 	Debug("rendering page", no)
 	page:draw(dc, self.cache[pagehash].bb, 0, 0, self.render_mode)
 	page:close()
-	
+
 	local bb = self.cache[pagehash].bb
 	self.dest_x = 0
 	self.dest_y = 0
@@ -213,7 +213,7 @@ function KOPTReader:drawOrCache(no, preCache)
 		-- TODO: error handling
 		return nil
 	end
-	
+
 	local kc = self:getContext(page, no, preCache)
 	self.globalzoom_mode = self.ZOOM_FIT_TO_CONTENT_WIDTH_PAN
 	-- check if we have relevant cache contents
@@ -225,7 +225,7 @@ function KOPTReader:drawOrCache(no, preCache)
 		-- requested part is within cached tile
 		-- ...so properly clean page
 		page:close()
-		
+
 		self.min_offset_x = fb.bb:getWidth() - self.cache[pagehash].w
 		self.min_offset_y = fb.bb:getHeight() - self.cache[pagehash].h
 		if(self.min_offset_x > 0) then
@@ -234,11 +234,11 @@ function KOPTReader:drawOrCache(no, preCache)
 		if(self.min_offset_y > 0) then
 			self.min_offset_y = 0
 		end
-		
+
 		if self.offset_y <= -201253 then
 			self.offset_y = self.min_offset_y
 		end
-		
+
 		-- offset_x_in_page & offset_y_in_page is the offset within zoomed page
 		-- they are always positive.
 		-- you can see self.offset_x_& self.offset_y as the offset within
@@ -247,7 +247,7 @@ function KOPTReader:drawOrCache(no, preCache)
 		local offset_y_in_page = -self.offset_y
 		if offset_x_in_page < 0 then offset_x_in_page = 0 end
 		if offset_y_in_page < 0 then offset_y_in_page = 0 end
-		
+
 		Debug("cached page offset_x",self.offset_x,"offset_y",self.offset_y,"min_offset_x",self.min_offset_x,"min_offset_y",self.min_offset_y)
 		-- ...and give it more time to live (ttl), except if we're precaching
 		if not preCache then
@@ -261,7 +261,7 @@ function KOPTReader:drawOrCache(no, preCache)
 			offset_x_in_page - self.cache[pagehash].x,
 			offset_y_in_page - self.cache[pagehash].y
 	end
-	
+
 	-- okay, we do not have it in cache yet.
 	-- so render now.
 	-- start off with the requested area
@@ -296,7 +296,8 @@ function KOPTReader:drawOrCache(no, preCache)
 	else
 		if use_threads and self.precache_kc ~= nil then
 			if self.precache_kc:isPreCache() == 1 and self.cache[self.cached_pagehash] then
-				InfoMessage:inform("Rendering in background...", DINFO_DELAY, 1, MSG_WARN)
+				InfoMessage:inform(
+					_("Rendering in background..."), DINFO_DELAY, 1, MSG_WARN)
 				return self.cached_pagehash, self.cached_offset_x, self.cached_offset_y
 			elseif self.precache_kc:isPreCache() == 0 then -- cache is ready to be written
 				Debug("write cache", self.precache_pagehash)
@@ -306,7 +307,7 @@ function KOPTReader:drawOrCache(no, preCache)
 				kc = self:getContext(page, no, true)
 				page:reflow(kc, self.render_mode)
 				return self:writeToCache(kc, page, pagehash, false)
-			else 
+			else
 				Debug("ERROR something wrong happens .. why cached page is missing?")
 				return nil
 			end
@@ -364,7 +365,7 @@ function KOPTReader:writeToCache(kc, page, pagehash, preCache)
 	local fullwidth, fullheight = kc:getPageDim()
 	self.reflow_zoom = kc:getZoom()
 	Debug("page::reflowPage:", "fullwidth:", fullwidth, "fullheight:", fullheight)
-	
+
 	if (fullwidth * fullheight / 2) <= max_cache then
 		-- yes we can, so do this with offset 0, 0
 		tile.x = 0
@@ -395,11 +396,11 @@ function KOPTReader:writeToCache(kc, page, pagehash, preCache)
 	Debug("page::drawReflowedPage", "width:", self.cache[pagehash].w, "height:", self.cache[pagehash].h)
 	page:rfdraw(kc, self.cache[pagehash].bb)
 	page:close()
-	
+
 	if preCache then
 		self.precache_kc = nil
 	end
-	
+
 	self.min_offset_x = fb.bb:getWidth() - self.cache[pagehash].w
 	self.min_offset_y = fb.bb:getHeight() - self.cache[pagehash].h
 	if(self.min_offset_x > 0) then
@@ -412,12 +413,12 @@ function KOPTReader:writeToCache(kc, page, pagehash, preCache)
 	if self.offset_y <= -201253 then
 		self.offset_y = self.min_offset_y
 	end
-	
+
 	local offset_x_in_page = -self.offset_x
 	local offset_y_in_page = -self.offset_y
 	if offset_x_in_page < 0 then offset_x_in_page = 0 end
 	if offset_y_in_page < 0 then offset_y_in_page = 0 end
-	
+
 	-- return hash and offset within blitbuffer
 	return pagehash,
 		offset_x_in_page - tile.x,
@@ -435,7 +436,7 @@ function KOPTReader:getContext(page, pnumber, preCache)
 	pheight = math.floor(pheight * 100) / 100
 	Debug("Context preCache:", preCache and "true" or "false")
 	Debug("Context page::getSize",pwidth,pheight)
-	
+
 	local x0, y0, x1, y1 = page:getUsedBBox()
 	if x0 == 0.01 and y0 == 0.01 and x1 == -0.01 and y1 == -0.01 then
 		x0 = 0
@@ -480,7 +481,7 @@ function KOPTReader:getContext(page, pnumber, preCache)
 		end
 	end
 
-	Debug("Context page::getUsedBBox", x0, y0, x1, y1 ) 
+	Debug("Context page::getUsedBBox", x0, y0, x1, y1 )
 	if kc:getTrim() == 1 then
 		kc:setBBox(0, 0, pwidth, pheight)
 	else
@@ -494,7 +495,7 @@ function KOPTReader:getContext(page, pnumber, preCache)
 		["y1"] = y1,
 	}
 	Debug("Context cur_bbox", self.cur_bbox)
-	
+
 	return kc
 end
 
@@ -514,13 +515,13 @@ function KOPTReader:nextView()
 		-- goto next view of current page
 		self.offset_y = self.offset_y - G_height + self.pan_overlap_vertical
 	end
-	
+
 	return pageno
 end
 
 function KOPTReader:prevView()
 	local pageno = self.pageno
-	
+
 	Debug("preView offset_y", self.offset_y, "min_offset_y", self.min_offset_y)
 	if self.offset_y >= 0 then
 		-- hit content top, turn to previous page bottom
@@ -603,9 +604,9 @@ function KOPTReader:adjustCommands()
 	self.commands:delGroup(MOD_SHIFT.."< >")
 	self.commands:delGroup("vol-/+")
 	self.commands:del(KEY_P, nil, "P")
-	
+
 	self.commands:add({KEY_F,KEY_AA}, nil, "F",
-		"change koptreader configuration",
+		_("change koptreader configuration"),
 		function(self)
 			KOPTConfig:config(self)
 			self:redrawCurrentPage()

@@ -24,7 +24,7 @@ end
 -- DJVU does not support password yet
 function DJVUReader:open(filename)
 	if not validDJVUFile(filename) then
-		return false, "Not a valid DjVu file"
+		return false, _("Not a valid DjVu file")
 	end
 
 	local ok
@@ -44,10 +44,10 @@ function DJVUReader:adjustDjvuReaderCommand()
 	self.commands:del(KEY_J, MOD_SHIFT, "J")
 	self.commands:del(KEY_K, MOD_SHIFT, "K")
 	self.commands:add(KEY_R, nil, "R",
-		"select djvu page rendering mode",
+		_("select djvu page rendering mode"),
 		function(self)
 			self:select_render_mode()
-	end) 
+	end)
 end
 
 -- select the rendering mode from those supported by djvulibre.
@@ -55,18 +55,24 @@ end
 -- then we should update our values here also. This is a bit risky, but these values never change, so it should be ok :)
 function DJVUReader:select_render_mode()
 	local mode_menu = SelectMenu:new{
-		menu_title = "Select DjVu page rendering mode",
+		menu_title = _("Select DjVu page rendering mode"),
 		item_array = {
-			"COLOUR (works for both colour and b&w pages)",		--  0  (colour page or stencil)
-			"BLACK & WHITE (for b&w pages only, much faster)",	--  1  (stencil or colour page)
-			"COLOUR ONLY (slightly faster than COLOUR)",		--  2  (colour page or fail)
-			"MASK ONLY (for b&w pages only)",					--  3  (stencil or fail)
-			"COLOUR BACKGROUND (show only background)",			--  4  (colour background layer)
-			"COLOUR FOREGROUND (show only foreground)"			--  5  (colour foreground layer)
+			--  0  (colour page or stencil)
+			_("COLOUR (works for both colour and b&w pages)"),
+			--  1  (stencil or colour page)
+			_("BLACK & WHITE (for b&w pages only, much faster)"),
+			--  2  (colour page or fail)
+			_("COLOUR ONLY (slightly faster than COLOUR)"),
+			--  3  (stencil or fail)
+			_("MASK ONLY (for b&w pages only)"),
+			--  4  (colour background layer)
+			_("COLOUR BACKGROUND (show only background)"),
+			--  5  (colour foreground layer)
+			_("COLOUR FOREGROUND (show only foreground)")
 			},
 		current_entry = self.render_mode,
 	}
-	local mode = mode_menu:choose(0, fb.bb:getHeight()) 
+	local mode = mode_menu:choose(0, fb.bb:getHeight())
 	if mode then
 		self.render_mode = mode - 1
 		self:clearCache()
@@ -75,7 +81,7 @@ function DJVUReader:select_render_mode()
 end
 
 ----------------------------------------------------
--- highlight support 
+-- highlight support
 ----------------------------------------------------
 function DJVUReader:getText(pageno)
 	return self.doc:getPageText(pageno)

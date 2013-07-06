@@ -404,7 +404,7 @@ function UniReader:startHighLightMode()
 			end
 		end
 
-		InfoMessage:inform("No visible text ", DINFO_DELAY, 1, MSG_WARN);
+		InfoMessage:inform(_("No visible text "), DINFO_DELAY, 1, MSG_WARN);
 		Debug("_findFirstWordInView none found in", t)
 
 		return nil
@@ -1119,7 +1119,7 @@ function UniReader:drawOrCache(no, preCache)
 
 	-- offset_x_in_page & offset_y_in_page is the offset within zoomed page
 	-- they are always positive.
-	-- you can see self.offset_x_& self.offset_y as the offset within
+	-- you can see self.offset_x & self.offset_y as the offset within
 	-- draw space, which includes the page. So it can be negative and positive.
 	local offset_x_in_page = -self.offset_x
 	local offset_y_in_page = -self.offset_y
@@ -1206,7 +1206,6 @@ function UniReader:drawOrCache(no, preCache)
 		size = tile.w * tile.h / 2,
 		bb = Blitbuffer.new(tile.w, tile.h)
 	}
-	--debug ("# new biltbuffer:"..dump(self.cache[pagehash]))
 	dc:setOffset(-tile.x, -tile.y)
 	Debug("rendering page", no)
 	page:draw(dc, self.cache[pagehash].bb, 0, 0, self.render_mode)
@@ -1434,6 +1433,16 @@ end
 function UniReader:show(no)
 	local pagehash, offset_x, offset_y = self:drawOrCache(no)
 	local width, height = G_width, G_height
+	local zoomed_width = 0
+	if self.globalzoom_mode == self.ZOOM_FIT_TO_CONTENT
+	or self.globalzoom_mode == self.ZOOM_FIT_TO_CONTENT_WIDTH
+	or self.globalzoom_mode == self.ZOOM_FIT_TO_CONTENT_HEIGHT then
+		zoomed_width = self.globalzoom * (self.cur_bbox.x1 - self.cur_bbox.x0)
+		zoomed_height = self.globalzoom * (self.cur_bbox.y1 - self.cur_bbox.y0)
+	else
+		zoomed_width = self.fullwidth
+		zoomed_height = self.fullheight
+	end
 
 	if not pagehash then
 		return
@@ -1442,15 +1451,15 @@ function UniReader:show(no)
 	local bb = self.cache[pagehash].bb
 	self.dest_x = 0
 	self.dest_y = 0
-	if bb:getWidth() - offset_x < width then
+	if zoomed_width < width then
 		-- we can't fill the whole output width, center the content
-		self.dest_x = (width - (bb:getWidth() - offset_x)) / 2
+		self.dest_x = (width - zoomed_width) / 2
 	end
-	if bb:getHeight() - offset_y < height and
+	if zoomed_height < height and
 	self.globalzoom_mode ~= self.ZOOM_FIT_TO_CONTENT_WIDTH_PAN then
 		-- we can't fill the whole output height and not in
 		-- ZOOM_FIT_TO_CONTENT_WIDTH_PAN mode, center the content
-		self.dest_y = (height - (bb:getHeight() - offset_y)) / 2
+		self.dest_y = (height - zoomed_height) / 2
 	elseif self.globalzoom_mode == self.ZOOM_FIT_TO_CONTENT_WIDTH_PAN and
 	self.offset_y > 0 then
 		-- if we are in ZOOM_FIT_TO_CONTENT_WIDTH_PAN mode and turning to
@@ -1470,15 +1479,18 @@ function UniReader:show(no)
 	Debug("blitFrom dest_off:", self.dest_x, self.dest_y,
 		"src_off:", offset_x, offset_y,
 		"width:", width, "height:", height)
-	fb.bb:blitFrom(bb, self.dest_x, self.dest_y, offset_x, offset_y, width, height)
+	fb.bb:blitFrom(bb,
+		self.dest_x, self.dest_y,
+		offset_x, offset_y,
+		zoomed_width, zoomed_height)
 
 	Debug("self.show_overlap", self.show_overlap)
-       if self.show_overlap_enable then
-               if self.show_overlap < 0 then
-                       fb.bb:dimRect(0,0, width, self.dest_y - self.show_overlap)
-               elseif self.show_overlap > 0 then
-                       fb.bb:dimRect(0,self.dest_y + height - self.show_overlap, width, self.show_overlap)
-               end
+	if self.show_overlap_enable then
+		if self.show_overlap < 0 then
+			fb.bb:dimRect(0, 0, width, self.dest_y - self.show_overlap)
+		elseif self.show_overlap > 0 then
+			fb.bb:dimRect(0, self.dest_y + height - self.show_overlap, width, self.show_overlap)
+		end
 	end
 
 	-- render highlights to page
@@ -2925,7 +2937,7 @@ function UniReader:addAllCommands()
 		end)
 
 	self.commands:add(KEY_C, nil, "C",
-		"align the viewport to top/bottom",
+		_("align the viewport to top/bottom"),
 		function(unireader)
 			unireader.comics_mode_enable = not unireader.comics_mode_enable
 			InfoMessage:inform(
@@ -3679,7 +3691,7 @@ function UniReader:modBBox()
 	x,y,w,h = self:getRectInScreen( new_bbox["x0"], new_bbox["y0"], new_bbox["x1"], new_bbox["y1"] )
 	fb.bb:invertRect( x,y, w,h )
 	--fb.bb:invertRect( x+1,y+1, w-2,h-2 ) -- just border?
-	InfoMessage:inform("New page bbox ", DINFO_DELAY, 1, MSG_WARN, "New page bounding box")
+	InfoMessage:inform(_("New page bbox "), DINFO_DELAY, 1, MSG_WARN, "New page bounding box")
 	self:redrawCurrentPage()
 
 	self.rcount = self.rcountmax -- force next full refresh

@@ -19,7 +19,7 @@ function PDFReader:open(filename)
 		if not password or not self.doc:authenticatePassword(password) then
 			self.doc:close()
 			self.doc = nil
-			return false, "wrong or missing password"
+			return false, _("wrong or missing password")
 		end
 		-- password wrong or not entered
 	end
@@ -28,14 +28,14 @@ function PDFReader:open(filename)
 		-- for PDFs, they might trigger errors later when accessing page tree
 		self.doc:close()
 		self.doc = nil
-		return false, "damaged page tree"
+		return false, _("damaged page tree")
 	end
 	self.filename = filename
 	return true
 end
 
 ----------------------------------------------------
--- highlight support 
+-- highlight support
 ----------------------------------------------------
 function PDFReader:getText(pageno)
 	local ok, page = pcall(self.doc.openPage, self.doc, pageno)
@@ -68,16 +68,16 @@ end
 
 function PDFReader:adjustCommands()
 	self.commands:add(KEY_S, MOD_ALT, "S",
-		"save all attachments on this page",
+		_("save all attachments on this page"),
 		function(self)
 			self:saveAttachments()
-	end) 
+	end)
 end
 
 -- saves all attachments on the current page in the same directory
 -- as the file itself (see extr.c utility)
 function PDFReader:saveAttachments()
-	InfoMessage:inform("Saving attachments...", DINFO_NODELAY, 1, MSG_AUX)
+	InfoMessage:inform(_("Saving attachments..."), DINFO_NODELAY, 1, MSG_AUX)
 	local p = io.popen('./extr "'..self.filename..'" '..tostring(self.pageno), "r")
 	local count = p:read("*a")
 	p:close()
@@ -85,13 +85,13 @@ function PDFReader:saveAttachments()
 		-- double braces are needed because string.gsub() returns more than one value
 		count = tonumber((string.gsub(count, "[\n\r]+", "")))
 		if count == 0 then
-			InfoMessage:inform("No attachments found ", DINFO_DELAY, 1, MSG_WARN)
+			InfoMessage:inform(_("No attachments found "), DINFO_DELAY, 1, MSG_WARN)
 		else
-			InfoMessage:inform(count.." attachment"..(count > 1 and "s" or "").." saved ",
+			InfoMessage:inform(string.format(_("%d attachment(s) saved "), count),
 				DINFO_DELAY, 1, MSG_AUX)
 		end
 	else
-		InfoMessage:inform("Failed to save attachments ", DINFO_DELAY, 1, MSG_WARN)
+		InfoMessage:inform(_("Failed to save attachments "), DINFO_DELAY, 1, MSG_WARN)
 	end
 	-- needed because of inform(..DINFO_NODELAY..) above
 	self:redrawCurrentPage()

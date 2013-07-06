@@ -33,7 +33,7 @@ end
 
 function FileHistory:setPath(newPath)
 	self.path = newPath
-	self:readDir("-c ") 
+	self:readDir("-c ")
 	self.items = #self.files
 	if self.items == 1 then
 		return nil
@@ -61,7 +61,7 @@ function FileHistory:setSearchResult(keywords)
 	if keywords == "" or keywords == " " then
 		-- show all history
 		self.result = self.files
-	else 
+	else
 		-- select history files with keywords in the filename
 		for __,f in pairs(self.files) do
 			if string.find(string.lower(f.name), keywords) then
@@ -108,20 +108,20 @@ end
 function FileHistory:addAllCommands()
 	self.commands = Commands:new{}
 	self.commands:add(KEY_H, nil, "H",
-		"show help page",
+		_("show help page"),
 		function(self)
 			HelpPage:show(0, G_height, self.commands)
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_FW_UP, nil, "joypad up",
-		"previous item",
+		_("previous item"),
 		function(self)
 			self:prevItem()
 		end
 	)
 	self.commands:add(KEY_FW_DOWN, nil, "joypad down",
-		"next item",
+		_("next item"),
 		function(self)
 			self:nextItem()
 		end
@@ -130,15 +130,15 @@ function FileHistory:addAllCommands()
 	local numeric_keydefs, i = {}
 	for i=1, 10 do numeric_keydefs[i]=Keydef:new(KEY_1+i-1, nil, tostring(i%10)) end
 	self.commands:addGroup("[1, 2 .. 9, 0]", numeric_keydefs,
-		"item at position 0%, 10% .. 90%, 100%",
+		_("item at position 0%, 10% .. 90%, 100%"),
 		function(self)
 			local target_item = math.ceil(self.items * (keydef.keycode-KEY_1) / 9)
-			self.current, self.page, self.markerdirty, self.pagedirty = 
+			self.current, self.page, self.markerdirty, self.pagedirty =
 				gotoTargetItem(target_item, self.items, self.current, self.page, self.perpage)
 		end
 	)
 	self.commands:add({KEY_PGFWD, KEY_LPGFWD}, nil, ">",
-		"next page",
+		_("next page"),
 		function(self)
 			if self.page < (self.items / self.perpage) then
 				if self.current + self.page*self.perpage > self.items then
@@ -153,7 +153,7 @@ function FileHistory:addAllCommands()
 		end
 	)
 	self.commands:add({KEY_PGBCK, KEY_LPGBCK}, nil, "<",
-		"previous page",
+		_("previous page"),
 		function(self)
 			if self.page > 1 then
 				self.page = self.page - 1
@@ -165,7 +165,7 @@ function FileHistory:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_G, nil, "G", -- NuPogodi, 01.10.12: goto page No.
-		"goto page",
+		_("goto page"),
 		function(self)
 			local n = math.ceil(self.items / self.perpage)
 			local page = NumInputBox:input(G_height-100, 100, "Page:", "current page "..self.page.." of "..n, true)
@@ -180,10 +180,10 @@ function FileHistory:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_FW_RIGHT, nil, "joypad right",
-		"document details",
+		_("document details"),
 		function(self)
 			local file_entry = self.result[self.perpage*(self.page-1)+self.current]
-			if file_entry.name == ".." then 
+			if file_entry.name == ".." then
 				warningUnsupportedFunction()
 				return
 			end -- do not show details
@@ -192,7 +192,7 @@ function FileHistory:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_S, nil, "S",
-		"invoke search inputbox",
+		_("invoke search inputbox"),
 		function(self)
 			-- NuPogodi, 30.09.12: be sure that something is found
 			local old_keywords = self.keywords
@@ -217,14 +217,14 @@ function FileHistory:addAllCommands()
 		end
 	)
 	self.commands:add({KEY_F, KEY_AA}, nil, "F, Aa",
-		"change font faces",
+		_("change font faces"),
 		function(self)
 			Font:chooseFonts()
 			self.pagedirty = true
 		end
 	)
 	self.commands:add({KEY_ENTER, KEY_FW_PRESS}, nil, "Enter",
-		"open selected document",
+		_("open selected document"),
 		function(self)
 			local file_entry = self.result[self.perpage*(self.page-1)+self.current]
 			file_full_path = file_entry.dir .. "/" .. file_entry.name
@@ -247,7 +247,7 @@ function FileHistory:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_DEL, nil, "Del",
-		"delete history entry",
+		_("delete history entry"),
 		function(self)
 			local file_entry = self.result[self.perpage*(self.page-1)+self.current]
 			local file_to_del = file_entry.dir .. "/" .. file_entry.name
@@ -270,13 +270,13 @@ function FileHistory:addAllCommands()
 		end
 	)
 	self.commands:add(KEY_SPACE, nil, "Space",
-		"refresh page manually",
+		_("refresh page manually"),
 		function(self)
 			self.pagedirty = true
 		end
 	)
 	self.commands:add(KEY_BACK, nil, "Back",
-		"back",
+		_("back"),
 		function(self)
 			return "break"
 		end
@@ -290,7 +290,7 @@ function FileHistory:choose(keywords)
 
 	-- NuPogodi, 30.09.12: immediate quit (no redraw), if empty
 	if self:setSearchResult(keywords) < 1 then
-		InfoMessage:inform("No reading history ", DINFO_DELAY, 1, MSG_WARN)
+		InfoMessage:inform(_("No reading history "), DINFO_DELAY, 1, MSG_WARN)
 		return nil
 	end
 
@@ -303,8 +303,8 @@ function FileHistory:choose(keywords)
 			self.markerdirty = true
 			fb.bb:paintRect(0, 0, G_width, G_height, 0)
 			-- draw header
-			local header = "Last Documents ("..tostring(self.items).." items)"
-			if self.keywords ~= "" and self.keywords ~= " " then 
+			local header = string.format(_("Last Documents (%d items)"), self.items)
+			if self.keywords ~= "" and self.keywords ~= " " then
 				--header = header .. " (filter: \'" .. string.upper(self.keywords) .. "\')"
 				header = "Search Results for \'"..string.upper(self.keywords).."\'"
 			end

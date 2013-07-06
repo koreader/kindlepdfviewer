@@ -59,7 +59,7 @@ function HelpPage:show(ypos, height, commands, title)
 	while true do
 		if is_pagedirty then
 			fb.bb:paintRect(0, ypos, fb.bb:getWidth(), height, 0)
-			DrawTitle(title or "Active Hotkeys",self.margin_H,0,self.title_H,self.bg_color,tface)
+			DrawTitle(title or _("Active Hotkeys"),self.margin_H,0,self.title_H,self.bg_color,tface)
 			local c
 			local max_x = 0
 			for c = 1, perpage do
@@ -94,7 +94,9 @@ function HelpPage:show(ypos, height, commands, title)
 				end
 			end
 			-- draw footer
-			local footer = "Page "..self.page.." of "..math.ceil(self.items / perpage).."  - Back to close this page"
+			local footer = string.format(
+				_("Page %d of %d - Back to close this page"),
+				self.page, math.ceil(self.items / perpage))
 			renderUtf8Text(fb.bb, self.margin_H, height-7, fface, footer, true)
 		end
 		if is_pagedirty then
