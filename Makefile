@@ -1,3 +1,6 @@
+# koreader-base directory
+KOR_BASE=koreader-base
+
 # the repository might not have been checked out yet, so make this
 # able to fail:
 -include koreader-base/Makefile.defs
@@ -62,7 +65,10 @@ customupdate: koreader-base/koreader-base koreader-base/extr mo
 	cp -r $(MO_DIR) $(INSTALL_DIR)
 	$(STRIP) --strip-unneeded $(INSTALL_DIR)/koreader-base $(INSTALL_DIR)/extr
 	mkdir $(INSTALL_DIR)/data
-	cp -L koreader-base/$(DJVULIB) koreader-base/$(CRELIB) koreader-base/$(LUALIB) koreader-base/$(K2PDFOPTLIB) $(INSTALL_DIR)/libs
+	cp -L koreader-base/$(DJVULIB) $(KOR_BASE)/$(CRELIB) \
+		$(KOR_BASE)/$(LUALIB) $(KOR_BASE)/$(K2PDFOPTLIB) \
+		$(KOR_BASE)/$(LEPTONICALIB) $(KOR_BASE)/$(TESSERACTLIB) \
+		$(INSTALL_DIR)/libs
 	$(STRIP) --strip-unneeded $(INSTALL_DIR)/libs/*
 	cp -rpL koreader-base/data/*.css $(INSTALL_DIR)/data
 	cp -rpL koreader-base/fonts $(INSTALL_DIR)
