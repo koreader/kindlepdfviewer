@@ -71,8 +71,7 @@ customupdate: all
 
 
 pot:
-	$(XGETTEXT_BIN) reader.lua `find frontend -iname "*.lua"` \
-		> $(TEMPLATE_DIR)/$(DOMAIN).pot
+	$(XGETTEXT_BIN) *.lua > $(TEMPLATE_DIR)/$(DOMAIN).pot
 
 mo:
 	for po in `find l10n -iname '*.po'`; do \
