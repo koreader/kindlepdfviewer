@@ -906,7 +906,7 @@ function UniReader:startHighLightMode()
 			elseif ev.code == KEY_BACK then
 				running = false
 			end -- if key event
-			fb:refresh(1)
+			Screen:refresh(1)
 		end
 	end -- EOF while
 end
@@ -1101,9 +1101,9 @@ function UniReader:drawOrCache(no, preCache)
 
 	local page_indicator = function()
 		if Debug('page_indicator',no) then
-			local pg_w = G_width / ( self.doc:getPages() )
-			fb.bb:invertRect( pg_w*(no-1),0, pg_w,10)
-			fb:refresh(1,     pg_w*(no-1),0, pg_w,10)
+			local pg_w = G_width / (self.doc:getPages())
+			fb.bb:invertRect(pg_w*(no-1),0, pg_w,10)
+			Screen:refresh(1, nil, pg_w*(no-1), 0, pg_w, 10)
 		end
 	end
 	page_indicator()
@@ -1515,11 +1515,11 @@ function UniReader:show(no)
 	if self.rcount >= self.rcountmax then
 		Debug("full refresh")
 		self.rcount = 0
-		fb:refresh(0)
+		Screen:refresh(0)
 	else
 		Debug("partial refresh")
 		self.rcount = self.rcount + 1
-		fb:refresh(1)
+		Screen:refresh(1)
 	end
 	self.slot_visible = slot;
 end
@@ -2472,7 +2472,7 @@ end
 function UniReader:showMenu()
 	self:_drawReadingInfo()
 
-	fb:refresh(1)
+	Screen:refresh(1)
 	while true do
 		local ev = input.saveWaitForEvent()
 		ev.code = adjustKeyEvents(ev)
@@ -2992,9 +2992,9 @@ function UniReader:addAllCommands()
 		function(unireader)
 			-- eInk will not refresh if nothing has changed on the screen so we fake a change here.
 			fb.bb:invertRect(0, 0, 1, 1)
-			fb:refresh(1)
+			Screen:refresh(1)
 			fb.bb:invertRect(0, 0, 1, 1)
-			fb:refresh(0)
+			Screen:refresh(0)
 			self.rcount = self.rcountmax
 			self:redrawCurrentPage()
 		end)
@@ -3042,7 +3042,7 @@ function UniReader:addAllCommands()
 			x,y,w,h = unireader:getRectInScreen( bbox["x0"], bbox["y0"], bbox["x1"], bbox["y1"] )
 			Debug("inxertRect",x,y,w,h)
 			fb.bb:invertRect( x,y, w,h )
-			fb:refresh(1)
+			Screen:refresh(1)
 		end)
 	self.commands:add(KEY_X,MOD_SHIFT,"X",
 		_("modify page bbox"),
@@ -3439,7 +3439,7 @@ function UniReader:addAllCommands()
 
 					Debug("shortcut_map", shortcut_map)
 
-					fb:refresh(1)
+					Screen:refresh(1)
 				end
 
 				render_shortcuts()
@@ -3541,7 +3541,7 @@ function UniReader:modBBox()
 	fb.bb:invertRect( x_s,0, 1,G_height )
 	InfoMessage:inform(running_corner.." bbox ", DINFO_NODELAY, 1, MSG_WARN,
 		running_corner.." bounding box")
-	fb:refresh(1)
+	Screen:refresh(1)
 
 	local last_direction = { x = 0, y = 0 }
 
@@ -3577,7 +3577,7 @@ function UniReader:modBBox()
 					Screen:restoreFromSavedBB()
 					InfoMessage:inform(running_corner.." bbox ", DINFO_NODELAY, 1, MSG_WARN,
 						running_corner.." bounding box")
-					fb:refresh(1)
+					Screen:refresh(1)
 					x_s = x+w
 					y_s = y+h
 				else
@@ -3676,7 +3676,7 @@ function UniReader:modBBox()
 					end
 				end
 
-				fb:refresh(1)
+				Screen:refresh(1)
 			end
 		end
 

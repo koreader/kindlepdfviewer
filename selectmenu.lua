@@ -364,21 +364,21 @@ function SelectMenu:choose(ypos, height)
 				if self.oldcurrent > 0 then
 					y = ypos + self.title_H + (self.spacing * self.oldcurrent) + 12
 					fb.bb:paintRect( lx, y, fw, 3, 0)
-					fb:refresh(1, lx, y, fw, 3)
+					Screen:refresh(1, nil, lx, y, fw, 3)
 				end
 			end
 			-- draw new marker line
 			y = ypos + self.title_H + (self.spacing * self.current) + 12
 			fb.bb:paintRect(lx, y, fw, 3, 15)
 			if not self.pagedirty then
-				fb:refresh(1, lx, y, fw, 3)
+				Screen:refresh(1, nil, lx, y, fw, 3)
 			end
 			self.oldcurrent = self.current
 			self.markerdirty = false
 		end
 
 		if self.pagedirty then
-			fb:refresh(0, 0, ypos, fb.bb:getWidth(), height)
+			Screen:refresh(0, 0, nil, ypos, fb.bb:getWidth(), height)
 			self.pagedirty = false
 		end
 

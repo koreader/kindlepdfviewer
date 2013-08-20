@@ -9,7 +9,7 @@ MSG_CONFIRM = 4
 MSG_BUG = 5
 
 InfoMessage = {
-	InfoMethod = { --[[ 
+	InfoMethod = { --[[
 		The items define how to inform user about various types of events, the values should be 0..3:
 			the lowest bit is responcible for showing popup windows,
 			while the 2nd bit allows using TTS-voice messages.
@@ -28,7 +28,7 @@ InfoMessage = {
 		"resources/info-error.png",
 		"resources/info-confirm.png",
 		"resources/info-bug.png",
-		}, 
+		},
 	ImageFile = "resources/info-warn.png",
 	-- TTS-related parameters
 	TTSspeed = nil,
@@ -65,7 +65,7 @@ function InfoMessage:show(text,refresh_mode)
 	dialog:paintTo(fb.bb, 0, 0)
 	dialog:free()
 	if refresh_mode ~= nil then
-		fb:refresh(refresh_mode)
+		Screen:refresh(refresh_mode)
 	end
 end
 
@@ -74,9 +74,9 @@ function showInfoMsgWithDelay(text, msec, refresh_mode)
 	Screen:saveCurrentBB()
 
 	InfoMessage:show(text)
-	fb:refresh(refresh_mode)
+	Screen:refresh(refresh_mode)
 	-- util.usleep(msec*1000)
-	
+
 	-- eat the first key release event
 	local ev = input.waitForEvent()
 	adjustKeyEvents(ev)
@@ -88,7 +88,7 @@ function showInfoMsgWithDelay(text, msec, refresh_mode)
 	until not ok or ev.value == EVENT_VALUE_KEY_PRESS
 
 	Screen:restoreFromSavedBB()
-	fb:refresh(refresh_mode)
+	Screen:refresh(refresh_mode)
 end
 
 --[[
@@ -137,7 +137,7 @@ function InfoMessage:chooseMethodForEvent(event)
 	local popup, voice = self:getMethodForEvent(event)
 	local items_menu = SelectMenu:new{
 		menu_title = "Event notifications",
-		item_array = {"Avoid any notifications", 
+		item_array = {"Avoid any notifications",
 					"Show popup window",
 					"Use TTS-voice",
 					"Popup window and TTS-voice",
@@ -164,7 +164,7 @@ function InfoMessage:chooseEventForMethod(event)
 		"Bugs",
 		}
 	while item_no ~= event and item_no < #event_list do
-		item_no = item_no + 1 
+		item_no = item_no + 1
 	end
 	local event_menu = SelectMenu:new{
 		menu_title = "Select the event type",
@@ -236,7 +236,7 @@ function InfoMessage:getVolumeLevels()
 	while i < 16 do -- proper K3-range 0..15 might be different for other models
 		os.execute('lipc-set-prop com.lab126.audio Volume '..i)
 		v = self:getSoundVolume()
-		table.insert(levels, v) 
+		table.insert(levels, v)
 		i = i + 1
 	end
 	return levels
@@ -267,5 +267,5 @@ function InfoMessage:drawTopMsg(msg)
 	local len = sizeUtf8Text(0, G_width, face, msg, true).x + 20
 	fb.bb:paintRect(0, 0, len, 15+6*2, 4)
 	renderUtf8Text(fb.bb, 10, 15+6, face, msg, true)
-	fb:refresh(1)
+	Screen:refresh(1)
 end
