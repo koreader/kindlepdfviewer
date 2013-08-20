@@ -278,11 +278,11 @@ function CREReader:goto(pos, is_ignore_jump, pos_type)
 	if self.rcount >= self.rcountmax then
 		Debug("full refresh")
 		self.rcount = 0
-		fb:refresh(0)
+		Screen:refresh(0)
 	else
 		Debug("partial refresh")
 		self.rcount = self.rcount + 1
-		fb:refresh(1)
+		Screen:refresh(1)
 	end
 
 	self.pos = pos
@@ -553,7 +553,7 @@ end
 
 function CREReader:showMenu()
 	self:_drawReadingInfo()
-	fb:refresh(1)
+	Screen:refresh(1)
 	while true do
 		local ev = input.saveWaitForEvent()
 		ev.code = adjustKeyEvents(ev)

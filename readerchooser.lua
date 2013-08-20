@@ -173,7 +173,7 @@ function ReaderChooser:drawOptions(xpos, ypos, barcolor, bgcolor, font_face)
 	-- draw option text
 	renderUtf8Text(fb.bb, xpos+self.margin_O, ypos+self.options_H/2+8, font_face, self.OPTION_TYPE, true, left_cell_bcolor/15, 1.0)
 	renderUtf8Text(fb.bb, xpos+width/2+self.margin_O, ypos+self.options_H/2+8, font_face, self.OPTION_FILE, true, right_cell_bcolor/15, 1.0)
-	fb:refresh(1, xpos, ypos, width, self.options_H-optbar_T)
+	Screen:refresh(1, nil, xpos, ypos, width, self.options_H-optbar_T)
 end
 
 function ReaderChooser:choose(readers)
@@ -204,21 +204,21 @@ function ReaderChooser:choose(readers)
 		reader_text_width[index] = self:drawReaderItem(name, topleft_x, topleft_y+self.title_H+self.spacing*index+10, cface)
 	end
 
-	fb:refresh(1, topleft_x, topleft_y, width, height)
+	Screen:refresh(1, nil, topleft_x, topleft_y, width, height)
 
 	-- paint first reader marker
 	local xmarker = topleft_x + self.margin_I
 	local ymarker = topleft_y + self.title_H + self.title_bar_H
 	fb.bb:paintRect(xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3, 15)
-	fb:refresh(1, xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3)
+	Screen:refresh(1, nil, xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3)
 
 	local ev, keydef, command, ret_code
 	while true do
 		if self.markerdirty then
 			fb.bb:paintRect(xmarker, ymarker+self.spacing*self.last_item, reader_text_width[self.last_item], 3, 3)
-			fb:refresh(1, xmarker, ymarker+self.spacing*self.last_item, reader_text_width[self.last_item], 3)
+			Screen:refresh(1, nil, xmarker, ymarker+self.spacing*self.last_item, reader_text_width[self.last_item], 3)
 			fb.bb:paintRect(xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3, 15)
-			fb:refresh(1, xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3)
+			Screen:refresh(1, nil, xmarker, ymarker+self.spacing*self.current_item, reader_text_width[self.current_item], 3)
 			self.markerdirty = false
 		end
 

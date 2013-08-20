@@ -325,21 +325,21 @@ function FileSearcher:choose(keywords)
 				if self.oldcurrent > 0 then
 					y = self.title_H + (self.spacing * self.oldcurrent) + 12
 					fb.bb:paintRect(self.margin_H, y, G_width - 2 * self.margin_H, 3, 0)
-					fb:refresh(1, self.margin_H, y, G_width - 2 * self.margin_H, 3)
+					Screen:refresh(1, nil, self.margin_H, y, G_width - 2 * self.margin_H, 3)
 				end
 			end
 			-- draw new marker line
 			y = self.title_H + (self.spacing * self.current) + 12
 			fb.bb:paintRect(self.margin_H, y, G_width - 2 * self.margin_H, 3, 15)
 			if not self.pagedirty then
-				fb:refresh(1, self.margin_H, y, G_width - 2 * self.margin_H, 3)
+				Screen:refresh(1, nil, self.margin_H, y, G_width - 2 * self.margin_H, 3)
 			end
 			self.oldcurrent = self.current
 			self.markerdirty = false
 		end
 
 		if self.pagedirty then
-			fb:refresh(0)
+			Screen:refresh(0)
 			self.pagedirty = false
 		end
 

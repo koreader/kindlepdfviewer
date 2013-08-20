@@ -38,6 +38,17 @@ Codes for rotation modes:
           0
 --]]
 
+local WAVEFORM_MODE_INIT        = 0x0	-- Screen goes to white (clears)
+local WAVEFORM_MODE_DU          = 0x1	-- Grey->white/grey->black
+local WAVEFORM_MODE_GC16        = 0x2	-- High fidelity (flashing)
+local WAVEFORM_MODE_GC4         = WAVEFORM_MODE_GC16 -- For compatibility
+local WAVEFORM_MODE_GC16_FAST   = 0x3	-- Medium fidelity
+local WAVEFORM_MODE_A2          = 0x4	-- Faster but even lower fidelity
+local WAVEFORM_MODE_GL16        = 0x5	-- High fidelity from white transition
+local WAVEFORM_MODE_GL16_FAST   = 0x6	-- Medium fidelity from white transition
+local WAVEFORM_MODE_AUTO        = 0x101
+
+
 Screen = {
 	cur_rotation_mode = 0,
 	-- these two variabls are used to help switching from framework to reader
@@ -46,6 +57,18 @@ Screen = {
 
 	saved_bb = nil,
 }
+
+function Screen:refresh(refesh_type, waveform_mode, x, y, w, h)
+	if x then x = x < 0 and 0 or math.floor(x) end
+    if y then y = y < 0 and 0 or math.floor(y) end
+    if w then w = w > G_width and G_width or math.ceil(w) end
+    if h then h = h > G_height and G_height or math.ceil(h) end
+
+	if not waveform_mode then
+		waveform_mode = WAVEFORM_MODE_GC16
+	end
+	fb:refresh(refesh_type, waveform_mode, x, y, w, h)
+end
 
 function Screen:setRotationMode(mode)
 	if mode < 0 or mode > 3 then

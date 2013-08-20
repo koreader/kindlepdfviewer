@@ -100,7 +100,7 @@ function HelpPage:show(ypos, height, commands, title)
 			renderUtf8Text(fb.bb, self.margin_H, height-7, fface, footer, true)
 		end
 		if is_pagedirty then
-			fb:refresh(0, 0, ypos, fb.bb:getWidth(), height)
+			Screen:refresh(0, 0, nil, ypos, fb.bb:getWidth(), height)
 			is_pagedirty = false
 		end
 

@@ -187,7 +187,7 @@ KOPTConfig = {
 	OPT_ITEM_FONT_SIZE = 16, -- option item font size
 
     BGCOLOR = 3, -- background color
-	
+
 	-- last pos text is drawn
 	text_pos = 0,
 	-- current selected option
@@ -195,7 +195,7 @@ KOPTConfig = {
 	-- config change
 	config_change = false,
 	confirm_change = false,
-	
+
 	-- reader object
 	koptreader = nil
 }
@@ -227,7 +227,7 @@ function KOPTConfig:drawOptionItem(xpos, ypos, option_index, item_index, text, f
 	local draw_index = KOPTOptions[option_index].draw_index
 	local xpos = xpos+item_x_offset+self.ITEM_SPACING_H*(item_index-1)+self.text_pos
 	local ypos = ypos+self.OPTION_PADDING_T+self.OPTION_SPACING_V*(draw_index-1)
-	
+
 	if KOPTOptions[option_index].text_font_size then
 		font_face = Font:getFace("cfont", KOPTOptions[option_index].text_font_size[item_index])
 	end
@@ -235,21 +235,21 @@ function KOPTConfig:drawOptionItem(xpos, ypos, option_index, item_index, text, f
 		--Debug("drawing option:", KOPTOptions[option_index].option_text, "item:", text)
 		renderUtf8Text(fb.bb, xpos, ypos, font_face, text, true, self.BGCOLOR/15, 1.0)
 	end
-	
+
 	local text_len = sizeUtf8Text(0, G_width, font_face, text, true).x
 	self.text_pos = self.text_pos + text_len
-	
+
 	if KOPTOptions[option_index].marker_dirty[item_index] or redraw then
 		--Debug("drawing option:", KOPTOptions[option_index].option_text, "marker:", text)
 		if item_index == KOPTOptions[option_index].current_item then
 			fb.bb:paintRect(xpos, ypos+5, text_len, 3,(option_index == self.current_option) and 15 or 6)
-			if refresh then 
-				fb:refresh(1, xpos, ypos+5, text_len, 3)
+			if refresh then
+				Screen:refresh(1, nil, xpos, ypos+5, text_len, 3)
 			end
 		else
 			fb.bb:paintRect(xpos, ypos+5, text_len, 3, 3)
 			if refresh then
-				fb:refresh(1, xpos, ypos+5, text_len, 3)
+				Screen:refresh(1, nil, xpos, ypos+5, text_len, 3)
 			end
 		end
 		KOPTOptions[option_index].marker_dirty[item_index] = false
@@ -317,36 +317,36 @@ end
 
 function KOPTConfig:config(reader)
 	self.koptreader = reader
-	
+
 	self:makeDefault(self.koptreader.configurable)
 	self:addAllCommands()
-	
+
 	local name_font = Font:getFace("tfont", self.OPT_NAME_FONT_SIZE)
 	local item_font = Font:getFace("cfont", self.OPT_ITEM_FONT_SIZE)
-	
-	-- base window coordinates 
+
+	-- base window coordinates
 	local width, height = self.WIDTH, self.HEIGHT
 	local topleft_x, topleft_y = (fb.bb:getWidth()-width)/2, fb.bb:getHeight()-self.MARGIN_BOTTOM-height
 	local botleft_x, botleft_y = topleft_x, topleft_y+height
-	
+
 	self:drawBox(topleft_x, topleft_y, width, height, self.BGCOLOR, 15)
 	self:drawOptions(topleft_x, topleft_y, name_font, item_font, true, false)
-	fb:refresh(1, topleft_x, topleft_y, width, height)
-	
+	Screen:refresh(1, nil, topleft_x, topleft_y, width, height)
+
 	local ev, keydef, command, ret_code
 	while true do
 		self:reconfigure(self.koptreader.configurable)
-		
+
 		if self.config_change and self.confirm_change then
 			self.koptreader:redrawWithoutPrecache()
 			self:drawBox(topleft_x, topleft_y, width, height, self.BGCOLOR, 15)
 			self:drawOptions(topleft_x, topleft_y, name_font, item_font, true, false)
-			fb:refresh(1, topleft_x, topleft_y, width, height)
+			Screen:refresh(1, nil, topleft_x, topleft_y, width, height)
 			self.config_change = false
 			self.confirm_change = false
 		end
 		self:drawOptions(topleft_x, topleft_y, name_font, item_font, false, true)
-		
+
 		ev = input.saveWaitForEvent()
 		ev.code = adjustKeyEvents(ev)
 		if ev.type == EV_KEY and ev.value ~= EVENT_VALUE_KEY_RELEASE then
@@ -378,7 +378,7 @@ function KOPTConfig:addAllCommands()
 				self.current_option = (self.current_option + #KOPTOptions + 1)%#KOPTOptions
 				self.current_option = (self.current_option == 0) and #KOPTOptions or self.current_option
 			until KOPTOptions[self.current_option].show
-			
+
 			last_option_item = KOPTOptions[last_option].current_item
 			KOPTOptions[last_option].marker_dirty[last_option_item] = true
 			current_option_item = KOPTOptions[self.current_option].current_item
@@ -393,7 +393,7 @@ function KOPTConfig:addAllCommands()
 				self.current_option = (self.current_option + #KOPTOptions - 1)%#KOPTOptions
 				self.current_option = (self.current_option == 0) and #KOPTOptions or self.current_option
 			until KOPTOptions[self.current_option].show
-			
+
 			last_option_item = KOPTOptions[last_option].current_item
 			KOPTOptions[last_option].marker_dirty[last_option_item] = true
 			current_option_item = KOPTOptions[self.current_option].current_item
@@ -408,7 +408,7 @@ function KOPTConfig:addAllCommands()
 			local current_item = (KOPTOptions[self.current_option].current_item + item_count - 1)%item_count
 			current_item = (current_item == 0) and item_count or current_item
 			KOPTOptions[self.current_option].current_item = current_item
-			
+
 			KOPTOptions[self.current_option].marker_dirty[last_item] = true
 			KOPTOptions[self.current_option].marker_dirty[current_item] = true
 			self.config_change = true
@@ -422,7 +422,7 @@ function KOPTConfig:addAllCommands()
 			local current_item = (KOPTOptions[self.current_option].current_item + item_count + 1)%item_count
 			current_item = (current_item == 0) and item_count or current_item
 			KOPTOptions[self.current_option].current_item = current_item
-			
+
 			KOPTOptions[self.current_option].marker_dirty[last_item] = true
 			KOPTOptions[self.current_option].marker_dirty[current_item] = true
 			self.config_change = true
@@ -457,16 +457,16 @@ function KOPTConfig:modBBox(koptreader)
 	local orig_dest_y = koptreader.dest_y
 	local orig_offset_x = koptreader.offset_x
 	local orig_offset_y = koptreader.offset_y
-	
+
 	koptreader:showOrigPage()
-	
+
 	koptreader:modBBox()
-	
+
 	-- restore variables changed in modBBox
 	koptreader.globalzoom = orig_globalzoom
 	koptreader.dest_x = orig_dest_x
 	koptreader.dest_y = orig_dest_y
 	koptreader.offset_x = orig_offset_x
 	koptreader.offset_y = orig_offset_y
-	
+
 end

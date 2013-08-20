@@ -248,19 +248,19 @@ function FileChooser:choose()
 			if not self.pagedirty then
 				if self.oldcurrent > 0 then
 					fb.bb:paintRect(self.margin_H, ymarker+self.spacing*self.oldcurrent, wlen, 3, 0)
-					fb:refresh(1, self.margin_H, ymarker+self.spacing*self.oldcurrent, wlen, 3)
+					Screen:refresh(1, nil, self.margin_H, ymarker+self.spacing*self.oldcurrent, wlen, 3)
 				end
 			end
 			fb.bb:paintRect(self.margin_H, ymarker+self.spacing*self.current, wlen, 3, 15)
 			if not self.pagedirty then
-				fb:refresh(1, self.margin_H, ymarker+self.spacing*self.current, wlen, 3)
+				Screen:refresh(1, nil, self.margin_H, ymarker+self.spacing*self.current, wlen, 3)
 			end
 			self.oldcurrent = self.current
 			self.markerdirty = false
 		end
 
 		if self.pagedirty then
-			fb:refresh(0, 0, ypos, G_width, G_height)
+			Screen:refresh(0, nil, 0, ypos, G_width, G_height)
 			self.pagedirty = false
 		end
 

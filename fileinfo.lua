@@ -200,7 +200,7 @@ function FileInfo:show(path, name)
 			end
 			-- NuPogodi, 29.09.12: restored footer > to see 'Press H for help'
 			DrawFooter(_("Page 1 of 1"), fface,self.foot_H)
-			fb:refresh(0)
+			Screen:refresh(0)
 			self.pagedirty = false
 		end
 		-- waiting for user's commands
