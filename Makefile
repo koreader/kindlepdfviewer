@@ -12,7 +12,7 @@ VERSION=$(shell git describe HEAD)
 INSTALL_DIR=kindlepdfviewer-$(MACHINE)
 
 # files to link from main directory
-INSTALL_FILES=battery.lua commands.lua crereader.lua defaults.lua dialog.lua djvureader.lua readerchooser.lua filechooser.lua filehistory.lua fileinfo.lua filesearcher.lua font.lua graphics.lua helppage.lua image.lua inputbox.lua keys.lua pdfreader.lua koptconfig.lua koptreader.lua picviewer.lua reader.lua rendertext.lua screen.lua selectmenu.lua settings.lua unireader.lua widget.lua gettext.lua kpdf.sh
+INSTALL_FILES=battery.lua commands.lua crereader.lua defaults.lua dialog.lua djvureader.lua readerchooser.lua filechooser.lua filehistory.lua fileinfo.lua filesearcher.lua font.lua graphics.lua helppage.lua image.lua inputbox.lua keys.lua pdfreader.lua koptconfig.lua koptreader.lua picviewer.lua reader.lua rendertext.lua screen.lua selectmenu.lua settings.lua unireader.lua widget.lua gettext.lua kpdf.sh resources COPYING README.md git-rev
 
 # for gettext
 DOMAIN=kindlepdfviewer
@@ -22,7 +22,7 @@ XGETTEXT_BIN=$(KOREADER_MISC_TOOL)/gettext/lua_xgettext.py
 MO_DIR=$(INSTALL_DIR)/kindlepdfviewer/i18n
 
 
-all: mo $(KOR_BASE)/$(OUTPUT_DIR)/luajit
+all: $(KOR_BASE)/$(OUTPUT_DIR)/luajit mo
 	echo $(VERSION) > git-rev
 	mkdir -p $(INSTALL_DIR)/kindlepdfviewer
 	cp -rfL $(KOR_BASE)/$(OUTPUT_DIR)/* $(INSTALL_DIR)/kindlepdfviewer/
@@ -42,10 +42,10 @@ endif
 	rm -rf $(INSTALL_DIR)/kindlepdfviewer/data/{cr3.ini,cr3skin-format.txt,desktop,devices,manual}
 	rm $(INSTALL_DIR)/kindlepdfviewer/fonts/droid/DroidSansFallbackFull.ttf
 
-$(KOR_BASE)/$(OUTPUT_DIR)/luajit: koreader-base
-$(KOR_BASE)/$(OUTPUT_DIR)/extr: koreader-base
+$(KOR_BASE)/$(OUTPUT_DIR)/luajit:
+	$(MAKE) -C $(KOR_BASE)
 
-koreader-base:
+$(KOR_BASE)/$(OUTPUT_DIR)/extr:
 	$(MAKE) -C $(KOR_BASE)
 
 fetchthirdparty:

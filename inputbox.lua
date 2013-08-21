@@ -70,7 +70,7 @@ function InputBox:addChar(char)
 	-- draw new cursor
 	self.cursor:moveHorizontal(self.fwidth)
 	self.cursor:draw()
-	fb:refresh(1, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
+	Screen:refresh(1, nil, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
 end
 
 function InputBox:delChar()
@@ -86,11 +86,11 @@ function InputBox:delChar()
 	self.input_cur_x = self.input_cur_x - self.fwidth
 	-- fill last character with blank rectangle
 	fb.bb:paintRect(self.input_cur_x, self.input_start_y-19, self.fwidth, self.fheight, self.input_bg)
-	fb:refresh(1, self.input_cur_x, self.input_start_y-19, self.fwidth, self.fheight)
+	Screen:refresh(1, nil, self.input_cur_x, self.input_start_y-19, self.fwidth, self.fheight)
 	-- draw new cursor
 	self.cursor:moveHorizontal(-self.fwidth)
 	self.cursor:draw()
-	fb:refresh(1, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
+	Screen:refresh(1, nil, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
 end
 
 function InputBox:clearText()
@@ -101,7 +101,7 @@ function InputBox:clearText()
 	self:refreshText()
 	self.cursor.x_pos = self.input_start_x - 3
 	self.cursor:draw()
-	fb:refresh(1, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
+	Screen:refresh(1, nil, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
 end
 
 function InputBox:drawBox(ypos, w, h, title)
@@ -164,7 +164,7 @@ function InputBox:input(ypos, height, title, d_text, is_hint)
 		end
 	end
 	self.cursor:draw()
-	fb:refresh(1, 1, ypos, w, h)
+	Screen:refresh(1, nil, 1, ypos, w, h)
 
 	local ev, keydef, command, ret_code
 	while true do
@@ -297,7 +297,7 @@ function InputBox:DrawVirtualKeyboard()
 	local h=dy+2*r-2
 	blitbuffer.paintBorder(fb.bb, lx+10*dx-8, vy-dy-r-6, h, h, 9, c, r)
 	renderUtf8Text(fb.bb, lx+10*dx+22, vy-20, smfont, (self.layout-1), true)
-	fb:refresh(1, 1, fb.bb:getHeight()-120, fb.bb:getWidth()-2, 120)
+	Screen:refresh(1, nil, 1, fb.bb:getHeight()-120, fb.bb:getWidth()-2, 120)
 end
 
 function InputBox:num(bool)
@@ -392,7 +392,7 @@ function InputBox:addAllCommands()
 			if (self.cursor.x_pos + 3) > self.input_start_x then
 				self.cursor:moveHorizontalAndDraw(-self.fwidth)
 				self.charpos = self.charpos - 1
-				fb:refresh(1, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
+				Screen:refresh(1, nil, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
 			end
 		end
 	)
@@ -402,7 +402,7 @@ function InputBox:addAllCommands()
 			if (self.cursor.x_pos + 3) > self.input_start_x then
 				self.cursor:moveHorizontalAndDraw(-self.fwidth*(self.charpos-1))
 				self.charpos = 1
-				fb:refresh(1, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
+				Screen:refresh(1, nil, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
 			end
 		end
 	)
@@ -412,7 +412,7 @@ function InputBox:addAllCommands()
 			if (self.cursor.x_pos + 3) < self.input_cur_x then
 				self.cursor:moveHorizontalAndDraw(self.fwidth)
 				self.charpos = self.charpos + 1
-				fb:refresh(1, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
+				Screen:refresh(1, nil, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
 			end
 		end
 	)
@@ -422,7 +422,7 @@ function InputBox:addAllCommands()
 			if (self.cursor.x_pos + 3) < self.input_cur_x then
 				self.cursor:moveHorizontalAndDraw(self.fwidth*(#self.charlist+1-self.charpos))
 				self.charpos = #self.charlist + 1
-				fb:refresh(1, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
+				Screen:refresh(1, nil, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
 			end
 		end
 	)
@@ -554,14 +554,14 @@ function InputBox:showHelpPage(list, title)
 	-- make inactive input slot
 	self.cursor:clear() -- hide cursor
 	fb.bb:dimRect(self.input_start_x-5, self.input_start_y-19, self.input_slot_w, self.fheight, self.input_bg)
-	fb:refresh(1, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
+	Screen:refresh(1, nil, self.input_start_x-5, self.ypos, self.input_slot_w, self.h)
 	HelpPage:show(0, fb.bb:getHeight()-165, list, title)
 	-- on the help page-exit, making inactive helpage
 	fb.bb:dimRect(0, 40, fb.bb:getWidth(), fb.bb:getHeight()-205, self.input_bg)
 	-- and active input slot
 	self:refreshText()
 	self.cursor:draw() -- show cursor = ready to input
-	fb:refresh(1)
+	Screen:refresh(1)
 end
 
 function InputBox:setCalcMode()
@@ -618,7 +618,7 @@ function InputBox:ModeDependentCommands()
 						self:refreshText()
 						self.cursor:moveHorizontal(#self.charlist*self.fwidth)
 						self.cursor:draw()
-						fb:refresh(1, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
+						Screen:refresh(1, nil, self.input_start_x-5, self.input_start_y-25, self.input_slot_w, self.h-25)
 					else
 						InfoMessage:inform("Invalid user input ", DINFO_DELAY, 1, MSG_WARN)
 					end -- if pcall

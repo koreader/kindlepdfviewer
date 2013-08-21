@@ -149,7 +149,7 @@ function KOPTReader:showOrigPage()
 			fb.bb:paintRect(0, 0, width, height, DBACKGROUND_COLOR)
 		end
 		fb.bb:blitFrom(self.cache[pagehash].bb, self.dest_x, self.dest_y, 0, 0, width, height)
-		fb:refresh(1)
+		Screen:refresh(1)
 		return
 	end
 
@@ -196,7 +196,7 @@ function KOPTReader:showOrigPage()
 		fb.bb:paintRect(0, 0, width, height, DBACKGROUND_COLOR)
 	end
 	fb.bb:blitFrom(bb, self.dest_x, self.dest_y, 0, 0, width, height)
-	fb:refresh(1)
+	Screen:refresh(1)
 end
 
 function KOPTReader:drawOrCache(no, preCache)

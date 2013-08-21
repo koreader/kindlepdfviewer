@@ -189,7 +189,7 @@ function Commands:new(obj)
 				os.execute("killall -stop cvm")
 				fb:setOrientation(Screen.kpv_rotation_mode)
 				Screen:restoreFromSavedBB()
-				fb:refresh(0)
+				Screen:refresh(0)
 			end
 			G_screen_saver_mode = false
 		end
@@ -219,7 +219,7 @@ function Commands:new(obj)
 				os.execute("killall -stop cvm")
 				fb:setOrientation(Screen.kpv_rotation_mode)
 				Screen:restoreFromSavedBB()
-				fb:refresh(0)
+				Screen:refresh(0)
 				logBatteryLevel("USB UNPLUG")
 			end
 			FileChooser:setPath(FileChooser.path)

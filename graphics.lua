@@ -97,7 +97,7 @@ function Cursor:_draw(x, y, refresh)
 	fb.bb:invertRect(x, y + body_h + up_down_width, self.w, up_down_width)
 
 	if refresh then
-		fb:refresh(1, x, y, self.w, body_h + up_down_width * 2)
+		Screen:refresh(1, nil, x, y, self.w, body_h + up_down_width * 2)
 	end
 end
 
